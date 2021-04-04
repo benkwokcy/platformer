@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.5)
+
+project(platformer LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Compiler Warnings
+add_compile_options(-Wall -Wextra -Wpedantic -Wshadow)
+
+# Sanitizers
+add_compile_options(-g -O1 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls)
+add_link_options(-fsanitize=address -fsanitize=undefined)
+
+add_executable(platformer main.cpp)
