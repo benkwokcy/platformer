@@ -1,5 +1,4 @@
 .DS_Store
-build
-*.user
 README.txt
-*.autosave
+.vscode
+platformer
