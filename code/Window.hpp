@@ -10,8 +10,8 @@ class Window {
    public:
     static inline SDL_Window* window;
     static inline SDL_Renderer* renderer;
-    constexpr static int window_width = 800;
-    constexpr static int window_height = 600;
+    constexpr static int window_width = 640;
+    constexpr static int window_height = 480;
 
     static void start() {
         if (auto res = SDL_Init(SDL_INIT_VIDEO); res == -1) {
