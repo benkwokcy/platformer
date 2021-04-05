@@ -12,4 +12,9 @@ add_compile_options(-Wall -Wextra -Wpedantic -Wshadow)
 add_compile_options(-g -O1 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls)
 add_link_options(-fsanitize=address -fsanitize=undefined)
 
+# SDL
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+
 add_executable(platformer main.cpp)
+target_link_libraries(platformer ${SDL2_LIBRARIES})
