@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Compiler Warnings
 add_compile_options(-Wall -Wextra -Wpedantic -Wshadow)
 
-# Sanitizers
+# Sanitizers (comment out for release builds)
 add_compile_options(-g -O1 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls)
 add_link_options(-fsanitize=address -fsanitize=undefined)
 
