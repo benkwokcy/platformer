@@ -23,9 +23,13 @@ class Window {
         if (renderer = SDL_CreateRenderer(window, -1, 0); renderer == nullptr) {
             throw runtime_error("Failed SDL_CreateRenderer.");
         }
+        if (!IMG_Init(IMG_INIT_PNG)) {
+            throw runtime_error("Failed IMG_Init.");
+        }
     }
 
     static void stop() {
+        IMG_Quit();
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();

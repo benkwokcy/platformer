@@ -5,16 +5,14 @@
 #include <filesystem>
 
 #include "Window.hpp"
+#include "Menu.hpp"
 
 using namespace std;
 
 int main() {
     Window::start();
 
-    IMG_Init(IMG_INIT_PNG);
-    SDL_Surface* image = IMG_Load("assets/sprites/mainmenu.png");
-    assert(image != nullptr);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, image);
+    Scene* scene = new Menu();
 
     bool is_running = true;
     SDL_Event event;
@@ -26,16 +24,12 @@ int main() {
                 is_running = false;
             }
         }
-        SDL_RenderCopy(Window::renderer, texture, NULL, NULL);
+        scene->paint();
         SDL_RenderPresent(Window::renderer);
         if (auto after = SDL_GetTicks(); after - before < 16) {
             SDL_Delay(after - before);
         }
     }
-
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(image);
-    IMG_Quit();
 
     Window::stop();
 
