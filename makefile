@@ -1,5 +1,5 @@
 FLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Wshadow
-LIBRARIES = -I/usr/local/include/SDL2 -D_THREAD_SAFE -L/usr/local/lib -lSDL2 -lSDL2_ttf -lSDL2_mixer
+LIBRARIES = -I/usr/local/include/SDL2 -D_THREAD_SAFE -L/usr/local/lib -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image
 FILES = code/*.cpp
 EXECUTABLE = platformer
 
