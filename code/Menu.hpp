@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include <stdexcept>
+
 #include "Entity.hpp"
 #include "Window.hpp"
 
@@ -10,9 +12,12 @@
 class Menu : public Entity {
   public:
     Menu() {
-        image = IMG_Load("sprites/mainmenu.png");
-        assert(image != nullptr);
-        texture = SDL_CreateTextureFromSurface(Window::renderer, image);
+		if (image = IMG_Load("sprites/mainmenu.png"); image == nullptr) {
+			throw runtime_error("Failed IMG_Load for Menu.");
+		}
+        if (texture = SDL_CreateTextureFromSurface(Window::renderer, image); texture == nullptr) {
+			throw runtime_error("Failed CreateTextureFromSurface for Menu.");
+		}
     }
 
     ~Menu() {
