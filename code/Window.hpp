@@ -31,7 +31,7 @@ class Window {
         }
     }
 
-    // Shutdown SDL libraries
+    // Shut down SDL libraries
     static void stop() {
         IMG_Quit();
         SDL_DestroyRenderer(renderer);

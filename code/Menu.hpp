@@ -3,11 +3,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "Scene.hpp"
+#include "Entity.hpp"
 #include "Window.hpp"
 
 // The main menu.
-class Menu : public Scene {
+class Menu : public Entity {
 public:
     Menu() {
         image = IMG_Load("assets/sprites/mainmenu.png");
@@ -20,7 +20,7 @@ public:
         SDL_FreeSurface(image);
     }
 
-    void paint() override {
+    void paint() const override {
         SDL_RenderCopy(Window::renderer, texture, NULL, NULL);
     }
 

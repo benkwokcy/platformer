@@ -12,7 +12,7 @@ using namespace std;
 int main() {
     Window::start();
 
-    auto scene = shared_ptr<Scene>(new Menu());
+    unique_ptr<Entity> scene = make_unique<Menu>();
     bool is_running = true;
 
     while (is_running) {
