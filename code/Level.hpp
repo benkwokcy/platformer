@@ -12,7 +12,7 @@ public:
         entities.emplace_back(make_unique<Player>());
     }
 
-    void paint() const override {
+    void paint() override {
         for (auto& e : entities) {
             e->paint();
         }

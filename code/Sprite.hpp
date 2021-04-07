@@ -7,9 +7,14 @@
 
 class Sprite {
 public:
-    SDL_Rect dest_rect;
-
-    Sprite(const char* filename, int x = Window::center_x(), int y = Window::center_y()) {
+    // The sprite will be centered at position (x,y)
+    Sprite(const char* filename, int frame_width, int frame_height, int num_frames = 1, int frames_per_second = -1, int x = Window::center_x(), int y = Window::center_y()) : 
+        frame_width(frame_width),
+        frame_height(frame_height),
+        num_frames(num_frames),
+        frames_per_second(frames_per_second),
+        creation_time(static_cast<int>(SDL_GetTicks()))
+    {
         if (surface = IMG_Load(filename); surface == nullptr) {
             throw runtime_error("Failed IMG_Load.");
         }
@@ -17,12 +22,15 @@ public:
             throw runtime_error("Failed CreateTextureFromSurface.");
         }
 
-        int width, height;
-        SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-        dest_rect.x = x - width / 2;
-        dest_rect.y = y - height / 2;
-        dest_rect.w = width;
-        dest_rect.h = height;
+        source_rect.x = 0;
+        source_rect.y = 0;
+        source_rect.w = frame_width;
+        source_rect.h = frame_height;
+
+        dest_rect.x = x - frame_width / 2;
+        dest_rect.y = y - frame_height / 2;
+        dest_rect.w = frame_width;
+        dest_rect.h = frame_height;
     }
 
     ~Sprite() {
@@ -33,14 +41,22 @@ public:
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
 
-    void paint() const {
-        SDL_RenderCopy(Window::renderer, texture, NULL, &dest_rect);
+    void paint() {
+        if (num_frames > 1) {
+            int frame_index = ((SDL_GetTicks() - creation_time) * frames_per_second / 1000) % num_frames;
+            source_rect.x = frame_width * frame_index;
+        }
+        SDL_RenderCopy(Window::renderer, texture, &source_rect, &dest_rect);
     }
 
-    void next_frame() {
-        // TODO
-    }
 private:
+    int frame_width;
+    int frame_height;
+    int num_frames;
+    int frames_per_second;
+    int creation_time;
     SDL_Surface* surface;
     SDL_Texture* texture;
+    SDL_Rect source_rect;
+    SDL_Rect dest_rect;
 };

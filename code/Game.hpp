@@ -7,9 +7,11 @@
 #include "Event.hpp"
 #include "Menu.hpp"
 #include "Window.hpp"
+#include "Player.hpp"
 
 using namespace std;
 
+// Switches the game between different scenes.
 class Game {
 public:
     bool is_running;
@@ -29,6 +31,7 @@ public:
             }
         }
         scene->tick();
+        SDL_RenderClear(Window::renderer);
         scene->paint();
         SDL_RenderPresent(Window::renderer);
     }

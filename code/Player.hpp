@@ -10,14 +10,15 @@
 class Player : public Entity {
 public:
     Player() :
-        sprite(Sprite("sprites/playerrun.png"))
+        sprite(Sprite("sprites/playerrun.png", 78, 58, 8, 10))
     {}
-    
-    void paint() const override {
+
+    void paint() override {
         sprite.paint();
     }
 
     void handle_event(Event e) override {}
+
     void tick() override {}
 
 private:

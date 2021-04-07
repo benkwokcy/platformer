@@ -13,10 +13,10 @@
 class Menu : public Entity {
 public:
     Menu() :
-        sprite(Sprite("sprites/mainmenu.png"))
+        sprite(Sprite("sprites/mainmenu.png", 640, 480))
     {}
 
-    void paint() const override {
+    void paint() override {
         sprite.paint();
     }
 
