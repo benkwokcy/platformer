@@ -7,32 +7,22 @@
 
 #include "Entity.hpp"
 #include "Window.hpp"
+#include "Sprite.hpp"
 
 // The main menu.
 class Menu : public Entity {
 public:
-    Menu() {
-        if (image = IMG_Load("sprites/mainmenu.png"); image == nullptr) {
-            throw runtime_error("Failed IMG_Load for Menu.");
-        }
-        if (texture = SDL_CreateTextureFromSurface(Window::renderer, image); texture == nullptr) {
-            throw runtime_error("Failed CreateTextureFromSurface for Menu.");
-        }
-    }
-
-    ~Menu() {
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(image);
-    }
+    Menu() :
+        sprite(Sprite("sprites/mainmenu.png"))
+    {}
 
     void paint() const override {
-        SDL_RenderCopy(Window::renderer, texture, NULL, NULL);
+        sprite.paint();
     }
 
     void handle_event(Event e) override {}
     void tick() override {}
 
 private:
-    SDL_Surface* image;
-    SDL_Texture* texture;
+    Sprite sprite;
 };

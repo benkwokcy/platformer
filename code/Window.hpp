@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 
 #include <stdexcept>
+#include <utility>
 
 using namespace std;
 
@@ -11,16 +12,16 @@ class Window {
 public:
     static inline SDL_Window* window;
     static inline SDL_Renderer* renderer;
-    constexpr static int window_width = 640;
-    constexpr static int window_height = 480;
-    constexpr static char window_name[] = "Platformer";
+    constexpr static int width = 640;
+    constexpr static int height = 480;
+    constexpr static char name[] = "Platformer";
 
     // Initialize SDL libraries
     static void start() {
         if (auto res = SDL_Init(SDL_INIT_VIDEO); res == -1) {
             throw runtime_error("Failed SDL_Init.");
         }
-        if (window = SDL_CreateWindow(window_name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_SHOWN); window == nullptr) {
+        if (window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN); window == nullptr) {
             throw runtime_error("Failed SDL_CreateWindow.");
         }
         if (renderer = SDL_CreateRenderer(window, -1, 0); renderer == nullptr) {
@@ -37,5 +38,13 @@ public:
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
+    }
+
+    constexpr static int center_x() { 
+        return width / 2; 
+    }
+
+    constexpr static int center_y() { 
+        return height / 2; 
     }
 };

@@ -5,28 +5,21 @@
 
 #include "Entity.hpp"
 #include "Window.hpp"
+#include "Sprite.hpp"
 
 class Player : public Entity {
 public:
-    Player() {
-        // image = IMG_Load("assets/sprites/playerrun.png");
-        // assert(image != nullptr);
-        // texture = SDL_CreateTextureFromSurface(Window::renderer, image);
-    }
-
-    ~Player() {
-        // SDL_DestroyTexture(texture);
-        // SDL_FreeSurface(image);
-    }
-
+    Player() :
+        sprite(Sprite("sprites/playerrun.png"))
+    {}
+    
     void paint() const override {
-        // SDL_RenderCopy(Window::renderer, texture, NULL, NULL);
+        sprite.paint();
     }
 
     void handle_event(Event e) override {}
     void tick() override {}
 
 private:
-    // SDL_Surface* image;
-    // SDL_Texture* texture;
+    Sprite sprite;
 };

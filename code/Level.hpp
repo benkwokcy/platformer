@@ -12,8 +12,6 @@ public:
         entities.emplace_back(make_unique<Player>());
     }
 
-    ~Level() {}
-
     void paint() const override {
         for (auto& e : entities) {
             e->paint();
