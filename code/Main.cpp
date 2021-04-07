@@ -17,7 +17,8 @@ int main() {
     while (game.is_running) {
         auto before = SDL_GetTicks();
         game.do_one_frame();
-        if (auto after = SDL_GetTicks(); after - before < 16) {
+        auto after = SDL_GetTicks();
+        if (after - before < 16) {
             SDL_Delay(after - before);
         }
     }

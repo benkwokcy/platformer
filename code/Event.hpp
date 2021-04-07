@@ -4,9 +4,9 @@
 
 // The different event types in this game.
 enum Event {
+    NONE = 0,  // no events in the SDL queue
     QUIT,
-    IGNORE, // event is ignored
-    NONE    // no events in the queue
+    IGNORE  // an SDL event that we don't care about
 };
 
 // Get the next SDL event and convert it into an in-game event.

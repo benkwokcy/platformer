@@ -20,13 +20,10 @@ public:
     }
 
     void do_one_frame() {
-        while (1) {
-            Event e = get_event();
-            if (e == NONE) break;
+        while (Event e = get_event()) {
             switch (e) {
                 case QUIT:
-                    is_running = false;
-                    break;
+                    is_running = false; break;
                 default:
                     scene->handle_event(e);
             }
