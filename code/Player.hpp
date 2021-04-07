@@ -7,7 +7,7 @@
 #include "Window.hpp"
 
 class Player : public Entity {
-public:
+  public:
     Player() {
         // image = IMG_Load("assets/sprites/playerrun.png");
         // assert(image != nullptr);
@@ -25,7 +25,8 @@ public:
 
     void handle_event(Event e) override {}
     void tick() override {}
-private:
+
+  private:
     // SDL_Surface* image;
     // SDL_Texture* texture;
 };

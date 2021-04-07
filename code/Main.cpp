@@ -3,9 +3,9 @@
 #include <iostream>
 #include <memory>
 
-#include "Window.hpp"
-#include "Menu.hpp"
 #include "Event.hpp"
+#include "Menu.hpp"
+#include "Window.hpp"
 
 using namespace std;
 
@@ -20,8 +20,11 @@ int main() {
         SDL_Event sdl_event;
         while (SDL_PollEvent(&sdl_event)) {
             switch (Event game_event = translate_sdl_event(sdl_event)) {
-                case QUIT: is_running = false; break;
-                default: scene->handle_event(game_event);
+            case QUIT:
+                is_running = false;
+                break;
+            default:
+                scene->handle_event(game_event);
             }
         }
         scene->tick();

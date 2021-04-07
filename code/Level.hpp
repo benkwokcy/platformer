@@ -1,13 +1,13 @@
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "Entity.hpp"
 #include "Player.hpp"
 
 class Level : public Entity {
-public:
+  public:
     Level() {
         entities.emplace_back(make_unique<Player>());
     }
@@ -31,6 +31,7 @@ public:
             e->tick();
         }
     }
-private:
+
+  private:
     std::vector<unique_ptr<Entity>> entities;
 };

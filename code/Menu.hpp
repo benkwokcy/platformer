@@ -8,9 +8,9 @@
 
 // The main menu.
 class Menu : public Entity {
-public:
+  public:
     Menu() {
-        image = IMG_Load("assets/sprites/mainmenu.png");
+        image = IMG_Load("sprites/mainmenu.png");
         assert(image != nullptr);
         texture = SDL_CreateTextureFromSurface(Window::renderer, image);
     }
@@ -26,7 +26,8 @@ public:
 
     void handle_event(Event e) override {}
     void tick() override {}
-private:
+
+  private:
     SDL_Surface* image;
     SDL_Texture* texture;
 };
