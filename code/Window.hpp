@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <stdexcept>
 
@@ -12,7 +13,9 @@ class Window {
     static inline SDL_Renderer* renderer;
     constexpr static int window_width = 640;
     constexpr static int window_height = 480;
+    constexpr static char window_name[] = "Platformer";
 
+    // Initialize SDL libraries
     static void start() {
         if (auto res = SDL_Init(SDL_INIT_VIDEO); res == -1) {
             throw runtime_error("Failed SDL_Init.");
@@ -28,13 +31,11 @@ class Window {
         }
     }
 
+    // Shutdown SDL libraries
     static void stop() {
         IMG_Quit();
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
     }
-
-   private:
-    constexpr static char window_name[] = "Platformer";
 };

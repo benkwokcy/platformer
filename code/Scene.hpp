@@ -1,11 +1,11 @@
-enum Event {
-    MOVE_LEFT,
-    MOVE_RIGHT
-};
+#pragma once
 
+#include "Event.hpp"
+
+// The interface for all scenes.
 class Scene {
 public:
     virtual void paint() = 0;
-    virtual void event() = 0;
-    virtual void update() = 0;
+    virtual void handle_event(Event e) = 0;
+    virtual void tick() = 0; // computes the next frame
 };

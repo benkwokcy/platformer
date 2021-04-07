@@ -1,9 +1,12 @@
+#pragma once
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include "Scene.hpp"
 #include "Window.hpp"
 
+// The main menu.
 class Menu : public Scene {
 public:
     Menu() {
@@ -20,9 +23,9 @@ public:
     void paint() override {
         SDL_RenderCopy(Window::renderer, texture, NULL, NULL);
     }
-    
-    void event() override {}
-    void update() override {}
+
+    void handle_event(Event e) override {}
+    void tick() override {}
 private:
     SDL_Surface* image;
     SDL_Texture* texture;
