@@ -8,7 +8,7 @@
 using namespace std;
 
 class Window {
-  public:
+public:
     static inline SDL_Window* window;
     static inline SDL_Renderer* renderer;
     constexpr static int window_width = 640;

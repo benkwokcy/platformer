@@ -12,6 +12,7 @@ using namespace std;
 
 int main() {
     Window::start();
+
     Game game;
     while (game.is_running) {
         auto before = SDL_GetTicks();
@@ -20,6 +21,7 @@ int main() {
             SDL_Delay(after - before);
         }
     }
+    
     Window::stop();
     return 0;
 }

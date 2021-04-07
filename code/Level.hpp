@@ -7,7 +7,7 @@
 #include "Player.hpp"
 
 class Level : public Entity {
-  public:
+public:
     Level() {
         entities.emplace_back(make_unique<Player>());
     }
@@ -32,6 +32,6 @@ class Level : public Entity {
         }
     }
 
-  private:
+private:
     std::vector<unique_ptr<Entity>> entities;
 };

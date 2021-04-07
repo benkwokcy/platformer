@@ -10,14 +10,14 @@
 
 // The main menu.
 class Menu : public Entity {
-  public:
+public:
     Menu() {
-		if (image = IMG_Load("sprites/mainmenu.png"); image == nullptr) {
-			throw runtime_error("Failed IMG_Load for Menu.");
-		}
+        if (image = IMG_Load("sprites/mainmenu.png"); image == nullptr) {
+            throw runtime_error("Failed IMG_Load for Menu.");
+        }
         if (texture = SDL_CreateTextureFromSurface(Window::renderer, image); texture == nullptr) {
-			throw runtime_error("Failed CreateTextureFromSurface for Menu.");
-		}
+            throw runtime_error("Failed CreateTextureFromSurface for Menu.");
+        }
     }
 
     ~Menu() {
@@ -32,7 +32,7 @@ class Menu : public Entity {
     void handle_event(Event e) override {}
     void tick() override {}
 
-  private:
+private:
     SDL_Surface* image;
     SDL_Texture* texture;
 };
