@@ -11,29 +11,28 @@
 
 using namespace std;
 
-enum GameState {
-    SHOWING_MENU, PLAYING
+enum class GameState {
+    MENU, LEVEL, QUIT
 };
 
 // Switches the game between different scenes.
 class Game {
 public:
-    bool is_running;
-
     Game() :
-        state(SHOWING_MENU),
-        is_running(true)
+        state(GameState::MENU)
     {
         scene = &menu;
     }
 
     void do_one_frame() {
-        while (Event e = get_event()) {
+        for (Event e = get_event(); e != Event::NONE; e = get_event()) {
             switch (e) {
-                case QUIT:
-                    is_running = false; break;
-                case CONTINUE:
-                    if (state == SHOWING_MENU) {
+                case Event::QUIT:
+                    state = GameState::QUIT; 
+                    break;
+                case Event::CONTINUE:
+                    if (state == GameState::MENU) {
+                        state = GameState::LEVEL;
                         scene = &level;
                     }
                     break;
@@ -45,6 +44,10 @@ public:
         SDL_RenderClear(Window::renderer);
         scene->paint();
         SDL_RenderPresent(Window::renderer);
+    }
+
+    bool is_running() {
+        return state != GameState::QUIT;
     }
 
 private:

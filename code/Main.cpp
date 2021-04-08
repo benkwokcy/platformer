@@ -9,7 +9,7 @@ int main() {
     Window::start();
 
     Game game;
-    while (game.is_running) {
+    while (game.is_running()) {
         auto before = SDL_GetTicks();
         game.do_one_frame();
         auto after = SDL_GetTicks();
