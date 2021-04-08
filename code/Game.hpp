@@ -30,6 +30,8 @@ public:
                 case Event::QUIT:
                     state = GameState::QUIT; 
                     break;
+                case Event::IGNORE:
+                    break;
                 case Event::CONTINUE:
                     if (state == GameState::MENU) {
                         state = GameState::LEVEL;
