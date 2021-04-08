@@ -38,7 +38,7 @@ public:
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
 
-    void paint(int x = Window::center_x(), int y = Window::center_y()) {
+    void paint(int x = Window::center_x(), int y = Window::center_y(), bool flip = false) {
         // update position
         dest_rect.x = x - frame_width / 2;
         dest_rect.y = y - frame_height / 2;
@@ -47,7 +47,11 @@ public:
             int frame_index = ((SDL_GetTicks() - creation_time) * frames_per_second / 1000) % num_frames;
             source_rect.x = frame_width * frame_index;
         }
-        SDL_RenderCopy(Window::renderer, texture, &source_rect, &dest_rect);
+        if (flip) {
+            SDL_RenderCopyEx(Window::renderer, texture, &source_rect, &dest_rect, 0, NULL, SDL_FLIP_HORIZONTAL);
+        } else {
+            SDL_RenderCopy(Window::renderer, texture, &source_rect, &dest_rect);
+        }
     }
 
     void set_first_frame() {

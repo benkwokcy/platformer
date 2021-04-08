@@ -18,5 +18,9 @@ fast:
 	g++ $(FILES) -o $(EXECUTABLE) -O3 $(FLAGS) $(LIBRARIES)
 	./$(EXECUTABLE)
 
+profile:
+	g++ $(FILES) -g -o $(EXECUTABLE) -O3 $(FLAGS) $(LIBRARIES)
+	./$(EXECUTABLE)
+
 clean:
 	rm $(EXECUTABLE)

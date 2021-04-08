@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 
+#include <iostream>
+
 #include "Window.hpp"
 #include "Game.hpp"
 
