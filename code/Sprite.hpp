@@ -7,6 +7,10 @@
 
 class Sprite {
 public:
+    int num_frames;
+
+    Sprite() {}
+
     // The sprite will be centered at position (x,y)
     Sprite(const char* filename, int frame_width, int frame_height, int num_frames = 1, int frames_per_second = -1) : 
         frame_width(frame_width),
@@ -54,6 +58,10 @@ public:
         }
     }
 
+    int frames_elapsed() {
+        return (SDL_GetTicks() - creation_time) * frames_per_second / 1000;
+    }
+
     void set_first_frame() {
         creation_time = SDL_GetTicks();
     }
@@ -61,7 +69,6 @@ public:
 private:
     int frame_width;
     int frame_height;
-    int num_frames;
     int frames_per_second;
     int creation_time;
     SDL_Surface* surface;
