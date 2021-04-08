@@ -7,15 +7,18 @@ enum class Event {
     NONE,  // no events in the SDL queue
     CONTINUE,
     QUIT,
+    LEFT_PRESS,
+    LEFT_RELEASE,
+    RIGHT_PRESS,
+    RIGHT_RELEASE,
     IGNORE  // an SDL event that we don't care about
 };
 
 // Get the next SDL event and convert it into an in-game event.
 Event get_event() {
     SDL_Event e;
-    
-    if (!SDL_PollEvent(&e)) {
-        return Event::NONE;
+    if (!SDL_PollEvent(&e)) { 
+        return Event::NONE; 
     }
     
     if (e.type == SDL_QUIT) {
@@ -26,6 +29,17 @@ Event get_event() {
                 return Event::QUIT;
             case SDLK_RETURN:
                 return Event::CONTINUE;
+            case SDLK_LEFT:
+                return Event::LEFT_PRESS;
+            case SDLK_RIGHT:
+                return Event::RIGHT_PRESS;
+        }
+    } else if (e.type == SDL_KEYUP) {
+        switch (e.key.keysym.sym) {
+            case SDLK_LEFT:
+                return Event::LEFT_RELEASE;
+            case SDLK_RIGHT:
+                return Event::RIGHT_RELEASE;
         }
     }
 

@@ -8,7 +8,7 @@
 class Sprite {
 public:
     // The sprite will be centered at position (x,y)
-    Sprite(const char* filename, int frame_width, int frame_height, int num_frames = 1, int frames_per_second = -1, int x = Window::center_x(), int y = Window::center_y()) : 
+    Sprite(const char* filename, int frame_width, int frame_height, int num_frames = 1, int frames_per_second = -1) : 
         frame_width(frame_width),
         frame_height(frame_height),
         num_frames(num_frames),
@@ -26,9 +26,6 @@ public:
         source_rect.y = 0;
         source_rect.w = frame_width;
         source_rect.h = frame_height;
-
-        dest_rect.x = x - frame_width / 2;
-        dest_rect.y = y - frame_height / 2;
         dest_rect.w = frame_width;
         dest_rect.h = frame_height;
     }
@@ -41,12 +38,20 @@ public:
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
 
-    void paint() {
+    void paint(int x = Window::center_x(), int y = Window::center_y()) {
+        // update position
+        dest_rect.x = x - frame_width / 2;
+        dest_rect.y = y - frame_height / 2;
+        // update frame
         if (num_frames > 1) {
             int frame_index = ((SDL_GetTicks() - creation_time) * frames_per_second / 1000) % num_frames;
             source_rect.x = frame_width * frame_index;
         }
         SDL_RenderCopy(Window::renderer, texture, &source_rect, &dest_rect);
+    }
+
+    void set_first_frame() {
+        creation_time = SDL_GetTicks();
     }
 
 private:
