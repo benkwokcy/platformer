@@ -44,7 +44,7 @@ public:
         dest_rect.y = y - frame_height / 2;
         // update frame
         if (num_frames > 1) {
-            int frame_index = ((SDL_GetTicks() - creation_time) * frames_per_second / 1000) % num_frames;
+            int frame_index = frames_elapsed() % num_frames;
             source_rect.x = frame_width * frame_index;
         }
         if (flip) {
@@ -56,6 +56,14 @@ public:
 
     void set_first_frame() {
         creation_time = SDL_GetTicks();
+    }
+
+    int frames_elapsed() {
+        return ((SDL_GetTicks() - creation_time) * frames_per_second / 1000);
+    }
+
+    int get_num_frames() {
+        return num_frames;
     }
 
 private:

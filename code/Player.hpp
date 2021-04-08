@@ -4,6 +4,8 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <stdexcept>
+#include <stack>
 
 #include "Entity.hpp"
 #include "Window.hpp"
@@ -11,7 +13,7 @@
 #include "Event.hpp"
 
 enum class PlayerState {
-    IDLE, RUN_LEFT, RUN_RIGHT
+    MOVING, ATTACK
 };
 
 class Player : public Entity {
@@ -19,54 +21,58 @@ public:
     Player() :
         run(Sprite("sprites/playerrun.png", 78, 58, 8, 10)),
         idle(Sprite("sprites/playeridle.png", 78, 58, 11, 10)),
-        state(PlayerState::IDLE),
+        attack(Sprite("sprites/playerattack.png", 78, 58, 3, 10)),
         x(Window::center_x()),
         y(Window::center_y()),
         speed_x(0.0f),
         speed_y(0.0f),
         facing_left(false)
     {
-        sprite = &idle;
+        states.push(PlayerState::MOVING);
     }
 
     void paint() override {
-        sprite->paint(x, y, facing_left);
+        assert (!states.empty());
+        switch (states.top()) {
+            case PlayerState::ATTACK:
+                attack.paint(x, y, facing_left);
+                break;
+            case PlayerState::MOVING:
+                if (speed_x != 0) {
+                    run.paint(x, y, facing_left);
+                } else if (speed_x == 0) {
+                    idle.paint(x, y, facing_left);
+                }
+                break;
+            default:
+                throw runtime_error("Unexpected state");
+        }
     }
 
     void handle_event(Event e) override {
         switch (e) {
             case Event::LEFT_PRESS:
-                if (state != PlayerState::RUN_LEFT) {
-                    state = PlayerState::RUN_LEFT;
-                    facing_left = true;
-                    sprite = &run;
-                    sprite->set_first_frame();
-                    speed_x = -0.5f;
-                }
+                facing_left = true;
+                speed_x = -0.5f;
                 break;
             case Event::RIGHT_PRESS:
-                if (state != PlayerState::RUN_RIGHT) {
-                    state = PlayerState::RUN_RIGHT;
-                    facing_left = false;
-                    sprite = &run;
-                    sprite->set_first_frame();
-                    speed_x = 0.5f;
-                }
+                facing_left = false;
+                speed_x = 0.5f;
                 break;
             case Event::LEFT_RELEASE:
                 if (speed_x < 0) {
-                    state = PlayerState::IDLE;
-                    sprite = &idle;
-                    sprite->set_first_frame();
                     speed_x = 0.0f;
                 }
                 break;
             case Event::RIGHT_RELEASE:
                 if (speed_x > 0) {
-                    state = PlayerState::IDLE;
-                    sprite = &idle;
-                    sprite->set_first_frame();
                     speed_x = 0.0f;
+                }
+                break;
+            case Event::ATTACK:
+                if (states.top() != PlayerState::ATTACK) {
+                    states.push(PlayerState::ATTACK);
+                    attack.set_first_frame();
                 }
                 break;
             default:
@@ -77,15 +83,18 @@ public:
     void tick() override {
         x += speed_x;
         y += speed_y;
+        if (states.top() == PlayerState::ATTACK && attack.frames_elapsed() >= attack.get_num_frames()) {
+            states.pop();
+        }
     }
 
 private:
     // sprites
     Sprite run;
     Sprite idle;
+    Sprite attack;
     // player info
-    PlayerState state;
-    Sprite* sprite;
+    stack<PlayerState> states;
     float x;
     float y;
     float speed_x;

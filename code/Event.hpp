@@ -11,6 +11,7 @@ enum class Event {
     LEFT_RELEASE,
     RIGHT_PRESS,
     RIGHT_RELEASE,
+    ATTACK,
     IGNORE  // an SDL event that we don't care about
 };
 
@@ -33,6 +34,8 @@ Event get_event() {
                 return Event::LEFT_PRESS;
             case SDLK_RIGHT:
                 return Event::RIGHT_PRESS;
+            case SDLK_SPACE:
+                return Event::ATTACK;
         }
     } else if (e.type == SDL_KEYUP) {
         switch (e.key.keysym.sym) {
