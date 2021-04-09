@@ -22,6 +22,8 @@ public:
         run(Sprite("sprites/playerrun.png", 78, 58, 8, 10)),
         idle(Sprite("sprites/playeridle.png", 78, 58, 11, 10)),
         attack(Sprite("sprites/playerattack.png", 78, 58, 3, 10)),
+        jump(Sprite("sprites/playerjump.png", 78, 58, 1, 10)),
+        fall(Sprite("sprites/playerfall.png", 78, 58, 1, 10)),
         x(Window::center_x()),
         y(Window::center_y()),
         speed_x(0.0f),
@@ -39,10 +41,16 @@ public:
                 attack.paint(x, y, facing_left);
                 break;
             case PlayerState::MOVING:
-                if (speed_x != 0) {
+                if (speed_y < 0.0f) {
+                    jump.paint(x, y, facing_left);
+                } else if (speed_y > 0.0f) {
+                    fall.paint(x, y, facing_left);
+                } else if (speed_x != 0) {
                     run.paint(x, y, facing_left);
                 } else if (speed_x == 0) {
                     idle.paint(x, y, facing_left);
+                } else {
+                    throw runtime_error("Unexpected state");
                 }
                 break;
             default:
@@ -108,6 +116,8 @@ private:
     Sprite run;
     Sprite idle;
     Sprite attack;
+    Sprite jump;
+    Sprite fall;
     // player info
     stack<PlayerState> states;
     float x;
