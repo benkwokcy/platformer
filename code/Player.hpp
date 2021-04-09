@@ -26,7 +26,8 @@ public:
         y(Window::center_y()),
         speed_x(0.0f),
         speed_y(0.0f),
-        facing_left(false)
+        facing_left(false),
+        on_ground(true)
     {
         states.push(PlayerState::MOVING);
     }
@@ -75,14 +76,28 @@ public:
                     attack.set_first_frame();
                 }
                 break;
+            case Event::JUMP:
+                if (on_ground) {
+                    on_ground = false;
+                    y -= 1.0f;
+                    speed_y -= 1.0f;
+                }
             default:
                 break;
         }
     }
 
     void tick() override {
+        if (y >= Window::center_y()) {
+            y = Window::center_y();
+            on_ground = true;
+            speed_y = 0;
+        }
         x += speed_x;
         y += speed_y;
+        if (!on_ground) {
+            speed_y += 0.008f;
+        }
         if (states.top() == PlayerState::ATTACK && attack.frames_elapsed() >= attack.get_num_frames()) {
             states.pop();
         }
@@ -100,4 +115,5 @@ private:
     float speed_x;
     float speed_y;
     bool facing_left;
+    bool on_ground;
 };

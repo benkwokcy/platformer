@@ -12,7 +12,8 @@ enum class Event {
     RIGHT_PRESS,
     RIGHT_RELEASE,
     ATTACK,
-    IGNORE  // an SDL event that we don't care about
+    JUMP,
+    IGNORE,  // an SDL event that we don't care about
 };
 
 // Get the next SDL event and convert it into an in-game event.
@@ -36,6 +37,8 @@ Event get_event() {
                 return Event::RIGHT_PRESS;
             case SDLK_SPACE:
                 return Event::ATTACK;
+            case SDLK_UP:
+                return Event::JUMP;
         }
     } else if (e.type == SDL_KEYUP) {
         switch (e.key.keysym.sym) {
