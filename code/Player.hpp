@@ -96,8 +96,10 @@ public:
     }
 
     void tick() override {
-        if (y >= Window::center_y()) {
-            y = Window::center_y();
+        float ground_level = 288.0f;
+        float adjust_ground = 288.0f - (58 / 2) + 14;
+        if (y >= adjust_ground) {
+            y = adjust_ground;
             on_ground = true;
             speed_y = 0;
         }

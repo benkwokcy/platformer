@@ -5,10 +5,12 @@
 
 #include "Entity.hpp"
 #include "Player.hpp"
+#include "Background.hpp"
 
 class Level : public Entity {
 public:
     Level() {
+        entities.emplace_back(make_unique<Background>());
         entities.emplace_back(make_unique<Player>());
     }
 
