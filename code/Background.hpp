@@ -6,13 +6,16 @@
 
 #include "Entity.hpp"
 #include "Sprite.hpp"
+#include "Tiles.hpp"
 
 // The background of the level.
 class Background : public Entity {
 public:
     Background() :
         bounding_box({0, 0, 640, 480}),
-        sprite(Sprite("sprites/background.png", 640, 480, bounding_box))
+        sprite(Sprite("sprites/background.png", 640, 480, bounding_box)),
+        tileset("terrain.tsx"),
+        tilemap("level.tmx")
     {}
 
     void paint() override {
@@ -25,4 +28,6 @@ public:
 private:
     SDL_Rect bounding_box;
     Sprite sprite;
+    Tileset tileset;
+    Tilemap tilemap;
 };
