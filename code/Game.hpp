@@ -9,8 +9,6 @@
 #include "Window.hpp"
 #include "Level.hpp"
 
-using namespace std;
-
 enum class GameState {
     MENU, LEVEL, QUIT
 };

@@ -16,10 +16,10 @@ public:
         creation_time(static_cast<int>(SDL_GetTicks()))
     {
         if (surface = IMG_Load(filename); surface == nullptr) {
-            throw runtime_error("Failed IMG_Load.");
+            throw std::runtime_error("Failed IMG_Load.");
         }
         if (texture = SDL_CreateTextureFromSurface(Window::renderer, surface); texture == nullptr) {
-            throw runtime_error("Failed CreateTextureFromSurface.");
+            throw std::runtime_error("Failed CreateTextureFromSurface.");
         }
 
         source_rect.x = 0;

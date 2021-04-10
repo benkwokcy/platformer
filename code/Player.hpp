@@ -50,11 +50,11 @@ public:
                 } else if (speed_x == 0) {
                     idle.paint(x, y, facing_left);
                 } else {
-                    throw runtime_error("Unexpected state");
+                    throw std::runtime_error("Unexpected state");
                 }
                 break;
             default:
-                throw runtime_error("Unexpected state");
+                throw std::runtime_error("Unexpected state");
         }
     }
 
@@ -117,6 +117,6 @@ private:
     float speed_x, speed_y;
     bool facing_left, on_ground;
     SDL_Rect bounding_box; // in coordinates relative to the top left of the frame.
-    stack<PlayerState> states;
+    std::stack<PlayerState> states;
     Sprite run, idle, attack, jump, fall;
 };

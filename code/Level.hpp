@@ -10,8 +10,8 @@
 class Level : public Entity {
 public:
     Level() {
-        entities.emplace_back(make_unique<Background>());
-        entities.emplace_back(make_unique<Player>());
+        entities.emplace_back(std::make_unique<Background>());
+        entities.emplace_back(std::make_unique<Player>());
     }
 
     void paint() override {
@@ -33,5 +33,5 @@ public:
     }
 
 private:
-    std::vector<unique_ptr<Entity>> entities;
+    std::vector<std::unique_ptr<Entity>> entities;
 };

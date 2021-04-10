@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <utility>
 
-using namespace std;
+// using namespace std;
 
 class Window {
 public:
@@ -19,16 +19,16 @@ public:
     // Initialize SDL libraries
     static void start() {
         if (auto res = SDL_Init(SDL_INIT_VIDEO); res == -1) {
-            throw runtime_error("Failed SDL_Init.");
+            throw std::runtime_error("Failed SDL_Init.");
         }
         if (window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN); window == nullptr) {
-            throw runtime_error("Failed SDL_CreateWindow.");
+            throw std::runtime_error("Failed SDL_CreateWindow.");
         }
         if (renderer = SDL_CreateRenderer(window, -1, 0); renderer == nullptr) {
-            throw runtime_error("Failed SDL_CreateRenderer.");
+            throw std::runtime_error("Failed SDL_CreateRenderer.");
         }
         if (!IMG_Init(IMG_INIT_PNG)) {
-            throw runtime_error("Failed IMG_Init.");
+            throw std::runtime_error("Failed IMG_Init.");
         }
     }
 

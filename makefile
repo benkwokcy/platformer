@@ -1,4 +1,4 @@
-FLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Wshadow -v
+FLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Wshadow
 LIBRARIES = -lSDL2 -lSDL2_image -ltinyxml2
 MORE_LIBRARIES = -lSDL2_ttf -lSDL2_mixer
 FILES = code/*.cpp
