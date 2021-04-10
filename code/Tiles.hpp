@@ -9,16 +9,35 @@
 #include <iostream>
 #include <vector>
 
-// Split a comma-separated string of ints into a vector of ints.
-std::vector<int> split(const std::string& text) {
-    std::vector<int> V;
-    std::stringstream s_stream(text);
-    std::string buffer;
-    while (std::getline(s_stream, buffer, ',')) {
-        V.push_back(std::stoi(buffer));
-    }
-    return V;
+/*********************************************
+ *               CONSTANTS
+ *********************************************/
+
+namespace Assets {
+    std::string path("assets/");
+};
+
+/*********************************************
+ *              XML HELPER FUNCTIONS
+ *********************************************/
+
+void xml_assert(tinyxml2::XMLError error_code) {
+    assert(error_code == tinyxml2::XML_SUCCESS);
 }
+
+void get_int_attribute(tinyxml2::XMLElement* element, const char* attribute_name, int* destination) {
+    xml_assert(element->QueryIntAttribute(attribute_name, destination));
+}
+
+std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attribute_name) {
+    const char* temp;
+    xml_assert(element->QueryStringAttribute(attribute_name, &temp));
+    return std::string(temp);
+}
+
+/*********************************************
+ *                  CLASSES
+ *********************************************/
 
 class Tileset {
 public:
@@ -30,72 +49,87 @@ public:
 
     Tileset(std::string filename) {
         tinyxml2::XMLDocument doc;
-        assert(doc.LoadFile(("assets/" + filename).c_str()) == tinyxml2::XML_SUCCESS);
+        xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
 
         auto tileset_node = doc.FirstChildElement();
-        assert(tileset_node->QueryIntAttribute("tilewidth", &tile_width) == tinyxml2::XML_SUCCESS);
-        assert(tileset_node->QueryIntAttribute("tileheight", &tile_height) == tinyxml2::XML_SUCCESS);
-        assert(tileset_node->QueryIntAttribute("tilecount", &tile_count) == tinyxml2::XML_SUCCESS);
-        assert(tileset_node->QueryIntAttribute("columns", &tile_columns) == tinyxml2::XML_SUCCESS);
+        get_int_attribute(tileset_node, "tilewidth", &tile_width);
+        get_int_attribute(tileset_node, "tileheight", &tile_height);
+        get_int_attribute(tileset_node, "tilecount", &tile_count);
+        get_int_attribute(tileset_node, "columns", &tile_columns);
         
         auto image_node = tileset_node->FirstChildElement();
-        const char* temp;
-        assert(image_node->QueryStringAttribute("source", &temp) == tinyxml2::XML_SUCCESS);
-        image_path = temp;
-        assert(image_node->QueryIntAttribute("width", &image_width) == tinyxml2::XML_SUCCESS);
-        assert(image_node->QueryIntAttribute("height", &image_height) == tinyxml2::XML_SUCCESS);
+        image_path = get_string_attribute(image_node, "source");
+        get_int_attribute(image_node, "width", &image_width);
+        get_int_attribute(image_node, "height", &image_height);
     }
 };
 
 class Tilemap {
 public:
+    using matrix = std::vector<std::vector<int>>;
+
     int map_width, map_height;
     int tile_width, tile_height;
-    Tileset tileset;
-    std::vector<std::vector<int>> tile_layer;
+    std::vector<Tileset> tilesets;
+    std::vector<matrix> layers;
     std::vector<SDL_Rect> collisions;
 
     Tilemap(std::string filename) {
         tinyxml2::XMLDocument doc;
-        assert(doc.LoadFile(("assets/" + filename).c_str()) == tinyxml2::XML_SUCCESS);
+        xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
 
         auto map_node = doc.FirstChildElement();
-        assert(map_node->QueryIntAttribute("width", &map_width) == tinyxml2::XML_SUCCESS);
-        assert(map_node->QueryIntAttribute("height", &map_height) == tinyxml2::XML_SUCCESS);
-        assert(map_node->QueryIntAttribute("tilewidth", &tile_width) == tinyxml2::XML_SUCCESS);
-        assert(map_node->QueryIntAttribute("tileheight", &tile_height) == tinyxml2::XML_SUCCESS);
+        get_int_attribute(map_node, "width", &map_width);
+        get_int_attribute(map_node, "height", &map_height);
+        get_int_attribute(map_node, "tilewidth", &tile_width);
+        get_int_attribute(map_node, "tileheight", &tile_height);
         
-        auto curr = map_node->FirstChildElement();
-        while (curr) {
+        for (auto curr = map_node->FirstChildElement(); curr != nullptr; curr = curr->NextSiblingElement()) {
             std::string type(curr->Value());
             if (type == "tileset") {
-                const char* temp;
-                assert(curr->QueryStringAttribute("source", &temp) == tinyxml2::XML_SUCCESS);
-                tileset = Tileset(temp);
+                tilesets.emplace_back(get_string_attribute(curr, "source"));
             } else if (type == "layer") {
-                auto data_node = curr->FirstChildElement();
-                std::string raw_data(data_node->GetText());
-                std::stringstream data_stream(raw_data);
-                std::string temp;
-                std::vector<std::string> rows;
-                while (data_stream >> temp) {
-                    tile_layer.push_back(split(temp));
-                }
+                read_tile_layer(curr);
             } else if (type == "objectgroup") {
-                auto object_node = curr->FirstChildElement();
-                while (object_node) {
-                    SDL_Rect o;
-                    assert(object_node->QueryIntAttribute("x", &o.x) == tinyxml2::XML_SUCCESS);
-                    assert(object_node->QueryIntAttribute("y", &o.y) == tinyxml2::XML_SUCCESS);
-                    assert(object_node->QueryIntAttribute("width", &o.w) == tinyxml2::XML_SUCCESS);
-                    assert(object_node->QueryIntAttribute("height", &o.h) == tinyxml2::XML_SUCCESS);
-                    collisions.push_back(o);
-                    object_node = object_node->NextSiblingElement();
-                }
+                read_object_layer(curr);
             } else {
                 throw std::runtime_error("Unexpected node in Tilemap.");
             }
-            curr = curr->NextSiblingElement();
         }
+    }
+
+private:
+    // TODO - get more layer info
+    void read_tile_layer(tinyxml2::XMLElement* node) {
+        auto data_node = node->FirstChildElement();
+        std::stringstream csv_text(std::string(data_node->GetText()));
+        std::string temp;
+        matrix M;
+        while (csv_text >> temp) {
+            M.push_back(split_comma_separated_ints(temp));
+        }
+        layers.push_back(M);
+    }
+
+    // TODO - handle polygons and circles
+    void read_object_layer(tinyxml2::XMLElement* object_group_node) {
+        for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
+            SDL_Rect rect;
+            get_int_attribute(object_node, "x", &rect.x);
+            get_int_attribute(object_node, "y", &rect.y);
+            get_int_attribute(object_node, "width", &rect.w);
+            get_int_attribute(object_node, "height", &rect.h);
+            collisions.push_back(rect);
+        }
+    }
+
+    std::vector<int> split_comma_separated_ints(const std::string& text) {
+        std::vector<int> V;
+        std::stringstream s_stream(text);
+        std::string buffer;
+        while (std::getline(s_stream, buffer, ',')) {
+            V.push_back(std::stoi(buffer));
+        }
+        return V;
     }
 };

@@ -14,7 +14,6 @@ public:
     Background() :
         bounding_box({0, 0, 640, 480}),
         sprite(Sprite("sprites/background.png", 640, 480, bounding_box)),
-        tileset("terrain.tsx"),
         tilemap("level.tmx")
     {}
 
@@ -28,6 +27,5 @@ public:
 private:
     SDL_Rect bounding_box;
     Sprite sprite;
-    Tileset tileset;
     Tilemap tilemap;
 };
