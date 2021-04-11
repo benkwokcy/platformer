@@ -8,6 +8,7 @@
 class Sprite {
 public:
     Sprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int x_offset, int y_offset) : 
+        filename(filename),
         image_width(image_width),
         image_height(image_height),
         frame_width(frame_width),
@@ -54,6 +55,7 @@ public:
     }
 
 protected:
+    const char* filename;
     int image_width, image_height;
     int frame_width, frame_height;
     int num_rows, num_cols, num_frames;
