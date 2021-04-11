@@ -42,12 +42,15 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 class Tileset {
 public:
     std::string image_path;
+    int first_id;
     int image_width, image_height;
     int tile_width, tile_height, tile_count, tile_columns;
 
     Tileset() {}
 
-    Tileset(std::string filename) {
+    Tileset(std::string filename, int first_id) :
+        first_id(first_id)
+    {
         tinyxml2::XMLDocument doc;
         xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
 
@@ -87,7 +90,7 @@ public:
         for (auto curr = map_node->FirstChildElement(); curr != nullptr; curr = curr->NextSiblingElement()) {
             std::string type(curr->Value());
             if (type == "tileset") {
-                tilesets.emplace_back(get_string_attribute(curr, "source"));
+                read_tileset(curr);
             } else if (type == "layer") {
                 read_tile_layer(curr);
             } else if (type == "objectgroup") {
@@ -99,6 +102,12 @@ public:
     }
 
 private:
+    void read_tileset(tinyxml2::XMLElement* node) {
+        int first_id;
+        get_int_attribute(node, "firstgid", &first_id);
+        tilesets.emplace_back(get_string_attribute(node, "source"), first_id);
+    }
+
     // TODO - get more layer info
     void read_tile_layer(tinyxml2::XMLElement* node) {
         auto data_node = node->FirstChildElement();
