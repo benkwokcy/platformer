@@ -12,8 +12,7 @@
 class Background : public Entity {
 public:
     Background() :
-        bounding_box({0, 0, 640, 480}),
-        sprite(Sprite("sprites/background.png", 640, 480, bounding_box)),
+        sprite(Sprite("sprites/background.png", 640, 480, 0, 0)),
         tilemap("level.tmx")
     {}
 
@@ -25,7 +24,6 @@ public:
     void tick() override {}
 
 private:
-    SDL_Rect bounding_box;
     Sprite sprite;
     Tilemap tilemap;
 };

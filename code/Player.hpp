@@ -20,16 +20,17 @@ public:
     Player() :
         x(Window::center_x()),
         y(Window::center_y()),
+        w(22.0f),
+        h(28.0f),
         speed_x(0.0f),
         speed_y(0.0f),
         facing_left(false),
         on_ground(false),
-        bounding_box({20, 16, 22, 28}),
-        run(Sprite("sprites/playerrun.png", 78, 58, bounding_box, 8, 10)),
-        idle(Sprite("sprites/playeridle.png", 78, 58, bounding_box, 11, 10)),
-        attack(Sprite("sprites/playerattack.png", 78, 58, bounding_box, 3, 10)),
-        jump(Sprite("sprites/playerjump.png", 78, 58, bounding_box, 1, 10)),
-        fall(Sprite("sprites/playerfall.png", 78, 58, bounding_box, 1, 10))
+        run(AnimatedSprite("sprites/playerrun.png", 78, 58, 20, 16, 8, 10)),
+        idle(AnimatedSprite("sprites/playeridle.png", 78, 58, 20, 16, 11, 10)),
+        attack(AnimatedSprite("sprites/playerattack.png", 78, 58, 20, 16, 3, 10)),
+        jump(AnimatedSprite("sprites/playerjump.png", 78, 58, 20, 16, 1, 10)),
+        fall(AnimatedSprite("sprites/playerfall.png", 78, 58, 20, 16, 1, 10))
     {
         states.push(PlayerState::MOVING);
     }
@@ -97,8 +98,8 @@ public:
 
     void tick() override {
         float ground_level = 288.0f;
-        if (y + bounding_box.h >= ground_level) {
-            y = ground_level - bounding_box.h;
+        if (y + h >= ground_level) {
+            y = ground_level - h;
             on_ground = true;
             speed_y = 0;
         }
@@ -107,16 +108,16 @@ public:
         if (!on_ground) {
             speed_y += 0.008f;
         }
-        if (states.top() == PlayerState::ATTACK && attack.frames_elapsed() >= attack.get_num_frames()) {
+        if (states.top() == PlayerState::ATTACK && attack.animation_complete()) {
             states.pop();
         }
     }
 
 private:
     float x, y; // the top left corner of the player
+    float w, h;
     float speed_x, speed_y;
     bool facing_left, on_ground;
-    SDL_Rect bounding_box; // in coordinates relative to the top left of the frame.
     std::stack<PlayerState> states;
-    Sprite run, idle, attack, jump, fall;
+    AnimatedSprite run, idle, attack, jump, fall;
 };

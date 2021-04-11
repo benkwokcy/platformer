@@ -11,8 +11,7 @@
 class Menu : public Entity {
 public:
     Menu() :
-        bounding_box({0, 0, 640, 480}),
-        sprite(Sprite("sprites/mainmenu.png", 640, 480, bounding_box))
+        sprite(Sprite("sprites/mainmenu.png", 640, 480, 0, 0))
     {}
 
     void paint() override {
@@ -23,6 +22,5 @@ public:
     void tick() override {}
 
 private:
-    SDL_Rect bounding_box;
     Sprite sprite;
 };
