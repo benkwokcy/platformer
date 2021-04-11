@@ -115,7 +115,7 @@ public:
 
 private:
     float x, y; // the top left corner of the player
-    float w, h;
+    float w, h; // dimensions of the bounding box
     float speed_x, speed_y;
     bool facing_left, on_ground;
     std::stack<PlayerState> states;

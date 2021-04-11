@@ -7,7 +7,6 @@
 #include "Entity.hpp"
 #include "Sprite.hpp"
 
-// The main menu.
 class Menu : public Entity {
 public:
     Menu() :

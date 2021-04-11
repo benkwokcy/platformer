@@ -2,7 +2,6 @@
 
 #include <SDL2/SDL.h>
 
-// The different event types in this game.
 enum class Event {
     NONE,  // no events in the SDL queue
     CONTINUE,

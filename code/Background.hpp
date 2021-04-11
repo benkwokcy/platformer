@@ -8,7 +8,6 @@
 #include "Sprite.hpp"
 #include "Tiles.hpp"
 
-// The background of the level.
 class Background : public Entity {
 public:
     Background() :

@@ -6,8 +6,6 @@
 #include <stdexcept>
 #include <utility>
 
-// using namespace std;
-
 class Window {
 public:
     static inline SDL_Window* window;
