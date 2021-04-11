@@ -7,7 +7,9 @@
 
 class Sprite {
 public:
-    Sprite(const char* filename, int frame_width, int frame_height, int x_offset, int y_offset) : 
+    Sprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int x_offset, int y_offset) : 
+        image_width(image_width),
+        image_height(image_height),
         frame_width(frame_width),
         frame_height(frame_height),
         x_offset(x_offset),
@@ -20,6 +22,9 @@ public:
             throw std::runtime_error("Failed CreateTextureFromSurface.");
         }
 
+        num_cols = image_width / frame_width;
+        num_rows = image_height / frame_height;
+        num_frames = num_cols * num_rows;
         source_rect.x = 0;
         source_rect.y = 0;
         source_rect.w = frame_width;
@@ -28,7 +33,7 @@ public:
         dest_rect.h = frame_height;
     }
 
-    virtual ~Sprite() {
+    ~Sprite() {
         SDL_DestroyTexture(texture);
         SDL_FreeSurface(surface);
     }
@@ -36,7 +41,9 @@ public:
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
 
-    virtual void paint(int x = 0, int y = 0, bool horizontal_flip = false) {
+    void paint(int x = 0, int y = 0, int index = 0, bool horizontal_flip = false) {
+        source_rect.x = (index % num_cols) * frame_width;
+        source_rect.y = (index / num_cols) * frame_height;
         dest_rect.x = x - x_offset;
         dest_rect.y = y - y_offset;
         if (horizontal_flip) {
@@ -47,7 +54,9 @@ public:
     }
 
 protected:
+    int image_width, image_height;
     int frame_width, frame_height;
+    int num_rows, num_cols, num_frames;
     int x_offset, y_offset;
     SDL_Surface* surface;
     SDL_Texture* texture;
@@ -55,12 +64,11 @@ protected:
     SDL_Rect dest_rect;
 };
 
-// Expects a sprite sheet with one row of sprites
+// Doesn't necessarily need to have more than one frame.
 class AnimatedSprite : public Sprite {
 public:
-    AnimatedSprite(const char* filename, int frame_width, int frame_height, int x_offset, int y_offset, int num_frames, int frames_per_second) : 
-        Sprite(filename, frame_width, frame_height, x_offset, y_offset),
-        num_frames(num_frames),
+    AnimatedSprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int x_offset, int y_offset, int frames_per_second) : 
+        Sprite(filename, image_width, image_height, frame_width, frame_height, x_offset, y_offset),
         frames_per_second(frames_per_second),
         creation_time(static_cast<int>(SDL_GetTicks()))
     {}
@@ -68,10 +76,9 @@ public:
     AnimatedSprite(const AnimatedSprite& other) = delete;
     AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
 
-    void paint(int x = 0, int y = 0, bool horizontal_flip = false) override {
+    void paint(int x = 0, int y = 0, bool horizontal_flip = false) {
         int frame_index = frames_elapsed() % num_frames;
-        source_rect.x = frame_width * frame_index;
-        Sprite::paint(x, y, horizontal_flip);
+        Sprite::paint(x, y, frame_index, horizontal_flip);
     }
 
     // Reset the sprite to the first frame
@@ -85,7 +92,6 @@ public:
     }
 
 private:
-    int num_frames;
     int frames_per_second;
     int creation_time;
 

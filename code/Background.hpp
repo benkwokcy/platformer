@@ -11,7 +11,7 @@
 class Background : public Entity {
 public:
     Background() :
-        sprite(Sprite("sprites/background.png", 640, 480, 0, 0)),
+        sprite(Sprite("sprites/background.png", 640, 480, 640, 480, 0, 0)),
         tilemap("level.tmx")
     {}
 
