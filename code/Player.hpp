@@ -10,6 +10,7 @@
 #include "Window.hpp"
 #include "Sprite.hpp"
 #include "Event.hpp"
+#include "Collision.hpp"
 
 enum class PlayerState {
     MOVING, ATTACK
@@ -89,7 +90,7 @@ public:
                 if (on_ground) {
                     on_ground = false;
                     y -= 1.0f;
-                    speed_y -= 1.0f;
+                    speed_y -= 1.2f;
                 }
             default:
                 break;
@@ -97,22 +98,46 @@ public:
     }
 
     void tick() override {
-        // TODO - Replace this with collision system
-        float ground_level = 288.0f;
-        if (y + h >= ground_level) {
-            y = ground_level - h;
-            on_ground = true;
-            speed_y = 0;
-        }
+        speed_y += 0.008f; // TODO - Replace this with physics system
         x += speed_x;
         y += speed_y;
-        // TODO - Replace this with physics system
-        if (!on_ground) {
-            speed_y += 0.008f;
-        }
         if (states.top() == PlayerState::ATTACK && attack.animation_complete()) {
             states.pop();
         }
+    }
+
+    void collide_map(const SDL_Rect& other) {
+        SDL_Rect me = bounding_box();
+        if (SDL_HasIntersection(&me, &other) == SDL_TRUE) {
+            switch (rect_collide_rect(me, other)) {
+                case CollisionType::TOP:
+                    y += (other.y + other.h) - y;
+                    speed_y = 0.0f;
+                    break;
+                case CollisionType::BOTTOM:
+                    y -= (y + h) - other.y;
+                    on_ground = true;
+                    speed_y = 0.0f;
+                    break;
+                case CollisionType::LEFT:
+                    x += (other.x + other.w) - x;
+                    speed_x = 0.0f;
+                    break;
+                case CollisionType::RIGHT:
+                    x -= (x + w) - other.x;
+                    speed_x = 0.0f;
+                    break;
+                case CollisionType::NONE:
+                    break;
+                default:
+                    throw std::runtime_error("Unexpected collision type.");
+                    break;
+            }
+        }
+    }
+
+    SDL_Rect bounding_box() {
+        return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
     }
 
 private:

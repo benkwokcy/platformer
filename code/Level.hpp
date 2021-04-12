@@ -11,30 +11,25 @@ class Level : public Entity {
 public:
     Level() :
         tilemap("level.tmx")
-    {
-        entities.emplace_back(std::make_unique<Player>());
-    }
+    {}
 
     void paint() override {
         tilemap.paint();
-        for (auto& e : entities) {
-            e->paint();
-        }
+        player.paint();
     }
 
     void handle_event(Event event) override {
-        for (auto& e : entities) {
-            e->handle_event(event);
-        }
+        player.handle_event(event);
     }
 
     void tick() override {
-        for (auto& e : entities) {
-            e->tick();
+        player.tick();
+        for (auto& c : tilemap.collisions) {
+            player.collide_map(c);
         }
     }
 
 private:
+    Player player;
     Tilemap tilemap;
-    std::vector<std::unique_ptr<Entity>> entities;
 };

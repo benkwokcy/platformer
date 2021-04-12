@@ -80,7 +80,7 @@ public:
     int map_width, map_height;
     int tile_width, tile_height;
     std::map<first_tile_id, std::unique_ptr<Sprite>> tilesets; // we use Sprite pointers because Sprites are not copyable or moveable.
-    std::unordered_map<std::string,matrix> layers; // the 2D grid of tile indices
+    std::unordered_map<std::string,matrix> layers; // 2D grids of tile indices
     std::vector<SDL_Rect> collisions; // the bounding boxes to collide against
 
     Tilemap(std::string filename) : 
