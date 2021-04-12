@@ -7,6 +7,17 @@
 
 class Sprite {
 public:
+    // Convenience constructor for images with no tiling
+    Sprite(std::string filename, int image_width, int image_height)
+        : Sprite(filename, image_width, image_height, image_width, image_height, image_width, image_height, 0, 0)
+    {}
+
+    // Convenience constructor for terrain tilesheets
+    Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height)
+        : Sprite(filename, image_width, image_height, frame_width, frame_height, frame_width, frame_height, 0, 0)
+    {}
+
+    // Main constructor
     Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, int x_offset, int y_offset) : 
         filename(filename),
         image_width(image_width),

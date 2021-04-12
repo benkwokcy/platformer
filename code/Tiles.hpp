@@ -68,7 +68,7 @@ std::unique_ptr<Sprite> create_sprite_from_tileset(std::string filename) {
     image_width = get_int_attribute(image_node, "width");
     image_height = get_int_attribute(image_node, "height");
 
-    return std::make_unique<Sprite>(image_path, image_width, image_height, tile_width, tile_height, tile_width, tile_height, 0, 0);
+    return std::make_unique<Sprite>(image_path, image_width, image_height, tile_width, tile_height);
 }
 
 class Tilemap {
