@@ -48,28 +48,30 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 }
 
 /*********************************************
- *                 TILE CODE
+ *               TILE CLASSES
  *********************************************/
 
-std::unique_ptr<Sprite> create_sprite_from_tileset(std::string filename) {
-    std::string image_path;
-    int image_width, image_height;
-    int tile_width, tile_height;
+class Tileset {
+public:
+    Tileset(int first_tile_id, std::string image_path, int image_width, int image_height, int tile_width, int tile_height):
+        sprite(std::make_unique<Sprite>(image_path, image_width, image_height, tile_width, tile_height)),
+        first_tile_id(first_tile_id),
+        last_tile_id(first_tile_id + sprite->get_num_frames() - 1)
+    {}
 
-    tinyxml2::XMLDocument doc;
-    xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
+    bool contains_id(int id) {
+        return first_tile_id <= id && id <= last_tile_id;
+    }
 
-    auto tileset_node = doc.FirstChildElement();
-    tile_width = get_int_attribute(tileset_node, "tilewidth");
-    tile_height = get_int_attribute(tileset_node, "tileheight");
+    void paint(int x, int y, int id) {
+        sprite->paint(x, y, id - first_tile_id);
+    }
 
-    auto image_node = tileset_node->FirstChildElement();
-    image_path = Assets::path + get_string_attribute(image_node, "source");
-    image_width = get_int_attribute(image_node, "width");
-    image_height = get_int_attribute(image_node, "height");
-
-    return std::make_unique<Sprite>(image_path, image_width, image_height, tile_width, tile_height);
-}
+private:
+    std::unique_ptr<Sprite> sprite; // we use Sprite pointers because Sprites are not copyable or moveable.
+    int first_tile_id;
+    int last_tile_id;
+};
 
 class Tilemap {
 public:
@@ -79,7 +81,7 @@ public:
     std::string name;
     int map_width, map_height;
     int tile_width, tile_height;
-    std::map<first_tile_id, std::unique_ptr<Sprite>> tilesets; // we use Sprite pointers because Sprites are not copyable or moveable.
+    std::vector<Tileset> tilesets;
     std::unordered_map<std::string,matrix> layers; // 2D grids of tile indices
     std::vector<SDL_Rect> collisions; // the bounding boxes to collide against
 
@@ -110,6 +112,7 @@ public:
     }
 
     // TODO - don't hardcode to [0,0] screen coordinates
+    // TODO - should I just have 3 members - Background, Midground, Foreground? Or will I have other layers?
     void paint() {
         paint_layer(layers["Background"]);
         paint_layer(layers["Midground"]);
@@ -126,17 +129,29 @@ private:
         }
     }
 
-    // TODO - Since we have so few tilemaps, it's faster to use a vector
     void paint_tile(int x, int y, int tile_index) {
-        auto& [first_tile_id, sprite_ptr] = *(--tilesets.upper_bound(tile_index));
-        sprite_ptr->paint(x, y, tile_index - first_tile_id);
+        auto it = find_if(tilesets.begin(), tilesets.end(), [tile_index](auto& t){ return t.contains_id(tile_index); });
+        assert(it != tilesets.end());
+        it->paint(x, y, tile_index);
     }
 
     void add_tileset(tinyxml2::XMLElement* node) {
-        int first_id;
-        first_id = get_int_attribute(node, "firstgid");
-        auto filename = get_string_attribute(node, "source");
-        tilesets.emplace(std::make_pair(first_id, create_sprite_from_tileset(filename)));
+        int first_id = get_int_attribute(node, "firstgid");
+        std::string filename = get_string_attribute(node, "source");
+
+        tinyxml2::XMLDocument doc;
+        xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
+
+        auto tileset_node = doc.FirstChildElement();
+        int tile_width_ = get_int_attribute(tileset_node, "tilewidth");
+        int tile_height_ = get_int_attribute(tileset_node, "tileheight");
+
+        auto image_node = tileset_node->FirstChildElement();
+        std::string image_path = Assets::path + get_string_attribute(image_node, "source");
+        int image_width = get_int_attribute(image_node, "width");
+        int image_height = get_int_attribute(image_node, "height");
+
+        tilesets.emplace_back(first_id, image_path, image_width, image_height, tile_width_, tile_height_);
     }
 
     // TODO - get more layer info

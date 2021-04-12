@@ -7,12 +7,12 @@
 
 class Sprite {
 public:
-    // Convenience constructor for images with no tiling
+    // Convenience constructor for images with only 1 frame
     Sprite(std::string filename, int image_width, int image_height)
         : Sprite(filename, image_width, image_height, image_width, image_height, image_width, image_height, 0, 0)
     {}
 
-    // Convenience constructor for terrain tilesheets
+    // Convenience constructor for images with multiple frames and no offset
     Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height)
         : Sprite(filename, image_width, image_height, frame_width, frame_height, frame_width, frame_height, 0, 0)
     {}
@@ -57,6 +57,10 @@ public:
     Sprite(Sprite&& other) = delete;
     Sprite& operator=(Sprite&& other) = delete;
 
+    int get_num_frames() {
+        return num_frames;
+    }
+
     void paint(int x = 0, int y = 0, int index = 0, bool horizontal_flip = false) {
         source_rect.x = (index % num_cols) * frame_width;
         source_rect.y = (index / num_cols) * frame_height;
@@ -76,8 +80,8 @@ protected:
     int image_width, image_height;
     int frame_width, frame_height;
     int sprite_width, sprite_height; // if the sprite is smaller than the frame
-    int num_rows, num_cols, num_frames;
     int x_offset, y_offset; // if the sprite is smaller than the frame
+    int num_rows, num_cols, num_frames;
     SDL_Surface* surface;
     SDL_Texture* texture;
     SDL_Rect source_rect;
