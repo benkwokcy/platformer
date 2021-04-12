@@ -14,6 +14,7 @@ Parse maps and tilesets from the Tiled map editor into game objects.
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <unordered_map>
 #include <vector>
 
 #include "Sprite.hpp"
@@ -79,7 +80,7 @@ public:
     int map_width, map_height;
     int tile_width, tile_height;
     std::map<first_tile_id, std::unique_ptr<Sprite>> tilesets; // we use Sprite pointers because Sprites are not copyable or moveable.
-    std::vector<matrix> layers; // the 2D grid of tile indices
+    std::unordered_map<std::string,matrix> layers; // the 2D grid of tile indices
     std::vector<SDL_Rect> collisions; // the bounding boxes to collide against
 
     Tilemap(std::string filename) : 
@@ -110,7 +111,12 @@ public:
 
     // TODO - don't hardcode to [0,0] screen coordinates
     void paint() {
-        auto& M = layers[0]; // TODO - select midground
+        paint_layer(layers["Background"]);
+        paint_layer(layers["Midground"]);
+    }
+
+private:
+    void paint_layer(matrix& M) {
         for (size_t r = 0; r < M.size(); r++) {
             for (size_t c = 0; c < M[0].size(); c++) {
                 if (M[r][c] != 0) {
@@ -120,7 +126,6 @@ public:
         }
     }
 
-private:
     // TODO - Since we have so few tilemaps, it's faster to use a vector
     void paint_tile(int x, int y, int tile_index) {
         auto& [first_tile_id, sprite_ptr] = *(--tilesets.upper_bound(tile_index));
@@ -136,6 +141,7 @@ private:
 
     // TODO - get more layer info
     void add_tile_layer(tinyxml2::XMLElement* node) {
+        std::string layer_name = get_string_attribute(node, "name");
         auto data_node = node->FirstChildElement();
         std::stringstream csv_text(std::string(data_node->GetText()));
         std::string temp;
@@ -143,7 +149,7 @@ private:
         while (csv_text >> temp) {
             M.push_back(split_comma_separated_ints(temp));
         }
-        layers.push_back(M);
+        layers[layer_name] = M;
     }
 
     // TODO - handle polygons and circles
