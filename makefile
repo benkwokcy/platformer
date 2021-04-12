@@ -9,18 +9,18 @@ run:
 	./$(EXECUTABLE)
 
 san:
-	g++ $(FILES) -o $(EXECUTABLE) -g $(FLAGS) $(LIBRARIES) -fsanitize=address -fsanitize=undefined 
+	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g -fsanitize=address -fsanitize=undefined
 	./$(EXECUTABLE)
 
 debug:
-	g++ $(FILES) -o $(EXECUTABLE) -g $(FLAGS) $(LIBRARIES)
+	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g
 
 fast:
-	g++ $(FILES) -o $(EXECUTABLE) -O3 $(FLAGS) $(LIBRARIES)
+	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -O3
 	./$(EXECUTABLE)
 
 profile:
-	g++ $(FILES) -g -o $(EXECUTABLE) -O3 $(FLAGS) $(LIBRARIES)
+	g++ $(FILES)  -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g -O3
 	./$(EXECUTABLE)
 
 clean:
