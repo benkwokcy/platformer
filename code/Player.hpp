@@ -11,6 +11,7 @@
 #include "Sprite.hpp"
 #include "Event.hpp"
 #include "Collision.hpp"
+#include "Physics.hpp"
 
 enum class PlayerState {
     MOVING, ATTACK
@@ -45,7 +46,7 @@ public:
             case PlayerState::MOVING:
                 if (speed_y < 0.0f) {
                     jump.paint(x, y, facing_left);
-                } else if (speed_y > 0.0f) {
+                } else if (speed_y > 0.0f && !on_ground) {
                     fall.paint(x, y, facing_left);
                 } else if (speed_x != 0) {
                     run.paint(x, y, facing_left);
@@ -88,8 +89,6 @@ public:
                 break;
             case Event::JUMP:
                 if (on_ground) {
-                    on_ground = false;
-                    y -= 1.0f;
                     speed_y -= 1.2f;
                 }
             default:
@@ -98,7 +97,8 @@ public:
     }
 
     void tick() override {
-        speed_y += 0.008f; // TODO - Replace this with physics system
+        on_ground = false; // assume we are not on the ground and let the collision logic tell us if we are.
+        speed_y += Physics::GRAVITY;
         x += speed_x;
         y += speed_y;
         if (states.top() == PlayerState::ATTACK && attack.animation_complete()) {
@@ -131,6 +131,14 @@ public:
                     break;
                 default:
                     throw std::runtime_error("Unexpected collision type.");
+                    break;
+            }
+        } else {
+            switch (rect_touch_rect(me, other)) {
+                case CollisionType::BOTTOM:
+                    on_ground = true;
+                    break;
+                default:
                     break;
             }
         }
