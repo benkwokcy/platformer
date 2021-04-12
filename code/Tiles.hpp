@@ -23,10 +23,10 @@ namespace Assets {
 };
 
 /*********************************************
- *              XML HELPER FUNCTIONS
+ *            XML HELPER FUNCTIONS
  *********************************************/
 
-void xml_assert(tinyxml2::XMLError error_code) {
+inline void xml_assert(tinyxml2::XMLError error_code) {
     assert(error_code == tinyxml2::XML_SUCCESS);
 }
 
@@ -43,7 +43,7 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 }
 
 /*********************************************
- *                  MAIN CODE
+ *                 TILE CODE
  *********************************************/
 
 std::unique_ptr<Sprite> create_sprite_from_tileset(std::string filename) {
@@ -69,11 +69,12 @@ std::unique_ptr<Sprite> create_sprite_from_tileset(std::string filename) {
 class Tilemap {
 public:
     using matrix = std::vector<std::vector<int>>;
+    using first_tile_id = int;
 
     std::string name;
     int map_width, map_height;
-    int tile_width, tile_height; // is this needed?
-    std::map<int, std::unique_ptr<Sprite>> tilesets; // firstId : unique Sprite pointer
+    int tile_width, tile_height;
+    std::map<first_tile_id, std::unique_ptr<Sprite>> tilesets; // we use Sprite pointers because Sprites are not copyable or moveable.
     std::vector<matrix> layers;
     std::vector<SDL_Rect> collisions;
 
@@ -92,22 +93,24 @@ public:
         for (auto curr = map_node->FirstChildElement(); curr != nullptr; curr = curr->NextSiblingElement()) {
             std::string type(curr->Value());
             if (type == "tileset") {
-                read_tileset(curr);
+                add_tileset(curr);
             } else if (type == "layer") {
-                read_tile_layer(curr);
+                add_tile_layer(curr);
             } else if (type == "objectgroup") {
-                read_object_layer(curr);
+                add_object_layer(curr);
             } else {
                 throw std::runtime_error("Unexpected node in Tilemap.");
             }
         }
     }
 
-    // TODO - paint
+    void paint(int x, int y, int tile_index) {
+        auto& sprite_ptr = (tilesets.upper_bound(tile_index)--)->second;
+        sprite_ptr->paint(x, y, tile_index);
+    }
 
 private:
-
-    void read_tileset(tinyxml2::XMLElement* node) {
+    void add_tileset(tinyxml2::XMLElement* node) {
         int first_id;
         first_id = get_int_attribute(node, "firstgid");
         auto filename = get_string_attribute(node, "source");
@@ -115,7 +118,7 @@ private:
     }
 
     // TODO - get more layer info
-    void read_tile_layer(tinyxml2::XMLElement* node) {
+    void add_tile_layer(tinyxml2::XMLElement* node) {
         auto data_node = node->FirstChildElement();
         std::stringstream csv_text(std::string(data_node->GetText()));
         std::string temp;
@@ -127,7 +130,7 @@ private:
     }
 
     // TODO - handle polygons and circles
-    void read_object_layer(tinyxml2::XMLElement* object_group_node) {
+    void add_object_layer(tinyxml2::XMLElement* object_group_node) {
         for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
             SDL_Rect rect;
             rect.x = get_int_attribute(object_node, "x");
