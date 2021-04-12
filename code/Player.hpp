@@ -28,11 +28,11 @@ public:
         speed_y(0.0f),
         facing_left(false),
         on_ground(false),
-        run(AnimatedSprite("sprites/playerrun.png", 624, 58, 78, 58, 20, 16, 10)),
-        idle(AnimatedSprite("sprites/playeridle.png", 858, 58, 78, 58, 20, 16, 10)),
-        attack(AnimatedSprite("sprites/playerattack.png", 234, 58, 78, 58, 20, 16, 10)),
-        jump(AnimatedSprite("sprites/playerjump.png", 78, 58, 78, 58, 20, 16, 10)),
-        fall(AnimatedSprite("sprites/playerfall.png", 78, 58, 78, 58, 20, 16, 10))
+        run(AnimatedSprite("sprites/playerrun.png", 624, 58, 78, 58, 20, 28, 23, 16, 10)),
+        idle(AnimatedSprite("sprites/playeridle.png", 858, 58, 78, 58, 20, 28, 23, 16, 10)),
+        attack(AnimatedSprite("sprites/playerattack.png", 234, 58, 78, 58, 20, 28, 23, 16, 10)),
+        jump(AnimatedSprite("sprites/playerjump.png", 78, 58, 78, 58, 20, 28, 23, 16, 10)),
+        fall(AnimatedSprite("sprites/playerfall.png", 78, 58, 78, 58, 20, 28, 23, 16, 10))
     {
         states.push(PlayerState::MOVING);
     }
@@ -89,7 +89,7 @@ public:
                 break;
             case Event::JUMP:
                 if (on_ground) {
-                    speed_y -= 1.2f;
+                    speed_y -= 1.3f;
                 }
             default:
                 break;
