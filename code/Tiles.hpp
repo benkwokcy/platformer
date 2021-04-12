@@ -1,3 +1,7 @@
+/*
+Parse maps and tilesets from the Tiled map editor into game objects.
+*/
+
 #pragma once
 
 #include <SDL2/SDL.h>
@@ -104,12 +108,25 @@ public:
         }
     }
 
-    void paint(int x, int y, int tile_index) {
+    // TODO - don't hardcode to [0,0] screen coordinates
+    void paint() {
+        auto& M = layers[0]; // TODO - select midground
+        for (size_t r = 0; r < M.size(); r++) {
+            for (size_t c = 0; c < M[0].size(); c++) {
+                if (M[r][c] != 0) {
+                    paint_tile(c * tile_width, r * tile_height, M[r][c]);
+                }
+            }
+        }
+    }
+
+private:
+    // TODO - Since we have so few tilemaps, it's faster to use a vector
+    void paint_tile(int x, int y, int tile_index) {
         auto& [first_tile_id, sprite_ptr] = *(--tilesets.upper_bound(tile_index));
         sprite_ptr->paint(x, y, tile_index - first_tile_id);
     }
 
-private:
     void add_tileset(tinyxml2::XMLElement* node) {
         int first_id;
         first_id = get_int_attribute(node, "firstgid");

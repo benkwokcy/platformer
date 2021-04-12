@@ -5,16 +5,18 @@
 
 #include "Entity.hpp"
 #include "Player.hpp"
-#include "Midground.hpp"
+#include "Tiles.hpp"
 
 class Level : public Entity {
 public:
-    Level() {
-        entities.emplace_back(std::make_unique<Midground>());
+    Level() :
+        tilemap("level.tmx")
+    {
         entities.emplace_back(std::make_unique<Player>());
     }
 
     void paint() override {
+        tilemap.paint();
         for (auto& e : entities) {
             e->paint();
         }
@@ -33,5 +35,6 @@ public:
     }
 
 private:
+    Tilemap tilemap;
     std::vector<std::unique_ptr<Entity>> entities;
 };
