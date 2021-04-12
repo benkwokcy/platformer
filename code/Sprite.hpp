@@ -41,7 +41,8 @@ public:
 
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
-    // TODO - delete move as well
+    Sprite(Sprite&& other) = delete;
+    Sprite& operator=(Sprite&& other) = delete;
 
     void paint(int x = 0, int y = 0, int index = 0, bool horizontal_flip = false) {
         source_rect.x = (index % num_cols) * frame_width;
@@ -78,7 +79,8 @@ public:
 
     AnimatedSprite(const AnimatedSprite& other) = delete;
     AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
-    // TODO - delete move as well
+    AnimatedSprite(AnimatedSprite&& other) = delete;
+    AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
     void paint(int x = 0, int y = 0, bool horizontal_flip = false) {
         int frame_index = frames_elapsed() % num_frames;

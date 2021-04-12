@@ -97,6 +97,7 @@ public:
     }
 
     void tick() override {
+        // TODO - Replace this with collision system
         float ground_level = 288.0f;
         if (y + h >= ground_level) {
             y = ground_level - h;
@@ -105,6 +106,7 @@ public:
         }
         x += speed_x;
         y += speed_y;
+        // TODO - Replace this with physics system
         if (!on_ground) {
             speed_y += 0.008f;
         }
