@@ -1,16 +1,16 @@
 #pragma once
 
-#include <tinyxml2.h>
 #include <SDL2/SDL.h>
+#include <tinyxml2.h>
 
-#include <string>
-#include <sstream>
-#include <stdexcept>
 #include <iostream>
-#include <vector>
 #include <map>
 #include <memory>
+#include <sstream>
+#include <stdexcept>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "Sprite.hpp"
 
@@ -75,11 +75,11 @@ public:
     int map_width, map_height;
     int tile_width, tile_height;
     std::map<first_tile_id, std::unique_ptr<Sprite>> tilesets; // we use Sprite pointers because Sprites are not copyable or moveable.
-    std::vector<matrix> layers;
-    std::vector<SDL_Rect> collisions;
+    std::vector<matrix> layers; // the 2D grid of tile indices
+    std::vector<SDL_Rect> collisions; // the bounding boxes to collide against
 
-    Tilemap(std::string filename) :
-        name(filename)
+    Tilemap(std::string filename) : 
+        name(filename) 
     {
         tinyxml2::XMLDocument doc;
         xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
@@ -89,7 +89,7 @@ public:
         map_height = get_int_attribute(map_node, "height");
         tile_width = get_int_attribute(map_node, "tilewidth");
         tile_height = get_int_attribute(map_node, "tileheight");
-        
+
         for (auto curr = map_node->FirstChildElement(); curr != nullptr; curr = curr->NextSiblingElement()) {
             std::string type(curr->Value());
             if (type == "tileset") {
@@ -105,8 +105,8 @@ public:
     }
 
     void paint(int x, int y, int tile_index) {
-        auto& sprite_ptr = (tilesets.upper_bound(tile_index)--)->second;
-        sprite_ptr->paint(x, y, tile_index);
+        auto& [first_tile_id, sprite_ptr] = *(--tilesets.upper_bound(tile_index));
+        sprite_ptr->paint(x, y, tile_index - first_tile_id);
     }
 
 private:
