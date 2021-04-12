@@ -8,6 +8,11 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
+#include <map>
+#include <memory>
+#include <utility>
+
+#include "Sprite.hpp"
 
 /*********************************************
  *               CONSTANTS
@@ -25,8 +30,10 @@ void xml_assert(tinyxml2::XMLError error_code) {
     assert(error_code == tinyxml2::XML_SUCCESS);
 }
 
-void get_int_attribute(tinyxml2::XMLElement* element, const char* attribute_name, int* destination) {
-    xml_assert(element->QueryIntAttribute(attribute_name, destination));
+int get_int_attribute(tinyxml2::XMLElement* element, const char* attribute_name) {
+    int temp;
+    xml_assert(element->QueryIntAttribute(attribute_name, &temp));
+    return temp;
 }
 
 std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attribute_name) {
@@ -36,56 +43,51 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 }
 
 /*********************************************
- *                  CLASSES
+ *                  MAIN CODE
  *********************************************/
 
-class Tileset {
-public:
+std::unique_ptr<Sprite> create_sprite_from_tileset(std::string filename) {
     std::string image_path;
-    int first_id;
     int image_width, image_height;
-    int tile_width, tile_height, tile_count, tile_columns;
+    int tile_width, tile_height;
 
-    Tileset() {}
+    tinyxml2::XMLDocument doc;
+    xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
 
-    Tileset(std::string filename, int first_id) :
-        first_id(first_id)
-    {
-        tinyxml2::XMLDocument doc;
-        xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
+    auto tileset_node = doc.FirstChildElement();
+    tile_width = get_int_attribute(tileset_node, "tilewidth");
+    tile_height = get_int_attribute(tileset_node, "tileheight");
 
-        auto tileset_node = doc.FirstChildElement();
-        get_int_attribute(tileset_node, "tilewidth", &tile_width);
-        get_int_attribute(tileset_node, "tileheight", &tile_height);
-        get_int_attribute(tileset_node, "tilecount", &tile_count);
-        get_int_attribute(tileset_node, "columns", &tile_columns);
-        
-        auto image_node = tileset_node->FirstChildElement();
-        image_path = get_string_attribute(image_node, "source");
-        get_int_attribute(image_node, "width", &image_width);
-        get_int_attribute(image_node, "height", &image_height);
-    }
-};
+    auto image_node = tileset_node->FirstChildElement();
+    image_path = Assets::path + get_string_attribute(image_node, "source");
+    image_width = get_int_attribute(image_node, "width");
+    image_height = get_int_attribute(image_node, "height");
+
+    return std::make_unique<Sprite>(image_path, image_width, image_height, tile_width, tile_height, 0, 0);
+}
 
 class Tilemap {
 public:
     using matrix = std::vector<std::vector<int>>;
 
+    std::string name;
     int map_width, map_height;
-    int tile_width, tile_height;
-    std::vector<Tileset> tilesets;
+    int tile_width, tile_height; // is this needed?
+    std::map<int, std::unique_ptr<Sprite>> tilesets; // firstId : unique Sprite pointer
     std::vector<matrix> layers;
     std::vector<SDL_Rect> collisions;
 
-    Tilemap(std::string filename) {
+    Tilemap(std::string filename) :
+        name(filename)
+    {
         tinyxml2::XMLDocument doc;
         xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
 
         auto map_node = doc.FirstChildElement();
-        get_int_attribute(map_node, "width", &map_width);
-        get_int_attribute(map_node, "height", &map_height);
-        get_int_attribute(map_node, "tilewidth", &tile_width);
-        get_int_attribute(map_node, "tileheight", &tile_height);
+        map_width = get_int_attribute(map_node, "width");
+        map_height = get_int_attribute(map_node, "height");
+        tile_width = get_int_attribute(map_node, "tilewidth");
+        tile_height = get_int_attribute(map_node, "tileheight");
         
         for (auto curr = map_node->FirstChildElement(); curr != nullptr; curr = curr->NextSiblingElement()) {
             std::string type(curr->Value());
@@ -101,11 +103,15 @@ public:
         }
     }
 
+    // TODO - paint
+
 private:
+
     void read_tileset(tinyxml2::XMLElement* node) {
         int first_id;
-        get_int_attribute(node, "firstgid", &first_id);
-        tilesets.emplace_back(get_string_attribute(node, "source"), first_id);
+        first_id = get_int_attribute(node, "firstgid");
+        auto filename = get_string_attribute(node, "source");
+        tilesets.emplace(std::make_pair(first_id, create_sprite_from_tileset(filename)));
     }
 
     // TODO - get more layer info
@@ -124,10 +130,10 @@ private:
     void read_object_layer(tinyxml2::XMLElement* object_group_node) {
         for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
             SDL_Rect rect;
-            get_int_attribute(object_node, "x", &rect.x);
-            get_int_attribute(object_node, "y", &rect.y);
-            get_int_attribute(object_node, "width", &rect.w);
-            get_int_attribute(object_node, "height", &rect.h);
+            rect.x = get_int_attribute(object_node, "x");
+            rect.y = get_int_attribute(object_node, "y");
+            rect.w = get_int_attribute(object_node, "width");
+            rect.h = get_int_attribute(object_node, "height");
             collisions.push_back(rect);
         }
     }

@@ -7,7 +7,7 @@
 
 class Sprite {
 public:
-    Sprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int x_offset, int y_offset) : 
+    Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int x_offset, int y_offset) : 
         filename(filename),
         image_width(image_width),
         image_height(image_height),
@@ -16,7 +16,7 @@ public:
         x_offset(x_offset),
         y_offset(y_offset)
     {
-        if (surface = IMG_Load(filename); surface == nullptr) {
+        if (surface = IMG_Load(filename.c_str()); surface == nullptr) {
             throw std::runtime_error("Failed IMG_Load.");
         }
         if (texture = SDL_CreateTextureFromSurface(Window::renderer, surface); texture == nullptr) {
@@ -41,6 +41,7 @@ public:
 
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
+    // TODO - delete move as well
 
     void paint(int x = 0, int y = 0, int index = 0, bool horizontal_flip = false) {
         source_rect.x = (index % num_cols) * frame_width;
@@ -55,7 +56,7 @@ public:
     }
 
 protected:
-    const char* filename;
+    std::string filename;
     int image_width, image_height;
     int frame_width, frame_height;
     int num_rows, num_cols, num_frames;
@@ -77,6 +78,7 @@ public:
 
     AnimatedSprite(const AnimatedSprite& other) = delete;
     AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
+    // TODO - delete move as well
 
     void paint(int x = 0, int y = 0, bool horizontal_flip = false) {
         int frame_index = frames_elapsed() % num_frames;
