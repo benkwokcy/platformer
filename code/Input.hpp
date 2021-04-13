@@ -29,10 +29,8 @@ enum class InputEvent {
     NONE,  // no events in the SDL queue
     CONTINUE,
     QUIT,
-    LEFT_PRESS,
-    LEFT_RELEASE,
-    RIGHT_PRESS,
-    RIGHT_RELEASE,
+    LEFT,
+    RIGHT,
     ATTACK,
     JUMP,
     IGNORE,  // an SDL InputEvent that we don't care about
@@ -54,20 +52,13 @@ InputEvent get_event() {
             case SDLK_RETURN:
                 return InputEvent::CONTINUE;
             case SDLK_LEFT:
-                return InputEvent::LEFT_PRESS;
+                return InputEvent::LEFT;
             case SDLK_RIGHT:
-                return InputEvent::RIGHT_PRESS;
+                return InputEvent::RIGHT;
             case SDLK_SPACE:
                 return InputEvent::ATTACK;
             case SDLK_UP:
                 return InputEvent::JUMP;
-        }
-    } else if (e.type == SDL_KEYUP) {
-        switch (e.key.keysym.sym) {
-            case SDLK_LEFT:
-                return InputEvent::LEFT_RELEASE;
-            case SDLK_RIGHT:
-                return InputEvent::RIGHT_RELEASE;
         }
     }
 

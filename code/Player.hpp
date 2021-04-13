@@ -63,10 +63,10 @@ public:
 
     void handle_event(InputEvent e) override {
         switch (e) {
-            case InputEvent::LEFT_PRESS:
+            case InputEvent::LEFT:
                 facing_left = true;
                 break;
-            case InputEvent::RIGHT_PRESS:
+            case InputEvent::RIGHT:
                 facing_left = false;
                 break;
             case InputEvent::ATTACK:
