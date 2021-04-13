@@ -13,7 +13,7 @@ int main() {
     Game game;
     while (game.is_running()) {
         auto before = SDL_GetTicks();
-        game.do_one_frame();
+        game.tick();
         auto after = SDL_GetTicks();
         if (auto ms = after - before; ms < 15) {
             SDL_Delay(ms);

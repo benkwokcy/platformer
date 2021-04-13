@@ -5,6 +5,10 @@
 
 #include "Window.hpp"
 
+/*********************************************
+ *                 SPRITE
+ *********************************************/
+
 class Sprite {
 public:
     // Convenience constructor for images with only 1 frame
@@ -87,6 +91,10 @@ protected:
     SDL_Rect source_rect;
     SDL_Rect dest_rect;
 };
+
+/*********************************************
+ *            ANIMATED SPRITE
+ *********************************************/
 
 // Doesn't necessarily need to have more than one frame.
 class AnimatedSprite : public Sprite {

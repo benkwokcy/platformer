@@ -7,7 +7,7 @@
  *********************************************/
 
 // The input state is updated when SDL_PollEvent() is called.
-// This is fine because we handle events before calling tick() in Game::do_one_frame().
+// This is fine because we handle events before calling tick() in Game::tick().
 class Input {
 public:
     static inline const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);

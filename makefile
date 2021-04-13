@@ -4,16 +4,9 @@ MORE_LIBRARIES = -lSDL2_ttf -lSDL2_mixer
 FILES = code/*.cpp
 EXECUTABLE = platformer
 
-run:
-	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES)
-	./$(EXECUTABLE)
-
 san:
 	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g -fsanitize=address -fsanitize=undefined
 	./$(EXECUTABLE)
-
-debug:
-	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g
 
 fast:
 	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -O3
@@ -22,6 +15,6 @@ fast:
 profile:
 	g++ $(FILES)  -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g -O3
 	./$(EXECUTABLE)
-
-clean:
-	rm $(EXECUTABLE)
+	
+debug:
+	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g

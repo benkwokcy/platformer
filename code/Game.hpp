@@ -16,12 +16,13 @@ enum class GameState {
 // Switches the game between different scenes.
 class Game {
 public:
-    Game() : state(GameState::MENU)
+    Game() : 
+        state(GameState::MENU)
     {
         scene = &menu;
     }
 
-    void do_one_frame() {
+    void tick() {
         for (InputEvent e = get_event(); e != InputEvent::NONE; e = get_event()) {
             switch (e) {
                 case InputEvent::IGNORE:
