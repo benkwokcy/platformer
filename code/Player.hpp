@@ -39,7 +39,7 @@ public:
     }
 
     void paint() override {
-        auto [screen_x, screen_y] = Camera::convert_level_to_screen_coordinates(x, y);
+        auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(x, y);
         assert (!states.empty());
         switch (states.top()) {
             case PlayerState::ATTACK:

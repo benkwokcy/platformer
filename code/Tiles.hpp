@@ -119,26 +119,22 @@ public:
     }
 
 private:
-    // TODO - don't hardcode to [0,0] screen coordinates
     void paint_layer(matrix& M) {
         for (size_t r = 0; r < M.size(); r++) {
             for (size_t c = 0; c < M[0].size(); c++) {
-                if (M[r][c] != 0) {
-                    int level_x = c * tile_width;
-                    int level_y = r * tile_height;
-                    if (Camera::is_visible(level_x, level_y, tile_width, tile_height)) {
-                        auto [screen_x, screen_y] = Camera::convert_level_to_screen_coordinates(level_x, level_y);
-                        paint_tile(screen_x, screen_y, M[r][c]);
-                    }
-                }
+                if (M[r][c] == 0) continue;
+                
+                int tile_index = M[r][c];
+                int level_x = c * tile_width, level_y = r * tile_height;
+                
+                if (!Camera::is_visible(level_x, level_y, tile_width, tile_height)) continue;
+                
+                auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(level_x, level_y);
+                auto it = find_if(tilesets.begin(), tilesets.end(), [tile_index](auto& t){ return t.contains_id(tile_index); });
+                assert(it != tilesets.end());
+                it->paint(screen_x, screen_y, tile_index);
             }
         }
-    }
-
-    void paint_tile(int screen_x, int screen_y, int tile_index) {
-        auto it = find_if(tilesets.begin(), tilesets.end(), [tile_index](auto& t){ return t.contains_id(tile_index); });
-        assert(it != tilesets.end());
-        it->paint(screen_x, screen_y, tile_index);
     }
 
     void add_tileset(tinyxml2::XMLElement* node) {
@@ -160,7 +156,6 @@ private:
         tilesets.emplace_back(first_id, image_path, image_width, image_height, tile_width_, tile_height_);
     }
 
-    // TODO - get more layer info
     void add_tile_layer(tinyxml2::XMLElement* node) {
         std::string layer_name = get_string_attribute(node, "name");
         auto data_node = node->FirstChildElement();
@@ -173,7 +168,6 @@ private:
         layers[layer_name] = M;
     }
 
-    // TODO - handle polygons and circles
     void add_object_layer(tinyxml2::XMLElement* object_group_node) {
         for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
             SDL_Rect rect;

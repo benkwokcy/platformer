@@ -65,17 +65,16 @@ public:
         return num_frames;
     }
 
-    // (x,y) are in screen coordinates
-    void paint(int x = 0, int y = 0, int index = 0, bool horizontal_flip = false) {
+    void paint(int screen_x = 0, int screen_y = 0, int index = 0, bool horizontal_flip = false) {
         source_rect.x = (index % num_cols) * frame_width;
         source_rect.y = (index / num_cols) * frame_height;
         if (horizontal_flip) {
-            dest_rect.x = x - (frame_width - x_offset - sprite_width);
-            dest_rect.y = y - y_offset;
+            dest_rect.x = screen_x - (frame_width - x_offset - sprite_width);
+            dest_rect.y = screen_y - y_offset;
             SDL_RenderCopyEx(Window::renderer, texture, &source_rect, &dest_rect, 0, NULL, SDL_FLIP_HORIZONTAL);
         } else {
-            dest_rect.x = x - x_offset;
-            dest_rect.y = y - y_offset;
+            dest_rect.x = screen_x - x_offset;
+            dest_rect.y = screen_y - y_offset;
             SDL_RenderCopy(Window::renderer, texture, &source_rect, &dest_rect);
         }
     }
@@ -89,8 +88,8 @@ protected:
     int num_rows, num_cols, num_frames;
     SDL_Surface* surface;
     SDL_Texture* texture;
-    SDL_Rect source_rect;
-    SDL_Rect dest_rect;
+    SDL_Rect source_rect; // image coordinates
+    SDL_Rect dest_rect; // screen coordinates
 };
 
 /*********************************************
@@ -112,10 +111,9 @@ public:
     AnimatedSprite(AnimatedSprite&& other) = delete;
     AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
-    // (x,y) are in screen coordinates
-    void paint(int x = 0, int y = 0, bool horizontal_flip = false) {
+    void paint(int screen_x = 0, int screen_y = 0, bool horizontal_flip = false) {
         int frame_index = frames_elapsed() % num_frames;
-        Sprite::paint(x, y, frame_index, horizontal_flip);
+        Sprite::paint(screen_x, screen_y, frame_index, horizontal_flip);
     }
 
     // Reset the sprite to the first frame
