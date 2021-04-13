@@ -18,8 +18,8 @@ public:
         player.paint();
     }
 
-    void handle_event(Event event) override {
-        player.handle_event(event);
+    void handle_event(InputEvent InputEvent) override {
+        player.handle_event(InputEvent);
     }
 
     void tick() override {

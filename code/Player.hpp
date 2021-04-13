@@ -9,7 +9,7 @@
 #include "Entity.hpp"
 #include "Window.hpp"
 #include "Sprite.hpp"
-#include "Event.hpp"
+#include "Input.hpp"
 #include "Collision.hpp"
 #include "Physics.hpp"
 
@@ -61,33 +61,21 @@ public:
         }
     }
 
-    void handle_event(Event e) override {
+    void handle_event(InputEvent e) override {
         switch (e) {
-            case Event::LEFT_PRESS:
+            case InputEvent::LEFT_PRESS:
                 facing_left = true;
-                speed_x = -0.5f;
                 break;
-            case Event::RIGHT_PRESS:
+            case InputEvent::RIGHT_PRESS:
                 facing_left = false;
-                speed_x = 0.5f;
                 break;
-            case Event::LEFT_RELEASE:
-                if (speed_x < 0) {
-                    speed_x = 0.0f;
-                }
-                break;
-            case Event::RIGHT_RELEASE:
-                if (speed_x > 0) {
-                    speed_x = 0.0f;
-                }
-                break;
-            case Event::ATTACK:
+            case InputEvent::ATTACK:
                 if (states.top() != PlayerState::ATTACK) {
                     states.push(PlayerState::ATTACK);
                     attack.set_first_frame();
                 }
                 break;
-            case Event::JUMP:
+            case InputEvent::JUMP:
                 if (on_ground) {
                     speed_y -= 1.3f;
                 }
@@ -97,6 +85,15 @@ public:
     }
 
     void tick() override {
+        if (Input::left_down() || Input::right_down()) {
+            if (facing_left) {
+                speed_x = -0.5f;
+            } else {
+                speed_x = 0.5f;
+            }
+        } else {
+            speed_x = 0.0f;
+        }
         on_ground = false; // assume we are not on the ground and let the collision logic tell us if we are.
         speed_y += Physics::GRAVITY;
         x += speed_x;
@@ -112,12 +109,12 @@ public:
             switch (rect_collide_rect(me, other)) {
                 case CollisionType::TOP:
                     y += (other.y + other.h) - y;
-                    speed_y = 0.0f;
+                    speed_y = std::max(speed_y, 0.0f);
                     break;
                 case CollisionType::BOTTOM:
                     y -= (y + h) - other.y;
                     on_ground = true;
-                    speed_y = 0.0f;
+                    speed_y = std::min(speed_y, 0.0f);
                     break;
                 case CollisionType::LEFT:
                     x += (other.x + other.w) - x;

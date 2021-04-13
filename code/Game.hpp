@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "Event.hpp"
+#include "Input.hpp"
 #include "Menu.hpp"
 #include "Window.hpp"
 #include "Level.hpp"
@@ -22,14 +22,14 @@ public:
     }
 
     void do_one_frame() {
-        for (Event e = get_event(); e != Event::NONE; e = get_event()) {
+        for (InputEvent e = get_event(); e != InputEvent::NONE; e = get_event()) {
             switch (e) {
-                case Event::IGNORE:
+                case InputEvent::IGNORE:
                     break;
-                case Event::QUIT:
+                case InputEvent::QUIT:
                     state = GameState::QUIT; 
                     break;
-                case Event::CONTINUE:
+                case InputEvent::CONTINUE:
                     if (state == GameState::MENU) {
                         state = GameState::LEVEL;
                         scene = &level;

@@ -17,7 +17,7 @@ public:
         sprite.paint();
     }
 
-    void handle_event(Event e) override {}
+    void handle_event(InputEvent e) override {}
     void tick() override {}
 
 private:
