@@ -17,6 +17,7 @@ Parse maps and tilesets from the Tiled map editor into game objects.
 #include <unordered_map>
 #include <vector>
 
+#include "Camera.hpp"
 #include "Sprite.hpp"
 
 /*********************************************
@@ -111,7 +112,6 @@ public:
         }
     }
 
-    // TODO - don't hardcode to [0,0] screen coordinates
     // TODO - should I just have 3 members - Background, Midground, Foreground? Or will I have other layers?
     void paint() {
         paint_layer(layers["Background"]);
@@ -119,20 +119,26 @@ public:
     }
 
 private:
+    // TODO - don't hardcode to [0,0] screen coordinates
     void paint_layer(matrix& M) {
         for (size_t r = 0; r < M.size(); r++) {
             for (size_t c = 0; c < M[0].size(); c++) {
                 if (M[r][c] != 0) {
-                    paint_tile(c * tile_width, r * tile_height, M[r][c]);
+                    int level_x = c * tile_width;
+                    int level_y = r * tile_height;
+                    if (Camera::is_visible(level_x, level_y, tile_width, tile_height)) {
+                        auto [screen_x, screen_y] = Camera::convert_level_to_screen_coordinates(level_x, level_y);
+                        paint_tile(screen_x, screen_y, M[r][c]);
+                    }
                 }
             }
         }
     }
 
-    void paint_tile(int x, int y, int tile_index) {
+    void paint_tile(int screen_x, int screen_y, int tile_index) {
         auto it = find_if(tilesets.begin(), tilesets.end(), [tile_index](auto& t){ return t.contains_id(tile_index); });
         assert(it != tilesets.end());
-        it->paint(x, y, tile_index);
+        it->paint(screen_x, screen_y, tile_index);
     }
 
     void add_tileset(tinyxml2::XMLElement* node) {

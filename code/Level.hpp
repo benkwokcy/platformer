@@ -6,6 +6,7 @@
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Tiles.hpp"
+#include "Camera.hpp"
 
 class Level : public Entity {
 public:
@@ -18,8 +19,8 @@ public:
         player.paint();
     }
 
-    void handle_event(InputEvent InputEvent) override {
-        player.handle_event(InputEvent);
+    void handle_event(InputEvent e) override {
+        player.handle_event(e);
     }
 
     void tick() override {

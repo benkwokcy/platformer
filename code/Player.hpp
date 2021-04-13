@@ -12,6 +12,7 @@
 #include "Input.hpp"
 #include "Collision.hpp"
 #include "Physics.hpp"
+#include "Camera.hpp"
 
 enum class PlayerState {
     MOVING, ATTACK
@@ -38,20 +39,21 @@ public:
     }
 
     void paint() override {
+        auto [screen_x, screen_y] = Camera::convert_level_to_screen_coordinates(x, y);
         assert (!states.empty());
         switch (states.top()) {
             case PlayerState::ATTACK:
-                attack.paint(x, y, facing_left);
+                attack.paint(screen_x, screen_y, facing_left);
                 break;
             case PlayerState::MOVING:
                 if (speed_y < 0.0f) {
-                    jump.paint(x, y, facing_left);
+                    jump.paint(screen_x, screen_y, facing_left);
                 } else if (speed_y > 0.0f && !on_ground) {
-                    fall.paint(x, y, facing_left);
+                    fall.paint(screen_x, screen_y, facing_left);
                 } else if (speed_x != 0) {
-                    run.paint(x, y, facing_left);
+                    run.paint(screen_x, screen_y, facing_left);
                 } else if (speed_x == 0) {
-                    idle.paint(x, y, facing_left);
+                    idle.paint(screen_x, screen_y, facing_left);
                 } else {
                     throw std::runtime_error("Unexpected state");
                 }
@@ -101,6 +103,7 @@ public:
         if (states.top() == PlayerState::ATTACK && attack.animation_complete()) {
             states.pop();
         }
+        Camera::tick(static_cast<int>(x));
     }
 
     void collide_map(const SDL_Rect& other) {
@@ -130,8 +133,9 @@ public:
                 break;
         }
     }
+
 private:
-    float x, y; // the top left corner of the player
+    float x, y; // the top left corner of the player in level coordinates
     float w, h; // dimensions of the bounding box
     float speed_x, speed_y;
     bool facing_left, on_ground;

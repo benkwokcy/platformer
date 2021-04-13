@@ -65,6 +65,7 @@ public:
         return num_frames;
     }
 
+    // (x,y) are in screen coordinates
     void paint(int x = 0, int y = 0, int index = 0, bool horizontal_flip = false) {
         source_rect.x = (index % num_cols) * frame_width;
         source_rect.y = (index / num_cols) * frame_height;
@@ -111,6 +112,7 @@ public:
     AnimatedSprite(AnimatedSprite&& other) = delete;
     AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
+    // (x,y) are in screen coordinates
     void paint(int x = 0, int y = 0, bool horizontal_flip = false) {
         int frame_index = frames_elapsed() % num_frames;
         Sprite::paint(x, y, frame_index, horizontal_flip);
