@@ -3,10 +3,12 @@
 #include <algorithm>
 
 enum class CollisionType {
-    TOP, BOTTOM, LEFT, RIGHT, NONE
+    OVERLAP_TOP, OVERLAP_BOTTOM, OVERLAP_LEFT, OVERLAP_RIGHT, 
+    TOUCH_TOP, TOUCH_BOTTOM, TOUCH_LEFT, TOUCH_RIGHT,
+    NONE
 };
 
-// From a's perspective. Call this if you already know the rects are overlapping.
+// From a's perspective.
 CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
     int top_overlap = abs((b.y + b.h) - a.y);
     int bottom_overlap = abs((a.y + a.h) - b.y);
@@ -15,30 +17,27 @@ CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
 
     int mini = std::min({top_overlap, bottom_overlap, left_overlap, right_overlap});
 
-    if (mini == top_overlap) {
-        return CollisionType::TOP;
-    } else if (mini == bottom_overlap) {
-        return CollisionType::BOTTOM;
-    } else if (mini == left_overlap) {
-        return CollisionType::LEFT;
-    } else if (mini == right_overlap) {
-        return CollisionType::RIGHT;
-    } else {
-        return CollisionType::NONE;
+    if (SDL_HasIntersection(&a, &b) == SDL_TRUE) {
+        if (mini == top_overlap) {
+            return CollisionType::OVERLAP_TOP;
+        } else if (mini == bottom_overlap) {
+            return CollisionType::OVERLAP_BOTTOM;
+        } else if (mini == left_overlap) {
+            return CollisionType::OVERLAP_LEFT;
+        } else if (mini == right_overlap) {
+            return CollisionType::OVERLAP_RIGHT;
+        }
+    } else if (mini == 0) {
+        if (mini == top_overlap) {
+            return CollisionType::TOUCH_TOP;
+        } else if (mini == bottom_overlap) {
+            return CollisionType::TOUCH_BOTTOM;
+        } else if (mini == left_overlap) {
+            return CollisionType::TOUCH_LEFT;
+        } else if (mini == right_overlap) {
+            return CollisionType::TOUCH_RIGHT;
+        }
     }
-}
 
-// From a's perspective. Call this if you already know the rects aren't overlapping.
-CollisionType rect_touch_rect(const SDL_Rect& a, const SDL_Rect& b) {
-    if (a.y - (b.y + b.h) == 0) {
-        return CollisionType::TOP;
-    } else if (b.y - (a.y + a.h) == 0) {
-        return CollisionType::BOTTOM;
-    } else if (b.x - (a.x + a.w) == 0) {
-        return CollisionType::LEFT;
-    } else if (a.x - (b.x + b.w) == 0) {
-        return CollisionType::RIGHT;
-    } else {
-        return CollisionType::NONE;
-    }
+    return CollisionType::NONE;
 }

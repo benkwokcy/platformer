@@ -105,46 +105,31 @@ public:
 
     void collide_map(const SDL_Rect& other) {
         SDL_Rect me = bounding_box();
-        if (SDL_HasIntersection(&me, &other) == SDL_TRUE) {
-            switch (rect_collide_rect(me, other)) {
-                case CollisionType::TOP:
-                    y += (other.y + other.h) - y;
-                    speed_y = std::max(speed_y, 0.0f);
-                    break;
-                case CollisionType::BOTTOM:
-                    y -= (y + h) - other.y;
-                    on_ground = true;
-                    speed_y = std::min(speed_y, 0.0f);
-                    break;
-                case CollisionType::LEFT:
-                    x += (other.x + other.w) - x;
-                    speed_x = 0.0f;
-                    break;
-                case CollisionType::RIGHT:
-                    x -= (x + w) - other.x;
-                    speed_x = 0.0f;
-                    break;
-                case CollisionType::NONE:
-                    break;
-                default:
-                    throw std::runtime_error("Unexpected collision type.");
-                    break;
-            }
-        } else {
-            switch (rect_touch_rect(me, other)) {
-                case CollisionType::BOTTOM:
-                    on_ground = true;
-                    break;
-                default:
-                    break;
-            }
+        switch (rect_collide_rect(me, other)) {
+            case CollisionType::OVERLAP_TOP:
+                y += (other.y + other.h) - y;
+                speed_y = std::max(speed_y, 0.0f);
+                break;
+            case CollisionType::OVERLAP_BOTTOM:
+                y -= (y + h) - other.y;
+                on_ground = true;
+                speed_y = std::min(speed_y, 0.0f);
+                break;
+            case CollisionType::OVERLAP_LEFT:
+                x += (other.x + other.w) - x;
+                speed_x = 0.0f;
+                break;
+            case CollisionType::OVERLAP_RIGHT:
+                x -= (x + w) - other.x;
+                speed_x = 0.0f;
+                break;
+            case CollisionType::TOUCH_BOTTOM:
+                on_ground = true;
+                break;
+            default:
+                break;
         }
     }
-
-    SDL_Rect bounding_box() {
-        return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
-    }
-
 private:
     float x, y; // the top left corner of the player
     float w, h; // dimensions of the bounding box
@@ -152,4 +137,8 @@ private:
     bool facing_left, on_ground;
     std::stack<PlayerState> states;
     AnimatedSprite run, idle, attack, jump, fall;
+
+    SDL_Rect bounding_box() {
+        return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
+    }
 };
