@@ -79,7 +79,7 @@ public:
                 break;
             case InputEvent::JUMP:
                 if (on_ground) {
-                    speed_y -= 1.3f;
+                    speed_y -= 11.0f;
                 }
             default:
                 break;
@@ -89,9 +89,9 @@ public:
     void tick() override {
         if (Input::left_down() || Input::right_down()) {
             if (facing_left) {
-                speed_x = -0.5f;
+                speed_x = -4.0f;
             } else {
-                speed_x = 0.5f;
+                speed_x = 4.0f;
             }
         } else {
             speed_x = 0.0f;
