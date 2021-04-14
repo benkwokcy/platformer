@@ -22,7 +22,7 @@ public:
         if (window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN); window == nullptr) {
             throw std::runtime_error("Failed SDL_CreateWindow.");
         }
-        if (renderer = SDL_CreateRenderer(window, -1, 0); renderer == nullptr) {
+        if (renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC); renderer == nullptr) {
             throw std::runtime_error("Failed SDL_CreateRenderer.");
         }
         if (!IMG_Init(IMG_INIT_PNG)) {
