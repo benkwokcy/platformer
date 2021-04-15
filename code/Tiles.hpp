@@ -49,15 +49,15 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 }
 
 /*********************************************
- *               TILE CLASSES
+ *               TILE CODE
  *********************************************/
 
 class Tileset {
 public:
     Tileset(int first_tile_id, std::string image_path, int image_width, int image_height, int tile_width, int tile_height):
-        sprite(std::make_unique<Sprite>(image_path, image_width, image_height, tile_width, tile_height)),
+        sprite(image_path, image_width, image_height, tile_width, tile_height),
         first_tile_id(first_tile_id),
-        last_tile_id(first_tile_id + sprite->get_num_frames() - 1)
+        last_tile_id(first_tile_id + sprite.get_num_frames() - 1)
     {}
 
     bool contains_id(int id) {
@@ -65,11 +65,11 @@ public:
     }
 
     void paint(int x, int y, int id) {
-        sprite->paint(x, y, id - first_tile_id);
+        sprite.paint(x, y, id - first_tile_id);
     }
 
 private:
-    std::unique_ptr<Sprite> sprite; // we use Sprite pointers because Sprites are not copyable or moveable.
+    Sprite sprite;
     int first_tile_id;
     int last_tile_id;
 };

@@ -56,9 +56,30 @@ public:
         SDL_FreeSurface(surface);
     }
 
+    // Sprites cannot be copied
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
-    Sprite(Sprite&& other) = delete;
+
+    Sprite(Sprite&& other) {
+        filename = std::move(other.filename);
+        image_width = other.image_width;
+        image_height = other.image_height;
+        frame_width = other.frame_width;
+        frame_height = other.frame_height;
+        sprite_width = other.sprite_width;
+        sprite_height = other.sprite_height;
+        x_offset = other.x_offset;
+        y_offset = other.y_offset;
+        num_rows = other.num_rows;
+        num_cols = other.num_cols;
+        num_frames = other.num_frames;
+        surface = other.surface; other.surface = nullptr;
+        texture = other.texture; other.texture = nullptr;
+        source_rect = other.source_rect;
+        dest_rect = other.dest_rect;
+    }
+
+    // I could implement this but not necessary right now
     Sprite& operator=(Sprite&& other) = delete;
 
     int get_num_frames() {
@@ -108,7 +129,14 @@ public:
 
     AnimatedSprite(const AnimatedSprite& other) = delete;
     AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
-    AnimatedSprite(AnimatedSprite&& other) = delete;
+
+    AnimatedSprite(AnimatedSprite&& other) :
+        Sprite(std::move(other))
+    {
+        frames_per_second = other.frames_per_second;
+        creation_time = other.creation_time;
+    }
+
     AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
     void paint(int screen_x = 0, int screen_y = 0, bool horizontal_flip = false) {
