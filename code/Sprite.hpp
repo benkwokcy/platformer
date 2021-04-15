@@ -11,7 +11,7 @@
 
 class Sprite {
 public:
-    // Convenience constructor for images with only 1 frame
+    // Convenience constructor for a normal image with no frames
     Sprite(std::string filename, int image_width, int image_height)
         : Sprite(filename, image_width, image_height, image_width, image_height, image_width, image_height, 0, 0)
     {}

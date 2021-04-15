@@ -54,8 +54,8 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 
 class Tileset {
 public:
-    Tileset(int first_tile_id, std::string image_path, int image_width, int image_height, int tile_width, int tile_height):
-        sprite(image_path, image_width, image_height, tile_width, tile_height),
+    Tileset(int first_tile_id, std::string filename):
+        sprite(create_sprite_from_tileset_file(filename)),
         first_tile_id(first_tile_id),
         last_tile_id(first_tile_id + sprite.get_num_frames() - 1)
     {}
@@ -72,6 +72,22 @@ private:
     Sprite sprite;
     int first_tile_id;
     int last_tile_id;
+
+    Sprite create_sprite_from_tileset_file(std::string filename) {
+        tinyxml2::XMLDocument doc;
+        xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
+
+        auto tileset_node = doc.FirstChildElement();
+        int tile_width = get_int_attribute(tileset_node, "tilewidth");
+        int tile_height = get_int_attribute(tileset_node, "tileheight");
+
+        auto image_node = tileset_node->FirstChildElement();
+        std::string image_path = Assets::path + get_string_attribute(image_node, "source");
+        int image_width = get_int_attribute(image_node, "width");
+        int image_height = get_int_attribute(image_node, "height");
+
+        return Sprite(image_path, image_width, image_height, tile_width, tile_height);
+    }
 };
 
 class Tilemap {
@@ -140,20 +156,7 @@ private:
     void add_tileset(tinyxml2::XMLElement* node) {
         int first_id = get_int_attribute(node, "firstgid");
         std::string filename = get_string_attribute(node, "source");
-
-        tinyxml2::XMLDocument doc;
-        xml_assert(doc.LoadFile((Assets::path + filename).c_str()));
-
-        auto tileset_node = doc.FirstChildElement();
-        int tile_width_ = get_int_attribute(tileset_node, "tilewidth");
-        int tile_height_ = get_int_attribute(tileset_node, "tileheight");
-
-        auto image_node = tileset_node->FirstChildElement();
-        std::string image_path = Assets::path + get_string_attribute(image_node, "source");
-        int image_width = get_int_attribute(image_node, "width");
-        int image_height = get_int_attribute(image_node, "height");
-
-        tilesets.emplace_back(first_id, image_path, image_width, image_height, tile_width_, tile_height_);
+        tilesets.emplace_back(first_id, filename);
     }
 
     void add_tile_layer(tinyxml2::XMLElement* node) {
