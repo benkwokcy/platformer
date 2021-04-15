@@ -37,12 +37,4 @@ public:
         SDL_DestroyWindow(window);
         SDL_Quit();
     }
-
-    constexpr static int center_x() { 
-        return width / 2; 
-    }
-
-    constexpr static int center_y() { 
-        return height / 2; 
-    }
 };

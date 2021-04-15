@@ -77,14 +77,14 @@ private:
 class Tilemap {
 public:
     using matrix = std::vector<std::vector<int>>;
-    using first_tile_id = int;
 
     std::string name;
     int map_width, map_height;
     int tile_width, tile_height;
     std::vector<Tileset> tilesets;
-    std::unordered_map<std::string,matrix> layers; // 2D grids of tile indices
-    std::vector<SDL_Rect> collisions; // the bounding boxes to collide against
+    std::unordered_map<std::string, matrix> layers; // 2D grids of tile indices
+    std::vector<SDL_Rect> collisions; // bounding boxes to collide against
+    std::unordered_map<std::string, SDL_Rect> markers; // ex. spawn points, AI paths
 
     Tilemap(std::string filename) : 
         name(filename) 
@@ -112,7 +112,6 @@ public:
         }
     }
 
-    // TODO - should I just have 3 members - Background, Midground, Foreground? Or will I have other layers?
     void paint() {
         paint_layer(layers["Background"]);
         paint_layer(layers["Midground"]);
@@ -125,7 +124,8 @@ private:
                 if (M[r][c] == 0) continue;
                 
                 int tile_index = M[r][c];
-                int level_x = c * tile_width, level_y = r * tile_height;
+                int level_x = c * tile_width;
+                int level_y = r * tile_height;
                 
                 if (!Camera::is_visible(level_x, level_y, tile_width, tile_height)) continue;
                 
@@ -169,13 +169,30 @@ private:
     }
 
     void add_object_layer(tinyxml2::XMLElement* object_group_node) {
-        for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
-            SDL_Rect rect;
-            rect.x = get_int_attribute(object_node, "x");
-            rect.y = get_int_attribute(object_node, "y");
-            rect.w = get_int_attribute(object_node, "width");
-            rect.h = get_int_attribute(object_node, "height");
-            collisions.push_back(rect);
+        std::string group_name = get_string_attribute(object_group_node, "name");
+        if (group_name == "Collisions") {
+            assert(collisions.empty());
+            for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
+                SDL_Rect rect;
+                rect.x = get_int_attribute(object_node, "x");
+                rect.y = get_int_attribute(object_node, "y");
+                rect.w = get_int_attribute(object_node, "width");
+                rect.h = get_int_attribute(object_node, "height");
+                collisions.push_back(rect);
+            }
+        } else if (group_name == "Markers") {
+            for (auto object_node = object_group_node->FirstChildElement(); object_node != nullptr; object_node = object_node->NextSiblingElement()) {
+                std::string object_name = get_string_attribute(object_node, "name");
+                SDL_Rect rect;
+                rect.x = get_int_attribute(object_node, "x");
+                rect.y = get_int_attribute(object_node, "y");
+                rect.w = get_int_attribute(object_node, "width");
+                rect.h = get_int_attribute(object_node, "height");
+                assert(!markers.count(object_name));
+                markers[object_name] = rect;
+            }
+        } else {
+            throw std::runtime_error("Unexpected name for objectgroup in tilemap file.");
         }
     }
 

@@ -20,9 +20,9 @@ enum class PlayerState {
 
 class Player : public Entity {
 public:
-    Player() :
-        x(Window::center_x()),
-        y(Window::center_y()),
+    Player(float x, float y) :
+        x(x),
+        y(y),
         w(22.0f),
         h(28.0f),
         speed_x(0.0f),

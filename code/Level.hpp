@@ -11,7 +11,8 @@
 class Level : public Entity {
 public:
     Level() :
-        tilemap("level.tmx")
+        tilemap("level.tmx"),
+        player(tilemap.markers.at("PlayerSpawn").x, tilemap.markers.at("PlayerSpawn").y)
     {}
 
     void paint() override {
@@ -31,6 +32,6 @@ public:
     }
 
 private:
-    Player player;
     Tilemap tilemap;
+    Player player;
 };
