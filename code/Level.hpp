@@ -29,6 +29,7 @@ public:
         for (auto& c : tilemap.collisions) {
             player.collide_map(c);
         }
+        Camera::tick(static_cast<int>(player.get_x()));
     }
 
 private:

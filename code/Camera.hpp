@@ -10,7 +10,6 @@ class Camera {
 public:
     static inline int x = 0, y = 0; // top left corner of the camera view in level coordinates
 
-    // Called by the player every frame
     static void tick(int player_x) {
         int left_boundary = x + (0.3 * Window::width);
         int right_boundary = x + (0.7 * Window::width);

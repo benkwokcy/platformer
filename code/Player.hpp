@@ -103,7 +103,6 @@ public:
         if (states.top() == PlayerState::ATTACK && attack.animation_complete()) {
             states.pop();
         }
-        Camera::tick(static_cast<int>(x));
     }
 
     void collide_map(const SDL_Rect& other) {
@@ -132,6 +131,10 @@ public:
             default:
                 break;
         }
+    }
+
+    float get_x() {
+        return x;
     }
 
 private:
