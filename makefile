@@ -4,6 +4,9 @@ MORE_LIBRARIES = -lSDL2_ttf -lSDL2_mixer
 FILES = code/*.cpp
 EXECUTABLE = platformer
 
+comp:
+	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES)
+
 san:
 	g++ $(FILES) -o $(EXECUTABLE) $(FLAGS) $(LIBRARIES) -g -fsanitize=address -fsanitize=undefined
 	./$(EXECUTABLE)
