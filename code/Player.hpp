@@ -29,11 +29,11 @@ public:
         speed_y(0.0f),
         facing_left(false),
         on_ground(false),
-        run(AnimatedSprite("sprites/playerrun.png", 624, 58, 78, 58, w, h, 23, 16, 10)),
-        idle(AnimatedSprite("sprites/playeridle.png", 858, 58, 78, 58, w, h, 23, 16, 10)),
-        attack(AnimatedSprite("sprites/playerattack.png", 234, 58, 78, 58, w, h, 23, 16, 10)),
-        jump(AnimatedSprite("sprites/playerjump.png", 78, 58, 78, 58, w, h, 23, 16, 10)),
-        fall(AnimatedSprite("sprites/playerfall.png", 78, 58, 78, 58, w, h, 23, 16, 10))
+        run(AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, w, h, 23, 16, 10)),
+        idle(AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, w, h, 23, 16, 10)),
+        attack(AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, w, h, 23, 16, 10)),
+        jump(AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, w, h, 23, 16, 10)),
+        fall(AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, w, h, 23, 16, 10))
     {
         states.push(PlayerState::MOVING);
     }

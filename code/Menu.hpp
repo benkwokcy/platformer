@@ -10,7 +10,7 @@
 class Menu : public Entity {
 public:
     Menu() :
-        sprite(Sprite("sprites/mainmenu.png", 640, 480))
+        sprite(Sprite("assets/images/mainmenu.png", 640, 480))
     {}
 
     void paint() override {

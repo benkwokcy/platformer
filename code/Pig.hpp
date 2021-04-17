@@ -29,11 +29,11 @@ public:
         speed_y(0.0f),
         facing_left(false),
         on_ground(false),
-        run(AnimatedSprite("sprites/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
-        idle(AnimatedSprite("sprites/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
-        attack(AnimatedSprite("sprites/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
-        jump(AnimatedSprite("sprites/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
-        fall(AnimatedSprite("sprites/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10))
+        run(AnimatedSprite("assets/images/pigrun.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
+        idle(AnimatedSprite("assets/images/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
+        attack(AnimatedSprite("assets/images/pigattack.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
+        jump(AnimatedSprite("assets/images/pigjump.png", 374, 28, 34, 28, w, h, 12, 12, 10)),
+        fall(AnimatedSprite("assets/images/pigfall.png", 374, 28, 34, 28, w, h, 12, 12, 10))
     {
         states.push(PigState::MOVING);
     }
@@ -63,7 +63,9 @@ public:
         }
     }
 
-    void handle_event(InputEvent e) override {
+    void handle_event(InputEvent e) override {}
+
+    void tick() override {
         // switch (e) {
         //     case InputEvent::LEFT:
         //         facing_left = true;
@@ -84,9 +86,6 @@ public:
         //     default:
         //         break;
         // }
-    }
-
-    void tick() override {
         // if (Input::left_down() || Input::right_down()) {
         //     if (facing_left) {
         //         speed_x = -4.0f;
