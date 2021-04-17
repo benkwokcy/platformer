@@ -5,7 +5,6 @@
 
 #include "Scene.hpp"
 #include "Tiles.hpp"
-#include "Pig.hpp"
 #include "Camera.hpp"
 #include "Entity.hpp"
 

@@ -47,6 +47,7 @@ void Entity::handle_event(InputEvent e) {
 }
 
 void Entity::tick() {
+    input->tick(*this);
     physics->tick(*this);
 }
 

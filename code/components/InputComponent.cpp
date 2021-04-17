@@ -15,7 +15,7 @@ void InputComponent::handle_event(Entity& entity, InputEvent e) {
         case InputEvent::ATTACK:
             if (entity.states.top() != EntityState::ATTACK) {
                 entity.states.push(EntityState::ATTACK);
-                entity.graphics->attack.reset_to_first_frame();
+                entity.graphics->reset_time();
             }
             break;
         case InputEvent::JUMP:
@@ -24,5 +24,17 @@ void InputComponent::handle_event(Entity& entity, InputEvent e) {
             }
         default:
             break;
+    }
+}
+
+void InputComponent::tick(Entity& entity) {
+    if (Input::left_down() || Input::right_down()) {
+        if (entity.facing_left) {
+            entity.speed_x = -4.0f;
+        } else {
+            entity.speed_x = 4.0f;
+        }
+    } else {
+        entity.speed_x = 0.0f;
     }
 }
