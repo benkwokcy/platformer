@@ -13,7 +13,6 @@ enum class GameState {
     MENU, LEVEL, QUIT
 };
 
-// Switches the game between different scenes.
 class Game {
 public:
     Game() : 

@@ -146,8 +146,7 @@ public:
         Sprite::paint(screen_x, screen_y, frame_index, horizontal_flip);
     }
 
-    // Reset the sprite to the first frame
-    void set_first_frame() {
+    void reset_to_first_frame() {
         creation_time = SDL_GetTicks();
     }
 

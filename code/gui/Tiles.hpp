@@ -50,7 +50,7 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
 }
 
 /*********************************************
- *               TILE CODE
+ *           TILED FILE CLASSES
  *********************************************/
 
 Sprite create_sprite_from_tileset_file(std::string filename) {

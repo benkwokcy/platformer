@@ -6,6 +6,10 @@
 
 #include "Player.hpp"
 
+/*********************************************
+ *              CONSTRUCTORS
+ *********************************************/
+
 Player::Player(float x, float y) :
     x(x),
     y(y),
@@ -29,6 +33,10 @@ Player::~Player() {
     delete collision;
     delete physics;
 }
+
+/*********************************************
+ *              METHODS
+ *********************************************/
 
 void Player::paint() {
     graphics->paint(*this);

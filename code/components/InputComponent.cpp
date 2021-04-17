@@ -15,7 +15,7 @@ void InputComponent::handle_event(Player& player, InputEvent e) {
         case InputEvent::ATTACK:
             if (player.states.top() != PlayerState::ATTACK) {
                 player.states.push(PlayerState::ATTACK);
-                player.graphics->attack.set_first_frame();
+                player.graphics->attack.reset_to_first_frame();
             }
             break;
         case InputEvent::JUMP:

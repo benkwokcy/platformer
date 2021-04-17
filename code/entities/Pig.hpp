@@ -76,7 +76,7 @@
 //         //     case InputEvent::ATTACK:
 //         //         if (states.top() != PigState::ATTACK) {
 //         //             states.push(PigState::ATTACK);
-//         //             attack.set_first_frame();
+//         //             attack.reset_to_first_frame();
 //         //         }
 //         //         break;
 //         //     case InputEvent::JUMP:
