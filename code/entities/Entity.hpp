@@ -1,12 +1,43 @@
 #pragma once
 
+#include <stack>
+
 #include "Input.hpp"
 
-// The interface for all entities.
+struct SDL_Rect;
+class GraphicsComponent;
+class InputComponent;
+class CollisionComponent;
+class PhysicsComponent;
+
+enum class EntityState {
+    MOVING, ATTACK
+};
+
 class Entity {
 public:
-    virtual ~Entity() = default;
-    virtual void paint() = 0;
-    virtual void handle_event(InputEvent e) = 0;
-    virtual void tick() = 0; // computes the next frame
+    float x, y; // the top left corner of the entity in level coordinates
+    float w, h; // dimensions of the bounding box
+    float speed_x, speed_y;
+    bool facing_left, on_ground;
+    std::stack<EntityState> states;
+    GraphicsComponent* graphics;
+    InputComponent* input;
+    CollisionComponent* collision;
+    PhysicsComponent* physics;
+
+    Entity(float x, float y);
+    ~Entity();
+    Entity(const Entity& other) = delete;
+    Entity& operator=(const Entity& other) = delete;
+    Entity(Entity&& other) = delete;
+    Entity& operator=(Entity&& other) = delete;
+
+    void paint();
+    void handle_event(InputEvent e);
+    void tick();
+    void collide_map(const SDL_Rect& other);
+    SDL_Rect bounding_box();
 };
+
+Entity* create_player(int x, int y);

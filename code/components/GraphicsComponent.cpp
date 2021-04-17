@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "Player.hpp"
+#include "Entity.hpp"
 #include "Sprite.hpp"
 #include "Camera.hpp"
 
@@ -14,22 +14,22 @@ GraphicsComponent::GraphicsComponent() :
     fall(AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10))
 {}
 
-void GraphicsComponent::paint(Player& player) {
-    auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(player.x, player.y);
-    assert (!player.states.empty());
-    switch (player.states.top()) {
-        case PlayerState::ATTACK:
-            attack.paint(screen_x, screen_y, player.facing_left);
+void GraphicsComponent::paint(Entity& entity) {
+    auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(entity.x, entity.y);
+    assert (!entity.states.empty());
+    switch (entity.states.top()) {
+        case EntityState::ATTACK:
+            attack.paint(screen_x, screen_y, entity.facing_left);
             break;
-        case PlayerState::MOVING:
-            if (player.speed_y < 0.0f) {
-                jump.paint(screen_x, screen_y, player.facing_left);
-            } else if (player.speed_y > 0.0f && !player.on_ground) {
-                fall.paint(screen_x, screen_y, player.facing_left);
-            } else if (player.speed_x != 0) {
-                run.paint(screen_x, screen_y, player.facing_left);
-            } else if (player.speed_x == 0) {
-                idle.paint(screen_x, screen_y, player.facing_left);
+        case EntityState::MOVING:
+            if (entity.speed_y < 0.0f) {
+                jump.paint(screen_x, screen_y, entity.facing_left);
+            } else if (entity.speed_y > 0.0f && !entity.on_ground) {
+                fall.paint(screen_x, screen_y, entity.facing_left);
+            } else if (entity.speed_x != 0) {
+                run.paint(screen_x, screen_y, entity.facing_left);
+            } else if (entity.speed_x == 0) {
+                idle.paint(screen_x, screen_y, entity.facing_left);
             } else {
                 throw std::runtime_error("Unexpected state");
             }

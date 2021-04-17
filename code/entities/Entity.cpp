@@ -4,13 +4,13 @@
 #include "GraphicsComponent.hpp"
 #include "InputComponent.hpp"
 
-#include "Player.hpp"
+#include "Entity.hpp"
 
 /*********************************************
  *              CONSTRUCTORS
  *********************************************/
 
-Player::Player(float x, float y) :
+Entity::Entity(float x, float y) :
     x(x),
     y(y),
     w(16.0f),
@@ -24,10 +24,10 @@ Player::Player(float x, float y) :
     collision(new CollisionComponent()),
     physics(new PhysicsComponent())
 {
-    states.push(PlayerState::MOVING);
+    states.push(EntityState::MOVING);
 }
 
-Player::~Player() {
+Entity::~Entity() {
     delete graphics;
     delete input;
     delete collision;
@@ -38,22 +38,30 @@ Player::~Player() {
  *              METHODS
  *********************************************/
 
-void Player::paint() {
+void Entity::paint() {
     graphics->paint(*this);
 }
 
-void Player::handle_event(InputEvent e) {
+void Entity::handle_event(InputEvent e) {
     input->handle_event(*this, e);
 }
 
-void Player::tick() {
+void Entity::tick() {
     physics->tick(*this);
 }
 
-void Player::collide_map(const SDL_Rect& other) {
+void Entity::collide_map(const SDL_Rect& other) {
     collision->collide_map(*this, other);
 }
 
-SDL_Rect Player::bounding_box() {
+SDL_Rect Entity::bounding_box() {
     return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
+}
+
+/*********************************************
+ *              FACTORY METHODS
+ *********************************************/
+
+Entity* create_player(int x, int y) {
+    return new Entity(x, y);
 }

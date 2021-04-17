@@ -1,8 +1,8 @@
 #pragma once
 
-class Player;
+class Entity;
 
 class PhysicsComponent {
 public:
-    void tick(Player& player);
+    void tick(Entity& entity);
 };

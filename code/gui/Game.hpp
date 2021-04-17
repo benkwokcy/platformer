@@ -8,6 +8,7 @@
 #include "Menu.hpp"
 #include "Window.hpp"
 #include "Level.hpp"
+#include "Scene.hpp"
 
 enum class GameState {
     MENU, LEVEL, QUIT
@@ -18,7 +19,7 @@ public:
     Game() : 
         state(GameState::MENU)
     {
-        scene = &menu;
+        current_scene = &menu;
     }
 
     void tick() {
@@ -32,16 +33,16 @@ public:
                 case InputEvent::CONTINUE:
                     if (state == GameState::MENU) {
                         state = GameState::LEVEL;
-                        scene = &level;
+                        current_scene = &level;
                     }
                     break;
                 default:
-                    scene->handle_event(e);
+                    current_scene->handle_event(e);
             }
         }
-        scene->tick();
+        current_scene->tick();
         SDL_RenderClear(Window::renderer);
-        scene->paint();
+        current_scene->paint();
         SDL_RenderPresent(Window::renderer);
     }
 
@@ -50,7 +51,7 @@ public:
     }
 
 private:
-    Entity* scene;
+    Scene* current_scene;
     GameState state;
     Menu menu;
     Level level;

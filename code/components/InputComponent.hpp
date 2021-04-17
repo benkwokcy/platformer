@@ -1,8 +1,8 @@
 #pragma once
 
-class Player;
+class Entity;
 
 class InputComponent {
 public:
-    void handle_event(Player& player, InputEvent e);
+    void handle_event(Entity& entity, InputEvent e);
 };

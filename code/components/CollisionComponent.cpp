@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "Player.hpp"
+#include "Entity.hpp"
 
 #include "CollisionComponent.hpp"
 
@@ -48,28 +48,28 @@ CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
  *              COMPONENTS
  *********************************************/
 
-void CollisionComponent::collide_map(Player& player, const SDL_Rect& other) {
-    SDL_Rect me = player.bounding_box();
+void CollisionComponent::collide_map(Entity& entity, const SDL_Rect& other) {
+    SDL_Rect me = entity.bounding_box();
     switch (rect_collide_rect(me, other)) {
         case CollisionType::OVERLAP_TOP:
-            player.y += (other.y + other.h) - player.y;
-            player.speed_y = std::max(player.speed_y, 0.0f);
+            entity.y += (other.y + other.h) - entity.y;
+            entity.speed_y = std::max(entity.speed_y, 0.0f);
             break;
         case CollisionType::OVERLAP_BOTTOM:
-            player.y -= (player.y + player.h) - other.y;
-            player.on_ground = true;
-            player.speed_y = std::min(player.speed_y, 0.0f);
+            entity.y -= (entity.y + entity.h) - other.y;
+            entity.on_ground = true;
+            entity.speed_y = std::min(entity.speed_y, 0.0f);
             break;
         case CollisionType::OVERLAP_LEFT:
-            player.x += (other.x + other.w) - player.x;
-            player.speed_x = 0.0f;
+            entity.x += (other.x + other.w) - entity.x;
+            entity.speed_x = 0.0f;
             break;
         case CollisionType::OVERLAP_RIGHT:
-            player.x -= (player.x + player.w) - other.x;
-            player.speed_x = 0.0f;
+            entity.x -= (entity.x + entity.w) - other.x;
+            entity.speed_x = 0.0f;
             break;
         case CollisionType::TOUCH_BOTTOM:
-            player.on_ground = true;
+            entity.on_ground = true;
             break;
         default:
             break;

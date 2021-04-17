@@ -4,10 +4,10 @@
 
 #include <stdexcept>
 
-#include "Entity.hpp"
+#include "Scene.hpp"
 #include "Sprite.hpp"
 
-class Menu : public Entity {
+class Menu : public Scene {
 public:
     Menu() :
         sprite(Sprite("assets/images/mainmenu.png", 640, 480))
