@@ -64,15 +64,36 @@ SDL_Rect Entity::bounding_box() {
  *********************************************/
 
 Entity* create_player(int x, int y) {
+    float w = 16.0f;
+    float h = 28.0f;
     return new Entity(
         x, y,
-        16.0f, 28.0f,     
+        w, h,    
         new GraphicsComponent(
-            AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10)
+            AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, w, h, 23, 16, 10),
+            AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, w, h, 23, 16, 10),
+            AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, w, h, 23, 16, 10),
+            AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, w, h, 23, 16, 10),
+            AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, w, h, 23, 16, 10)
+        ),
+        new InputComponent(),
+        new CollisionComponent(),
+        new PhysicsComponent()
+    );
+}
+
+Entity* create_pig(int x, int y) {
+    float w = 15.0f;
+    float h = 16.0f;
+    return new Entity(
+        x, y,
+        w, h,     
+        new GraphicsComponent(
+            AnimatedSprite("assets/images/pigrun.png", 204, 28, 34, 28, w, h, 12, 12, 10),
+            AnimatedSprite("assets/images/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10),
+            AnimatedSprite("assets/images/pigattack.png", 170, 28, 34, 28, w, h, 12, 12, 10),
+            AnimatedSprite("assets/images/pigjump.png", 34, 28, 34, 28, w, h, 12, 12, 10),
+            AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, w, h, 12, 12, 10)
         ),
         new InputComponent(),
         new CollisionComponent(),

@@ -41,3 +41,4 @@ public:
 };
 
 Entity* create_player(int x, int y);
+Entity* create_pig(int x, int y);
