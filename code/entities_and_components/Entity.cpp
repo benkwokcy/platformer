@@ -89,11 +89,11 @@ Entity* create_pig(int x, int y) {
         x, y,
         w, h,     
         new GraphicsComponent(
-            AnimatedSprite("assets/images/pigrun.png", 204, 28, 34, 28, w, h, 12, 12, 10),
-            AnimatedSprite("assets/images/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10),
-            AnimatedSprite("assets/images/pigattack.png", 170, 28, 34, 28, w, h, 12, 12, 10),
-            AnimatedSprite("assets/images/pigjump.png", 34, 28, 34, 28, w, h, 12, 12, 10),
-            AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, w, h, 12, 12, 10)
+            AnimatedSprite("assets/images/pigrun.png", 204, 28, 34, 28, w, h, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigattack.png", 170, 28, 34, 28, w, h, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigjump.png", 34, 28, 34, 28, w, h, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, w, h, 12, 12, 10, true)
         ),
         new InputComponent(),
         new CollisionComponent(),

@@ -18,12 +18,12 @@ GraphicsComponent::GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle
 {}
 
 void GraphicsComponent::paint(Entity& entity) {
-    auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(entity.x, entity.y);
     assert (!entity.states.empty());
     if (entity.states.top() == EntityState::ATTACK && entity.graphics->attack.animation_complete(creation_time)) {
         entity.states.pop();
+        assert (!entity.states.empty());
     }
-    assert (!entity.states.empty());
+    auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(entity.x, entity.y);
     switch (entity.states.top()) {
         case EntityState::ATTACK:
             attack.paint(screen_x, screen_y, creation_time, entity.facing_left);

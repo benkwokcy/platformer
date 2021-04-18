@@ -15,16 +15,17 @@ class Sprite {
 public:
     // Convenience constructor for a normal image with no frames
     Sprite(std::string filename, int image_width, int image_height)
-        : Sprite(filename, image_width, image_height, image_width, image_height, image_width, image_height, 0, 0)
+        : Sprite(filename, image_width, image_height, image_width, image_height, image_width, image_height)
     {}
 
     // Convenience constructor for images with multiple frames and no offset
     Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height)
-        : Sprite(filename, image_width, image_height, frame_width, frame_height, frame_width, frame_height, 0, 0)
+        : Sprite(filename, image_width, image_height, frame_width, frame_height, frame_width, frame_height)
     {}
 
     // Main constructor
-    Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, int x_offset, int y_offset) : 
+    Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
+           int x_offset = 0, int y_offset = 0, bool faces_left = false) : 
         filename(filename),
         image_width(image_width),
         image_height(image_height),
@@ -33,7 +34,8 @@ public:
         sprite_width(sprite_width),
         sprite_height(sprite_height),
         x_offset(x_offset),
-        y_offset(y_offset)
+        y_offset(y_offset),
+        faces_left(faces_left)
     {
         if (surface = IMG_Load(filename.c_str()); surface == nullptr) {
             throw std::runtime_error("Failed IMG_Load.");
@@ -75,6 +77,7 @@ public:
         num_rows = other.num_rows;
         num_cols = other.num_cols;
         num_frames = other.num_frames;
+        faces_left = other.faces_left;
         surface = other.surface; other.surface = nullptr;
         texture = other.texture; other.texture = nullptr;
         source_rect = other.source_rect;
@@ -89,6 +92,7 @@ public:
     }
 
     void paint(int screen_x = 0, int screen_y = 0, int index = 0, bool horizontal_flip = false) {
+        if (faces_left) { horizontal_flip = !horizontal_flip; }
         source_rect.x = (index % num_cols) * frame_width;
         source_rect.y = (index / num_cols) * frame_height;
         if (horizontal_flip) {
@@ -109,6 +113,7 @@ protected:
     int sprite_width, sprite_height; // if the sprite is smaller than the frame
     int x_offset, y_offset; // if the sprite is smaller than the frame
     int num_rows, num_cols, num_frames;
+    bool faces_left; // true if the sprite is drawn facing left
     SDL_Surface* surface;
     SDL_Texture* texture;
     SDL_Rect source_rect; // image coordinates
@@ -123,8 +128,8 @@ protected:
 class AnimatedSprite : public Sprite {
 public:
     AnimatedSprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
-                   int x_offset, int y_offset, int frames_per_second) : 
-        Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset),
+                   int x_offset, int y_offset, int frames_per_second, bool faces_left = false) : 
+        Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset, faces_left),
         frames_per_second(frames_per_second)
     {}
 
