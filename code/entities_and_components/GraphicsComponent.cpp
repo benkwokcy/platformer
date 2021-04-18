@@ -14,15 +14,14 @@ GraphicsComponent::GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle
     attack(std::move(attack)),
     jump(std::move(jump)),
     fall(std::move(fall)),
-    ground(std::move(ground)),
-    creation_time(static_cast<int>(SDL_GetTicks()))
+    ground(std::move(ground))
 {}
 
 void GraphicsComponent::paint(Entity& entity) {
     assert (!entity.states.empty());
     if (entity.states.top() != EntityState::MOVING) {
-        if ((entity.states.top() == EntityState::ATTACK && entity.graphics->attack.animation_complete(creation_time)) || 
-            (entity.states.top() == EntityState::GROUND && entity.graphics->ground.animation_complete(creation_time))) {
+        if ((entity.states.top() == EntityState::ATTACK && entity.graphics->attack.animation_complete()) || 
+            (entity.states.top() == EntityState::GROUND && entity.graphics->ground.animation_complete())) {
             entity.states.pop();
             assert(!entity.states.empty());
         }
@@ -30,20 +29,20 @@ void GraphicsComponent::paint(Entity& entity) {
     auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(entity.x, entity.y);
     switch (entity.states.top()) {
         case EntityState::ATTACK:
-            attack.paint(screen_x, screen_y, creation_time, entity.facing_left);
+            attack.paint(screen_x, screen_y, entity.facing_left);
             break;
         case EntityState::GROUND:
-            ground.paint(screen_x, screen_y, creation_time, entity.facing_left);
+            ground.paint(screen_x, screen_y, entity.facing_left);
             break;
         case EntityState::MOVING:
             if (entity.speed_y < 0.0f) {
-                jump.paint(screen_x, screen_y, creation_time, entity.facing_left);
+                jump.paint(screen_x, screen_y, entity.facing_left);
             } else if (entity.speed_y > 0.0f && !entity.on_ground) {
-                fall.paint(screen_x, screen_y, creation_time, entity.facing_left);
+                fall.paint(screen_x, screen_y, entity.facing_left);
             } else if (entity.speed_x != 0) {
-                run.paint(screen_x, screen_y, creation_time, entity.facing_left);
+                run.paint(screen_x, screen_y, entity.facing_left);
             } else if (entity.speed_x == 0) {
-                idle.paint(screen_x, screen_y, creation_time, entity.facing_left);
+                idle.paint(screen_x, screen_y, entity.facing_left);
             } else {
                 throw std::runtime_error("Unexpected state");
             }
@@ -51,8 +50,4 @@ void GraphicsComponent::paint(Entity& entity) {
         default:
             throw std::runtime_error("Unexpected state");
     }
-}
-
-void GraphicsComponent::reset_time() {
-    creation_time = SDL_GetTicks();
 }

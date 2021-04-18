@@ -15,7 +15,7 @@ void InputComponent::handle_event(Entity& entity, InputEvent e) {
         case InputEvent::ATTACK:
             if (entity.states.top() != EntityState::ATTACK) {
                 entity.states.push(EntityState::ATTACK);
-                entity.graphics->reset_time();
+                entity.graphics->attack.reset_time();
             }
             break;
         case InputEvent::JUMP:

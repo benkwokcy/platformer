@@ -62,7 +62,7 @@ void CollisionComponent::collide_map(Entity& entity, const SDL_Rect& other) {
             entity.on_ground = true;
             if (entity.speed_y > 2.0f && entity.states.top() != EntityState::ATTACK) { 
                 entity.states.push(EntityState::GROUND);
-                entity.graphics->reset_time();
+                entity.graphics->ground.reset_time();
             }
             entity.speed_y = std::min(entity.speed_y, 0.0f);
             break;

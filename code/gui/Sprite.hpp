@@ -130,7 +130,8 @@ public:
     AnimatedSprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
                    int x_offset, int y_offset, int frames_per_second, bool faces_left = false) : 
         Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset, faces_left),
-        frames_per_second(frames_per_second)
+        frames_per_second(frames_per_second),
+        creation_time(static_cast<int>(SDL_GetTicks()))
     {}
 
     AnimatedSprite(const AnimatedSprite& other) = delete;
@@ -140,25 +141,32 @@ public:
         Sprite(std::move(other))
     {
         frames_per_second = other.frames_per_second;
+        creation_time = other.creation_time;
     }
 
     AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
-    void paint(int screen_x, int screen_y, int creation_time, bool horizontal_flip = false) {
-        int frame_index = frames_elapsed(creation_time) % num_frames;
+    void paint(int screen_x, int screen_y, bool horizontal_flip = false) {
+        int frame_index = frames_elapsed() % num_frames;
         Sprite::paint(screen_x, screen_y, frame_index, horizontal_flip);
     }
 
     // Returns true if the animation has completed one loop
-    bool animation_complete(int creation_time) {
-        return frames_elapsed(creation_time) >= num_frames;
+    bool animation_complete() {
+        return frames_elapsed() >= num_frames;
+    }
+
+    // Reset the animation start time.
+    void reset_time() {
+        creation_time = SDL_GetTicks();
     }
 
 private:
     int frames_per_second;
+    int creation_time;
 
     // Get the number of frames elapsed since creation or the last reset
-    int frames_elapsed(int creation_time) {
+    int frames_elapsed() {
         return (SDL_GetTicks() - creation_time) * frames_per_second / 1000;
     }
 };
