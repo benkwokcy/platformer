@@ -11,7 +11,7 @@ class CollisionComponent;
 class PhysicsComponent;
 
 enum class EntityState {
-    MOVING, ATTACK
+    MOVING, ATTACK, GROUND
 };
 
 class Entity {

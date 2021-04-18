@@ -14,7 +14,7 @@ public:
         tilemap("level.tmx")
         // pig(tilemap.markers.at("PigSpawn").x, tilemap.markers.at("PigSpawn").y)
     {
-        player = create_pig(tilemap.markers.at("PlayerSpawn").x, tilemap.markers.at("PlayerSpawn").y);
+        player = create_player(tilemap.markers.at("PlayerSpawn").x, tilemap.markers.at("PlayerSpawn").y);
     }
 
     ~Level() {

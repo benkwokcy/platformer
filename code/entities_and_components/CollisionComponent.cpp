@@ -1,8 +1,10 @@
 #include "SDL2/SDL.h"
 
 #include <algorithm>
+#include <iostream>
 
 #include "Entity.hpp"
+#include "GraphicsComponent.hpp"
 
 #include "CollisionComponent.hpp"
 
@@ -58,6 +60,10 @@ void CollisionComponent::collide_map(Entity& entity, const SDL_Rect& other) {
         case CollisionType::OVERLAP_BOTTOM:
             entity.y -= (entity.y + entity.h) - other.y;
             entity.on_ground = true;
+            if (entity.speed_y > 2.0f && entity.states.top() != EntityState::ATTACK) { 
+                entity.states.push(EntityState::GROUND);
+                entity.graphics->reset_time();
+            }
             entity.speed_y = std::min(entity.speed_y, 0.0f);
             break;
         case CollisionType::OVERLAP_LEFT:
