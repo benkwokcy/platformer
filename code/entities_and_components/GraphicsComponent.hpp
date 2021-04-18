@@ -9,7 +9,7 @@ public:
     AnimatedSprite run, idle, attack, jump, fall;
     int creation_time;
 
-    GraphicsComponent();
+    GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle, AnimatedSprite&& attack, AnimatedSprite&& jump, AnimatedSprite&& fall);
     void paint(Entity& entity);
     void reset_time();
 };

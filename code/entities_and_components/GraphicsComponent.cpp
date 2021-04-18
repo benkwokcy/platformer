@@ -8,12 +8,12 @@
 
 #include "GraphicsComponent.hpp"
 
-GraphicsComponent::GraphicsComponent() :
-    run(AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, 16, 28, 23, 16, 10)),
-    idle(AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, 16, 28, 23, 16, 10)),
-    attack(AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, 16, 28, 23, 16, 10)),
-    jump(AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, 16, 28, 23, 16, 10)),
-    fall(AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10)),
+GraphicsComponent::GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle, AnimatedSprite&& attack, AnimatedSprite&& jump, AnimatedSprite&& fall) :
+    run(std::move(run)),
+    idle(std::move(idle)),
+    attack(std::move(attack)),
+    jump(std::move(jump)),
+    fall(std::move(fall)),
     creation_time(static_cast<int>(SDL_GetTicks()))
 {}
 

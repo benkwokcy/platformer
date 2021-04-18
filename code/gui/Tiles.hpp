@@ -53,22 +53,6 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
  *           TILED FILE CLASSES
  *********************************************/
 
-Sprite create_sprite_from_tileset_file(std::string filename) {
-    tinyxml2::XMLDocument doc;
-    xml_assert(doc.LoadFile((Assets::tile_path + filename).c_str()));
-
-    auto tileset_node = doc.FirstChildElement();
-    int tile_width = get_int_attribute(tileset_node, "tilewidth");
-    int tile_height = get_int_attribute(tileset_node, "tileheight");
-
-    auto image_node = tileset_node->FirstChildElement();
-    std::string image_path = Assets::sprite_path + get_string_attribute(image_node, "source");
-    int image_width = get_int_attribute(image_node, "width");
-    int image_height = get_int_attribute(image_node, "height");
-
-    return Sprite(image_path, image_width, image_height, tile_width, tile_height);
-}
-
 class Tileset {
 public:
     Tileset(int first_tile_id, std::string filename):
@@ -89,6 +73,22 @@ private:
     Sprite sprite;
     int first_tile_id;
     int last_tile_id;
+
+    Sprite create_sprite_from_tileset_file(std::string filename) {
+        tinyxml2::XMLDocument doc;
+        xml_assert(doc.LoadFile((Assets::tile_path + filename).c_str()));
+
+        auto tileset_node = doc.FirstChildElement();
+        int tile_width = get_int_attribute(tileset_node, "tilewidth");
+        int tile_height = get_int_attribute(tileset_node, "tileheight");
+
+        auto image_node = tileset_node->FirstChildElement();
+        std::string image_path = Assets::sprite_path + get_string_attribute(image_node, "source");
+        int image_width = get_int_attribute(image_node, "width");
+        int image_height = get_int_attribute(image_node, "height");
+
+        return Sprite(image_path, image_width, image_height, tile_width, tile_height);
+    }
 };
 
 class Tilemap {

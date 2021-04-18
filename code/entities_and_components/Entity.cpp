@@ -10,19 +10,19 @@
  *              CONSTRUCTORS
  *********************************************/
 
-Entity::Entity(float x, float y) :
+Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, CollisionComponent* collision, PhysicsComponent* physics) :
     x(x),
     y(y),
-    w(16.0f),
-    h(28.0f),
+    w(w),
+    h(h),
     speed_x(0.0f),
     speed_y(0.0f),
     facing_left(false),
     on_ground(false),
-    graphics(new GraphicsComponent()),
-    input(new InputComponent()),
-    collision(new CollisionComponent()),
-    physics(new PhysicsComponent())
+    graphics(graphics),
+    input(input),
+    collision(collision),
+    physics(physics)
 {
     states.push(EntityState::MOVING);
 }
@@ -64,5 +64,18 @@ SDL_Rect Entity::bounding_box() {
  *********************************************/
 
 Entity* create_player(int x, int y) {
-    return new Entity(x, y);
+    return new Entity(
+        x, y,
+        16.0f, 28.0f,     
+        new GraphicsComponent(
+            AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10)
+        ),
+        new InputComponent(),
+        new CollisionComponent(),
+        new PhysicsComponent()
+    );
 }

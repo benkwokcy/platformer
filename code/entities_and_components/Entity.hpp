@@ -26,7 +26,7 @@ public:
     CollisionComponent* collision;
     PhysicsComponent* physics;
 
-    Entity(float x, float y);
+    Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, CollisionComponent* collision, PhysicsComponent* physics);
     ~Entity();
     Entity(const Entity& other) = delete;
     Entity& operator=(const Entity& other) = delete;
