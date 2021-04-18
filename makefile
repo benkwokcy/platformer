@@ -1,5 +1,5 @@
 FLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Wshadow
-INCLUDES = -Icode -Icode/components -Icode/entities -Icode/scenes -Icode/gui
+INCLUDES = -Icode -Icode/entities_and_components -Icode/scenes -Icode/gui
 LIBRARIES = -lSDL2 -lSDL2_image -ltinyxml2
 MORE_LIBRARIES = -lSDL2_ttf -lSDL2_mixer
 FILES = code/*.cpp code/*/*.cpp
