@@ -25,8 +25,7 @@ Parse maps and tilesets from the Tiled map editor into game objects.
  *********************************************/
 
 namespace Assets {
-    std::string tile_path("assets/");
-    std::string sprite_path("assets/spritesheets/");
+    std::string path("assets/");
 };
 
 /*********************************************
@@ -76,14 +75,14 @@ private:
 
     Sprite create_sprite_from_tileset_file(std::string filename) {
         tinyxml2::XMLDocument doc;
-        xml_assert(doc.LoadFile((Assets::tile_path + filename).c_str()));
+        xml_assert(doc.LoadFile(filename.c_str()));
 
         auto tileset_node = doc.FirstChildElement();
         int tile_width = get_int_attribute(tileset_node, "tilewidth");
         int tile_height = get_int_attribute(tileset_node, "tileheight");
 
         auto image_node = tileset_node->FirstChildElement();
-        std::string image_path = Assets::sprite_path + get_string_attribute(image_node, "source");
+        std::string image_path = Assets::path + get_string_attribute(image_node, "source");
         int image_width = get_int_attribute(image_node, "width");
         int image_height = get_int_attribute(image_node, "height");
 
@@ -107,7 +106,7 @@ public:
         name(filename) 
     {
         tinyxml2::XMLDocument doc;
-        xml_assert(doc.LoadFile((Assets::tile_path + filename).c_str()));
+        xml_assert(doc.LoadFile(filename.c_str()));
 
         auto map_node = doc.FirstChildElement();
         map_width = get_int_attribute(map_node, "width");
@@ -156,7 +155,7 @@ private:
 
     void add_tileset(tinyxml2::XMLElement* node) {
         int first_id = get_int_attribute(node, "firstgid");
-        std::string filename = get_string_attribute(node, "source");
+        std::string filename = Assets::path + get_string_attribute(node, "source");
         tilesets.emplace_back(first_id, filename);
     }
 

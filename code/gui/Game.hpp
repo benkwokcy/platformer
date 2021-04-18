@@ -51,8 +51,10 @@ public:
     }
 
 private:
+    // State
     Scene* current_scene;
     GameState state;
+    // Scenes
     Menu menu;
     Level level;
 };
