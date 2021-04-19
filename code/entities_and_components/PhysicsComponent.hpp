@@ -5,8 +5,6 @@
 struct SDL_Rect;
 class Entity;
 
-// TODO - only need 5 types? top/bottom/left/right/none. The penetration tells whether its touching or overlapping.
-// Might be good to keep them separate though if it's cleaner.
 enum class CollisionType {
     OVERLAP_TOP, OVERLAP_BOTTOM, OVERLAP_LEFT, OVERLAP_RIGHT, 
     TOUCH_TOP, TOUCH_BOTTOM, TOUCH_LEFT, TOUCH_RIGHT,

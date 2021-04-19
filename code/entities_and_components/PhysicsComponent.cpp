@@ -108,24 +108,33 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
     }
 }
 
-// TODO - Same direction vs opposite direction
-// TODO - Move both half instead of moving one all the way.
 // TODO - Should I be able to push people? Who can push who? The larger/heavier object? Is there friction?
-// TODO - make sure I'm just handling from my point of view, since we do all pairwise collisions
 void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
     auto [collision_type, penetration] = rect_collide_rect(me.bounding_box(), other.bounding_box());
     switch (collision_type) {
         case CollisionType::OVERLAP_TOP:
-            if (touching.bottom) {
+            if (touching.bottom) { // he has to move
                 other.y -= penetration;
                 other.speed_y = 0.0f;
-            } else {
+                other.physics->touching.bottom = true;
+            } else if (other.physics->touching.top) { // I have to move
                 me.y += penetration;
-                me.speed_y = std::max(me.speed_y, 0.0f);
+                me.speed_y = 0.0f;
+                touching.top = true;
+            } else if (me.speed_y * other.speed_y >= 0.0f) { // moving in the same direction or one is stationary
+                me.y += penetration / 2;
+                other.y -= penetration / 2;
+                me.speed_y = std::min(me.speed_y, other.speed_y);
+                other.speed_y = std::min(me.speed_y, other.speed_y);
+            } else { // moving towards each other
+                me.y += penetration / 2;
+                other.y -= penetration / 2;
+                me.speed_y = 0.0f;
+                other.speed_y = 0.0f;
             }
             break;
         case CollisionType::OVERLAP_BOTTOM:
-            if (other.physics->on_ground()) {
+            if (other.physics->touching.bottom) {
                 me.y -= penetration;
                 me.speed_y = std::min(me.speed_y, 0.0f);
                 touching.bottom = true;
@@ -157,9 +166,24 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 me.speed_x = 0.0f;
             }
             break;
+        case CollisionType::TOUCH_TOP:
+            if (touching.bottom) {
+                other.physics->touching.bottom = true;
+            }
+            break;
         case CollisionType::TOUCH_BOTTOM:
-            if (other.physics->on_ground()) {
+            if (other.physics->touching.bottom) {
                 touching.bottom = true;
+            }
+            break;
+        case CollisionType::TOUCH_LEFT:
+            if (touching.right) {
+                other.physics->touching.right = true;
+            }
+            break;
+        case CollisionType::TOUCH_RIGHT:
+            if (touching.left) {
+                other.physics->touching.left = true;
             }
             break;
         default:

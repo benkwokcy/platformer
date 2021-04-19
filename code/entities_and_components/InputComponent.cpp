@@ -28,6 +28,7 @@ void InputComponent::handle_event(Entity& me, InputEvent e) {
     }
 }
 
+// TODO - this is weird because only the main player uses this
 void InputComponent::tick(Entity& me) {
     if (Input::left_down() || Input::right_down()) {
         if (me.facing_left) {

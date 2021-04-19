@@ -25,14 +25,6 @@ public:
         }
     }
 
-    void paint() override {
-        level.paint();
-        player->paint();
-        for (auto& pig : pigs) { 
-            pig->paint(); 
-        }
-    }
-
     void handle_event(InputEvent e) override {
         player->handle_event(e);
         for (auto& pig : pigs) { 
@@ -56,10 +48,17 @@ public:
         // collide each pair of objects
         for (auto& pig : pigs) { 
             player->collide_movable(*pig); 
-            pig->collide_movable(*player);
         }
         // update camera
         Camera::tick(static_cast<int>(player->x));
+    }
+
+    void paint() override {
+        level.paint();
+        player->paint();
+        for (auto& pig : pigs) { 
+            pig->paint(); 
+        }
     }
 
 private:
