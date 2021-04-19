@@ -1,7 +1,6 @@
 #include <utility>
 
 #include "Input.hpp"
-#include "CollisionComponent.hpp"
 #include "PhysicsComponent.hpp"
 #include "GraphicsComponent.hpp"
 #include "InputComponent.hpp"
@@ -12,7 +11,7 @@
  *              CONSTRUCTORS
  *********************************************/
 
-Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, CollisionComponent* collision, PhysicsComponent* physics) :
+Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics) :
     x(x),
     y(y),
     w(w),
@@ -22,7 +21,6 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
     facing_left(false),
     graphics(graphics),
     input(input),
-    collision(collision),
     physics(physics)
 {
     states.push(EntityState::MOVING);
@@ -38,14 +36,12 @@ Entity::Entity(Entity&& other) :
     facing_left(other.facing_left),
     graphics(std::exchange(other.graphics, nullptr)),
     input(std::exchange(other.input, nullptr)),
-    collision(std::exchange(other.collision, nullptr)),
     physics(std::exchange(other.physics, nullptr))    
 {}
 
 Entity::~Entity() {
     delete graphics;
     delete input;
-    delete collision;
     delete physics;
 }
 
@@ -64,15 +60,14 @@ void Entity::handle_event(InputEvent e) {
 void Entity::tick() {
     input->tick(*this);
     physics->tick(*this);
-    collision->reset_touching();
 }
 
 void Entity::collide_movable(Entity& other) {
-    collision->collide_movable(*this, other);
+    physics->collide_movable(*this, other);
 }
 
 void Entity::collide_immovable(const SDL_Rect& other) {
-    collision->collide_immovable(*this, other);
+    physics->collide_immovable(*this, other);
 }
 
 SDL_Rect Entity::bounding_box() {
@@ -98,7 +93,6 @@ Entity* create_player(int x, int y) {
             AnimatedSprite("assets/images/playerground.png", 78, 58, 78, 58, w, h, 23, 16, 10)
         ),
         new InputComponent(),
-        new CollisionComponent(),
         new PhysicsComponent()
     );
 }
@@ -118,7 +112,6 @@ Entity* create_pig(int x, int y) {
             AnimatedSprite("assets/images/pigground.png", 34, 28, 34, 28, w, h, 12, 12, 10, true)
         ),
         new InputComponent(),
-        new CollisionComponent(),
         new PhysicsComponent()
     );
 }

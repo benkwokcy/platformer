@@ -7,7 +7,7 @@
 struct SDL_Rect;
 class GraphicsComponent;
 class InputComponent;
-class CollisionComponent;
+class PhysicsComponent;
 class PhysicsComponent;
 
 enum class EntityState {
@@ -23,10 +23,9 @@ public:
     std::stack<EntityState> states;
     GraphicsComponent* graphics;
     InputComponent* input;
-    CollisionComponent* collision;
     PhysicsComponent* physics;
 
-    Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, CollisionComponent* collision, PhysicsComponent* physics);
+    Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics);
     ~Entity();
     Entity(const Entity& other) = delete;
     Entity& operator=(const Entity& other) = delete;
@@ -36,8 +35,8 @@ public:
     void paint();
     void handle_event(InputEvent e);
     void tick();
-    void collide_movable(Entity& other);
     void collide_immovable(const SDL_Rect& other);
+    void collide_movable(Entity& other);
     SDL_Rect bounding_box();
 };
 

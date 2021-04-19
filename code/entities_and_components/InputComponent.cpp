@@ -1,41 +1,41 @@
 #include "Entity.hpp"
 #include "Input.hpp"
 #include "GraphicsComponent.hpp"
-#include "CollisionComponent.hpp"
+#include "PhysicsComponent.hpp"
 
 #include "InputComponent.hpp"
 
-void InputComponent::handle_event(Entity& entity, InputEvent e) {
+void InputComponent::handle_event(Entity& me, InputEvent e) {
     switch (e) {
         case InputEvent::LEFT:
-            entity.facing_left = true;
+            me.facing_left = true;
             break;
         case InputEvent::RIGHT:
-            entity.facing_left = false;
+            me.facing_left = false;
             break;
         case InputEvent::ATTACK:
-            if (entity.states.top() != EntityState::ATTACK) {
-                entity.states.push(EntityState::ATTACK);
-                entity.graphics->attack.reset_time();
+            if (me.states.top() != EntityState::ATTACK) {
+                me.states.push(EntityState::ATTACK);
+                me.graphics->attack.reset_time();
             }
             break;
         case InputEvent::JUMP:
-            if (entity.collision->on_ground()) {
-                entity.speed_y -= 11.0f;
+            if (me.physics->on_ground()) {
+                me.speed_y -= 11.0f;
             }
         default:
             break;
     }
 }
 
-void InputComponent::tick(Entity& entity) {
+void InputComponent::tick(Entity& me) {
     if (Input::left_down() || Input::right_down()) {
-        if (entity.facing_left) {
-            entity.speed_x = -4.0f;
+        if (me.facing_left) {
+            me.speed_x = -4.0f;
         } else {
-            entity.speed_x = 4.0f;
+            me.speed_x = 4.0f;
         }
     } else {
-        entity.speed_x = 0.0f;
+        me.speed_x = 0.0f;
     }
 }

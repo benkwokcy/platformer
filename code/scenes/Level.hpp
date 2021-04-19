@@ -46,16 +46,17 @@ public:
         for (auto& pig : pigs) { 
             pig->tick(); 
         }
-        // collide with level
+        // collide each object with level
         for (auto& c : level.collisions) {
             player->collide_immovable(c);
             for (auto& pig : pigs) { 
                 pig->collide_immovable(c); 
             }
         }
-        // collide with objects
+        // collide each pair of objects
         for (auto& pig : pigs) { 
             player->collide_movable(*pig); 
+            pig->collide_movable(*player);
         }
         // update camera
         Camera::tick(static_cast<int>(player->x));

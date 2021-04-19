@@ -6,6 +6,6 @@ class Entity;
 
 class InputComponent {
 public:
-    void handle_event(Entity& entity, InputEvent e);
-    void tick(Entity& entity);
+    void handle_event(Entity& me, InputEvent e);
+    void tick(Entity& me);
 };
