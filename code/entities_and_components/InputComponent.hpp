@@ -14,12 +14,12 @@ public:
 
 class PlayerInputComponent : public InputComponent {
 public:
-    virtual void handle_event(Entity& me, InputEvent e);
-    virtual void tick(Entity& me, Tilemap& level);
+    void handle_event(Entity& me, InputEvent e) override;
+    void tick(Entity& me, Tilemap& level) override;
 };
 
 class PigInputComponent : public InputComponent {
 public:
-    virtual void handle_event(Entity& me, InputEvent e);
-    virtual void tick(Entity& me, Tilemap& level);
+    void handle_event(Entity& me, InputEvent e) override;
+    void tick(Entity& me, Tilemap& level) override;
 };

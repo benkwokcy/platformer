@@ -12,21 +12,6 @@ Parse maps and tilesets from the Tiled map editor into game objects.
 
 #include "Sprite.hpp"
 
-/*********************************************
- *            XML HELPER FUNCTIONS
- *********************************************/
-
-inline void xml_assert(tinyxml2::XMLError error_code) {
-    assert(error_code == tinyxml2::XML_SUCCESS);
-}
-
-int get_int_attribute(tinyxml2::XMLElement* element, const char* attribute_name);
-std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attribute_name);
-
-/*********************************************
- *           TILED FILE CLASSES
- *********************************************/
-
 class Tileset {
 public:
     Tileset(int first_tile_id, std::string filename);

@@ -21,6 +21,10 @@ namespace Assets {
  *            XML HELPER FUNCTIONS
  *********************************************/
 
+inline void xml_assert(tinyxml2::XMLError error_code) {
+    assert(error_code == tinyxml2::XML_SUCCESS);
+}
+
 int get_int_attribute(tinyxml2::XMLElement* element, const char* attribute_name) {
     int temp;
     xml_assert(element->QueryIntAttribute(attribute_name, &temp));

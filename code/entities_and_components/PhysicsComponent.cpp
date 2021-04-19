@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <utility>
 #include <iostream>
+#include <stdexcept>
 
 #include "Entity.hpp"
 #include "GraphicsComponent.hpp"
@@ -21,14 +22,22 @@ constexpr float GRAVITY = 0.55f;
 
 // From a's perspective.
 std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
-    int top_overlap = abs((b.y + b.h) - a.y);
-    int bottom_overlap = abs((a.y + a.h) - b.y);
-    int left_overlap = abs((b.x + b.w) - a.x);
-    int right_overlap = abs((a.x + a.w) - b.x);
+    int top_overlap = (b.y + b.h) - a.y;
+    int bottom_overlap = (a.y + a.h) - b.y;
+    int left_overlap = (b.x + b.w) - a.x;
+    int right_overlap = (a.x + a.w) - b.x;
 
+    if (top_overlap < 0 || bottom_overlap < 0 || left_overlap < 0 || right_overlap < 0) {
+        return { CollisionType::NONE, 0 };
+    }
+
+    top_overlap = std::abs(top_overlap);
+    bottom_overlap = std::abs(bottom_overlap);
+    left_overlap = std::abs(left_overlap);
+    right_overlap = std::abs(right_overlap);
     int mini = std::min({top_overlap, bottom_overlap, left_overlap, right_overlap});
 
-    if (SDL_HasIntersection(&a, &b) == SDL_TRUE) {
+    if (mini > 0) {
         if (mini == top_overlap) {
             return { CollisionType::OVERLAP_TOP, mini };
         } else if (mini == bottom_overlap) {
@@ -50,7 +59,7 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
         }
     }
 
-    return { CollisionType::NONE, mini };
+    throw std::runtime_error("Unhandled collision type");
 }
 
 /*********************************************

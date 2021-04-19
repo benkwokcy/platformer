@@ -11,8 +11,6 @@ enum class CollisionType {
     NONE
 };
 
-std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b);
-
 // Touching means I am touching an immovable object on that side or I'm touching a movable object that is touching an immovable object.
 struct Touching {
     bool top = false;
