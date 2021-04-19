@@ -5,6 +5,7 @@
 #include "Entity.hpp"
 #include "Sprite.hpp"
 #include "Camera.hpp"
+#include "CollisionComponent.hpp"
 
 #include "GraphicsComponent.hpp"
 
@@ -37,7 +38,7 @@ void GraphicsComponent::paint(Entity& entity) {
         case EntityState::MOVING:
             if (entity.speed_y < 0.0f) {
                 jump.paint(screen_x, screen_y, entity.facing_left);
-            } else if (entity.speed_y > 0.0f && !entity.on_ground) {
+            } else if (entity.speed_y > 0.0f && !entity.collision->on_ground()) {
                 fall.paint(screen_x, screen_y, entity.facing_left);
             } else if (entity.speed_x != 0) {
                 run.paint(screen_x, screen_y, entity.facing_left);

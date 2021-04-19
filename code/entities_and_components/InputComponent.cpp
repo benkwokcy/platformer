@@ -1,6 +1,7 @@
 #include "Entity.hpp"
 #include "Input.hpp"
 #include "GraphicsComponent.hpp"
+#include "CollisionComponent.hpp"
 
 #include "InputComponent.hpp"
 
@@ -19,7 +20,7 @@ void InputComponent::handle_event(Entity& entity, InputEvent e) {
             }
             break;
         case InputEvent::JUMP:
-            if (entity.on_ground) {
+            if (entity.collision->on_ground()) {
                 entity.speed_y -= 11.0f;
             }
         default:

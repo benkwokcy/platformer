@@ -20,7 +20,6 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
     speed_x(0.0f),
     speed_y(0.0f),
     facing_left(false),
-    on_ground(false),
     graphics(graphics),
     input(input),
     collision(collision),
@@ -37,7 +36,6 @@ Entity::Entity(Entity&& other) :
     speed_x(other.speed_x),
     speed_y(other.speed_y),
     facing_left(other.facing_left),
-    on_ground(other.on_ground),
     graphics(std::exchange(other.graphics, nullptr)),
     input(std::exchange(other.input, nullptr)),
     collision(std::exchange(other.collision, nullptr)),
@@ -66,10 +64,15 @@ void Entity::handle_event(InputEvent e) {
 void Entity::tick() {
     input->tick(*this);
     physics->tick(*this);
+    collision->reset_touching();
 }
 
-void Entity::collide(const SDL_Rect& other) {
-    collision->collide(*this, other);
+void Entity::collide_movable(const SDL_Rect& other) {
+    collision->collide_movable(*this, other);
+}
+
+void Entity::collide_immovable(const SDL_Rect& other) {
+    collision->collide_immovable(*this, other);
 }
 
 SDL_Rect Entity::bounding_box() {

@@ -50,7 +50,50 @@ CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
  *              COMPONENTS
  *********************************************/
 
-void CollisionComponent::collide(Entity& entity, const SDL_Rect& other) {
+void CollisionComponent::reset_touching() {
+    touching = { false, false, false, false };
+}
+
+bool CollisionComponent::on_ground() {
+    return touching.bottom = true;
+}
+
+void CollisionComponent::collide_immovable(Entity& entity, const SDL_Rect& other) {
+    SDL_Rect me = entity.bounding_box();
+    switch (rect_collide_rect(me, other)) {
+        case CollisionType::OVERLAP_TOP:
+            touching.top = true;
+            entity.y += (other.y + other.h) - entity.y;
+            entity.speed_y = std::max(entity.speed_y, 0.0f);
+            break;
+        case CollisionType::OVERLAP_BOTTOM:
+            touching.bottom = true;
+            entity.y -= (entity.y + entity.h) - other.y;
+            if (entity.speed_y > 2.0f && entity.states.top() != EntityState::ATTACK) { 
+                entity.states.push(EntityState::GROUND);
+                entity.graphics->ground.reset_time();
+            }
+            entity.speed_y = std::min(entity.speed_y, 0.0f);
+            break;
+        case CollisionType::OVERLAP_LEFT:
+            touching.left = true;
+            entity.x += (other.x + other.w) - entity.x;
+            entity.speed_x = 0.0f;
+            break;
+        case CollisionType::OVERLAP_RIGHT:
+            touching.right = true;
+            entity.x -= (entity.x + entity.w) - other.x;
+            entity.speed_x = 0.0f;
+            break;
+        case CollisionType::TOUCH_BOTTOM:
+            touching.bottom = true;
+            break;
+        default:
+            break;
+    }
+}
+
+void CollisionComponent::collide_movable(Entity& entity, const SDL_Rect& other) {
     SDL_Rect me = entity.bounding_box();
     switch (rect_collide_rect(me, other)) {
         case CollisionType::OVERLAP_TOP:
@@ -59,7 +102,7 @@ void CollisionComponent::collide(Entity& entity, const SDL_Rect& other) {
             break;
         case CollisionType::OVERLAP_BOTTOM:
             entity.y -= (entity.y + entity.h) - other.y;
-            entity.on_ground = true;
+            touching.bottom = true;
             if (entity.speed_y > 2.0f && entity.states.top() != EntityState::ATTACK) { 
                 entity.states.push(EntityState::GROUND);
                 entity.graphics->ground.reset_time();
@@ -75,7 +118,7 @@ void CollisionComponent::collide(Entity& entity, const SDL_Rect& other) {
             entity.speed_x = 0.0f;
             break;
         case CollisionType::TOUCH_BOTTOM:
-            entity.on_ground = true;
+            touching.bottom = true;
             break;
         default:
             break;

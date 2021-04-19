@@ -19,7 +19,7 @@ public:
     float x, y; // the top left corner of the entity in level coordinates
     float w, h; // dimensions of the bounding box
     float speed_x, speed_y;
-    bool facing_left, on_ground;
+    bool facing_left;
     std::stack<EntityState> states;
     GraphicsComponent* graphics;
     InputComponent* input;
@@ -36,7 +36,8 @@ public:
     void paint();
     void handle_event(InputEvent e);
     void tick();
-    void collide(const SDL_Rect& other);
+    void collide_movable(const SDL_Rect& other);
+    void collide_immovable(const SDL_Rect& other);
     SDL_Rect bounding_box();
 };
 

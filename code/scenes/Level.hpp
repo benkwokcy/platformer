@@ -14,7 +14,7 @@ public:
         level("assets/level.tmx")
     {
         player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
-        pig = create_player(level.markers.at("PigSpawn").x, level.markers.at("PigSpawn").y);
+        pig = create_pig(level.markers.at("PigSpawn").x, level.markers.at("PigSpawn").y);
     }
 
     ~Level() {
@@ -37,10 +37,10 @@ public:
         player->tick();
         pig->tick();
         for (auto& c : level.collisions) {
-            player->collide(c);
-            pig->collide(c);
+            player->collide_immovable(c);
+            pig->collide_immovable(c);
         }
-        player->collide(pig->bounding_box());
+        player->collide_movable(pig->bounding_box());
         Camera::tick(static_cast<int>(player->x));
     }
 
