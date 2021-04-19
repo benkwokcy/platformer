@@ -19,10 +19,10 @@ CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b);
 
 class CollisionComponent {
 public:
-    Touching touching;
+    Touching touching {}; // keeps track where we are touching an immoveable object
 
     bool on_ground();
     void reset_touching();
-    void collide_movable(Entity& entity, const SDL_Rect& other);
+    void collide_movable(Entity& entity, Entity& other);
     void collide_immovable(Entity& entity, const SDL_Rect& other);
 };

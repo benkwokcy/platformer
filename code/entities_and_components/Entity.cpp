@@ -67,7 +67,7 @@ void Entity::tick() {
     collision->reset_touching();
 }
 
-void Entity::collide_movable(const SDL_Rect& other) {
+void Entity::collide_movable(Entity& other) {
     collision->collide_movable(*this, other);
 }
 

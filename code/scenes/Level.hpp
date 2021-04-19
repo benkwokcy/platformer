@@ -40,7 +40,7 @@ public:
             player->collide_immovable(c);
             pig->collide_immovable(c);
         }
-        player->collide_movable(pig->bounding_box());
+        player->collide_movable(*pig);
         Camera::tick(static_cast<int>(player->x));
     }
 

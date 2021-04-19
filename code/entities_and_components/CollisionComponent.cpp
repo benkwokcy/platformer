@@ -13,6 +13,7 @@
  *********************************************/
 
 // From a's perspective.
+// TODO - return the penetration amount
 CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
     int top_overlap = abs((b.y + b.h) - a.y);
     int bottom_overlap = abs((a.y + a.h) - b.y);
@@ -55,70 +56,104 @@ void CollisionComponent::reset_touching() {
 }
 
 bool CollisionComponent::on_ground() {
-    return touching.bottom = true;
+    return touching.bottom == true;
 }
 
-void CollisionComponent::collide_immovable(Entity& entity, const SDL_Rect& other) {
-    SDL_Rect me = entity.bounding_box();
-    switch (rect_collide_rect(me, other)) {
+void CollisionComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
+    auto me_box = me.bounding_box();
+    switch (rect_collide_rect(me_box, other)) {
         case CollisionType::OVERLAP_TOP:
             touching.top = true;
-            entity.y += (other.y + other.h) - entity.y;
-            entity.speed_y = std::max(entity.speed_y, 0.0f);
+            me.y += (other.y + other.h) - me.y;
+            me.speed_y = std::max(me.speed_y, 0.0f);
             break;
         case CollisionType::OVERLAP_BOTTOM:
             touching.bottom = true;
-            entity.y -= (entity.y + entity.h) - other.y;
-            if (entity.speed_y > 2.0f && entity.states.top() != EntityState::ATTACK) { 
-                entity.states.push(EntityState::GROUND);
-                entity.graphics->ground.reset_time();
+            me.y -= (me_box.y + me_box.h) - other.y;
+            if (me.speed_y > 2.0f && me.states.top() != EntityState::ATTACK) { 
+                me.states.push(EntityState::GROUND);
+                me.graphics->ground.reset_time();
             }
-            entity.speed_y = std::min(entity.speed_y, 0.0f);
+            me.speed_y = std::min(me.speed_y, 0.0f);
             break;
         case CollisionType::OVERLAP_LEFT:
             touching.left = true;
-            entity.x += (other.x + other.w) - entity.x;
-            entity.speed_x = 0.0f;
+            me.x += (other.x + other.w) - me_box.x;
+            me.speed_x = 0.0f;
             break;
         case CollisionType::OVERLAP_RIGHT:
             touching.right = true;
-            entity.x -= (entity.x + entity.w) - other.x;
-            entity.speed_x = 0.0f;
+            me.x -= (me_box.x + me_box.w) - other.x;
+            me.speed_x = 0.0f;
+            break;
+        case CollisionType::TOUCH_TOP:
+            touching.top = true;
             break;
         case CollisionType::TOUCH_BOTTOM:
             touching.bottom = true;
+            break;
+        case CollisionType::TOUCH_LEFT:
+            touching.left = true;
+            break;
+        case CollisionType::TOUCH_RIGHT:
+            touching.right = true;
             break;
         default:
             break;
     }
 }
 
-void CollisionComponent::collide_movable(Entity& entity, const SDL_Rect& other) {
-    SDL_Rect me = entity.bounding_box();
-    switch (rect_collide_rect(me, other)) {
+// Same direction vs opposite direction
+// Move both half instead of moving one all the way.
+void CollisionComponent::collide_movable(Entity& me, Entity& other) {
+    auto me_box = me.bounding_box();
+    auto other_box = other.bounding_box();
+    switch (rect_collide_rect(me_box, other_box)) {
         case CollisionType::OVERLAP_TOP:
-            entity.y += (other.y + other.h) - entity.y;
-            entity.speed_y = std::max(entity.speed_y, 0.0f);
+            if (touching.bottom) {
+                other.y -= (other_box.y + other_box.h) - me.y;
+                other.speed_y = std::max(other.speed_y, 0.0f);
+            } else {
+                me.y += (other_box.y + other_box.h) - me.y;
+                me.speed_y = std::max(me.speed_y, 0.0f);
+            }
             break;
         case CollisionType::OVERLAP_BOTTOM:
-            entity.y -= (entity.y + entity.h) - other.y;
-            touching.bottom = true;
-            if (entity.speed_y > 2.0f && entity.states.top() != EntityState::ATTACK) { 
-                entity.states.push(EntityState::GROUND);
-                entity.graphics->ground.reset_time();
+            if (other.collision->on_ground()) {
+                me.y -= (me.y + me.h) - other_box.y;
+                me.speed_y = std::min(me.speed_y, 0.0f);
+                touching.bottom = true;
+                if (me.speed_y > 2.0f && me.states.top() != EntityState::ATTACK) { 
+                    me.states.push(EntityState::GROUND);
+                    me.graphics->ground.reset_time();
+                }
+            } else {
+                other.y += (me.y + me.h) - other_box.y;
+                other.speed_y = std::min(other.speed_y, 0.0f);
             }
-            entity.speed_y = std::min(entity.speed_y, 0.0f);
             break;
         case CollisionType::OVERLAP_LEFT:
-            entity.x += (other.x + other.w) - entity.x;
-            entity.speed_x = 0.0f;
+            if (touching.right) {
+                other.x -= (other_box.x + other_box.w) - me.x;
+                other.speed_x = 0.0f;
+            } else {
+                me.x += (other_box.x + other_box.w) - me.x;
+                me.speed_x = 0.0f;
+            }
             break;
         case CollisionType::OVERLAP_RIGHT:
-            entity.x -= (entity.x + entity.w) - other.x;
-            entity.speed_x = 0.0f;
+            if (touching.left) {
+                other.x += (me_box.x + me_box.w) - other_box.x;
+                other.speed_x = 0.0f;
+            } else {
+                me.x -= (me_box.x + me_box.w) - other_box.x;
+                me.speed_x = 0.0f;
+            }
             break;
         case CollisionType::TOUCH_BOTTOM:
-            touching.bottom = true;
+            if (other.collision->on_ground()) {
+                touching.bottom = true;
+            }
             break;
         default:
             break;
