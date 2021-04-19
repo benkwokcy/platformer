@@ -68,8 +68,8 @@ void Entity::tick() {
     physics->tick(*this);
 }
 
-void Entity::collide_map(const SDL_Rect& other) {
-    collision->collide_map(*this, other);
+void Entity::collide(const SDL_Rect& other) {
+    collision->collide(*this, other);
 }
 
 SDL_Rect Entity::bounding_box() {

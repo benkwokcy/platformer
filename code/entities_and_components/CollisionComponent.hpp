@@ -12,5 +12,5 @@ CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b);
 
 class CollisionComponent {
 public:
-    void collide_map(Entity& entity, const SDL_Rect& other);
+    void collide(Entity& entity, const SDL_Rect& other);
 };

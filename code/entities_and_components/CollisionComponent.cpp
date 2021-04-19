@@ -50,7 +50,7 @@ CollisionType rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
  *              COMPONENTS
  *********************************************/
 
-void CollisionComponent::collide_map(Entity& entity, const SDL_Rect& other) {
+void CollisionComponent::collide(Entity& entity, const SDL_Rect& other) {
     SDL_Rect me = entity.bounding_box();
     switch (rect_collide_rect(me, other)) {
         case CollisionType::OVERLAP_TOP:

@@ -37,9 +37,10 @@ public:
         player->tick();
         pig->tick();
         for (auto& c : tilemap.collisions) {
-            player->collide_map(c);
-            pig->collide_map(c);
+            player->collide(c);
+            pig->collide(c);
         }
+        player->collide(pig->bounding_box());
         // TODO - pig collide player
         Camera::tick(static_cast<int>(player->x));
     }

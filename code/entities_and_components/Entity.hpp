@@ -36,7 +36,7 @@ public:
     void paint();
     void handle_event(InputEvent e);
     void tick();
-    void collide_map(const SDL_Rect& other);
+    void collide(const SDL_Rect& other);
     SDL_Rect bounding_box();
 };
 
