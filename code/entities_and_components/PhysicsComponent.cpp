@@ -64,6 +64,7 @@ void PhysicsComponent::tick(Entity& entity) {
     touching = { false, false, false, false };
 }
 
+// Collide a movable object (me) against an immovable object (other).
 void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
     auto [collision_type, penetration] = rect_collide_rect(me.bounding_box(), other);
     switch (collision_type) {
@@ -108,6 +109,7 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
     }
 }
 
+// Collide a movable object (me) against a movable object (other).
 // TODO - Should I be able to push people? Who can push who? The larger/heavier object? Is there friction?
 void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
     auto [collision_type, penetration] = rect_collide_rect(me.bounding_box(), other.bounding_box());
@@ -117,6 +119,10 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 other.y -= penetration;
                 other.speed_y = 0.0f;
                 other.physics->touching.bottom = true;
+                if (other.speed_y > 2.0f && other.states.top() != EntityState::ATTACK) { 
+                    other.states.push(EntityState::GROUND);
+                    other.graphics->ground.reset_time();
+                }
             } else if (other.physics->touching.top) { // I have to move
                 me.y += penetration;
                 me.speed_y = 0.0f;
@@ -124,8 +130,9 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
             } else if (me.speed_y * other.speed_y >= 0.0f) { // moving in the same direction or one is stationary
                 me.y += penetration / 2;
                 other.y -= penetration / 2;
-                me.speed_y = std::min(me.speed_y, other.speed_y);
-                other.speed_y = std::min(me.speed_y, other.speed_y);
+                float smallest = me.speed_y >= 0.0f && other.speed_y >= 0.0f ? std::min(me.speed_y, other.speed_y) : std::max(me.speed_y, other.speed_y);
+                me.speed_y = smallest;
+                other.speed_y = smallest;
             } else { // moving towards each other
                 me.y += penetration / 2;
                 other.y -= penetration / 2;
@@ -134,35 +141,72 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
             }
             break;
         case CollisionType::OVERLAP_BOTTOM:
-            if (other.physics->touching.bottom) {
+            if (touching.top) { // he has to move
+                other.y += penetration;
+                other.speed_y = 0.0f;
+                other.physics->touching.top = true;
+            } else if (other.physics->touching.bottom) { // I have to move
                 me.y -= penetration;
-                me.speed_y = std::min(me.speed_y, 0.0f);
+                me.speed_y = 0.0f;
                 touching.bottom = true;
                 if (me.speed_y > 2.0f && me.states.top() != EntityState::ATTACK) { 
                     me.states.push(EntityState::GROUND);
                     me.graphics->ground.reset_time();
                 }
-            } else {
-                other.y += penetration;
-                other.speed_y = std::min(other.speed_y, 0.0f);
+            } else if (other.speed_y * me.speed_y >= 0.0f) { // moving in the same direction or one is stationary
+                other.y += penetration / 2;
+                me.y -= penetration / 2;
+                float smallest = me.speed_y >= 0.0f && other.speed_y >= 0.0f ? std::min(me.speed_y, other.speed_y) : std::max(me.speed_y, other.speed_y);
+                me.speed_y = smallest;
+                other.speed_y = smallest;
+            } else { // moving towards each other
+                other.y += penetration / 2;
+                me.y -= penetration / 2;
+                other.speed_y = 0.0f;
+                me.speed_y = 0.0f;
             }
             break;
         case CollisionType::OVERLAP_LEFT:
-            if (touching.right) {
+            if (touching.right) { // he has to move
                 other.x -= penetration;
                 other.speed_x = 0.0f;
-                me.speed_x = 0.0f;
-            } else {
+                other.physics->touching.right = true;
+            } else if (other.physics->touching.left) { // I have to move
                 me.x += penetration;
-                me.speed_x = std::min(me.speed_x, other.speed_x);
+                me.speed_x = 0.0f;
+                touching.left = true;
+            } else if (me.speed_x * other.speed_x >= 0.0f) { // moving in the same direction or one is stationary
+                me.x += penetration / 2;
+                other.x -= penetration / 2;
+                float smallest = me.speed_x >= 0.0f && other.speed_x >= 0.0f ? std::min(me.speed_x, other.speed_x) : std::max(me.speed_x, other.speed_x);
+                me.speed_x = smallest;
+                other.speed_x = smallest;
+            } else { // moving towards each other
+                me.x += penetration / 2;
+                other.x -= penetration / 2;
+                me.speed_x = 0.0f;
+                other.speed_x = 0.0f;
             }
             break;
         case CollisionType::OVERLAP_RIGHT:
-            if (touching.left) {
+            if (touching.left) { // he has to move
                 other.x += penetration;
                 other.speed_x = 0.0f;
-            } else {
+                other.physics->touching.left = true;
+            } else if (other.physics->touching.right) { // I have to move
                 me.x -= penetration;
+                me.speed_x = 0.0f;
+                touching.right = true;
+            } else if (other.speed_x * me.speed_x >= 0.0f) { // moving in the same direction or one is stationary
+                other.x += penetration / 2;
+                me.x -= penetration / 2;
+                float smallest = other.speed_x >= 0.0f && me.speed_x >= 0.0f ? std::min(other.speed_x, me.speed_x) : std::max(other.speed_x, me.speed_x);
+                other.speed_x = smallest;
+                me.speed_x = smallest;
+            } else { // moving towards each me
+                other.x += penetration / 2;
+                me.x -= penetration / 2;
+                other.speed_x = 0.0f;
                 me.speed_x = 0.0f;
             }
             break;
@@ -170,8 +214,14 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
             if (touching.bottom) {
                 other.physics->touching.bottom = true;
             }
+            if (other.physics->touching.top) {
+                touching.top = true;
+            }
             break;
         case CollisionType::TOUCH_BOTTOM:
+            if (touching.top) {
+                other.physics->touching.top = true;
+            }
             if (other.physics->touching.bottom) {
                 touching.bottom = true;
             }
@@ -180,10 +230,16 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
             if (touching.right) {
                 other.physics->touching.right = true;
             }
+            if (other.physics->touching.left) {
+                touching.left = true;
+            }
             break;
         case CollisionType::TOUCH_RIGHT:
             if (touching.left) {
                 other.physics->touching.left = true;
+            }
+            if (other.physics->touching.right) {
+                touching.right = true;
             }
             break;
         default:
