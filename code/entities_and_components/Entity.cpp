@@ -4,6 +4,7 @@
 #include "PhysicsComponent.hpp"
 #include "GraphicsComponent.hpp"
 #include "InputComponent.hpp"
+#include "Tiles.hpp"
 
 #include "Entity.hpp"
 
@@ -57,8 +58,8 @@ void Entity::handle_event(InputEvent e) {
     input->handle_event(*this, e);
 }
 
-void Entity::tick() {
-    input->tick(*this);
+void Entity::tick(Tilemap& level) {
+    input->tick(*this, level);
     physics->tick(*this);
 }
 

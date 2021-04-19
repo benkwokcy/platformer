@@ -34,9 +34,9 @@ public:
 
     void tick() override {
         // update position
-        player->tick();
+        player->tick(level);
         for (auto& pig : pigs) { 
-            pig->tick(); 
+            pig->tick(level); 
         }
         // collide each object with level
         for (auto& c : level.collisions) {

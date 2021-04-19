@@ -9,6 +9,7 @@ class GraphicsComponent;
 class InputComponent;
 class PhysicsComponent;
 class PhysicsComponent;
+class Tilemap;
 
 enum class EntityState {
     MOVING, ATTACK, GROUND
@@ -34,7 +35,7 @@ public:
 
     void paint();
     void handle_event(InputEvent e);
-    void tick();
+    void tick(Tilemap& level);
     void collide_immovable(const SDL_Rect& other);
     void collide_movable(Entity& other);
     SDL_Rect bounding_box();
