@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Input.hpp"
 #include "CollisionComponent.hpp"
 #include "PhysicsComponent.hpp"
@@ -26,6 +28,21 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
 {
     states.push(EntityState::MOVING);
 }
+
+Entity::Entity(Entity&& other) :
+    x(other.x),
+    y(other.y),
+    w(other.w),
+    h(other.h),
+    speed_x(other.speed_x),
+    speed_y(other.speed_y),
+    facing_left(other.facing_left),
+    on_ground(other.on_ground),
+    graphics(std::exchange(other.graphics, nullptr)),
+    input(std::exchange(other.input, nullptr)),
+    collision(std::exchange(other.collision, nullptr)),
+    physics(std::exchange(other.physics, nullptr))    
+{}
 
 Entity::~Entity() {
     delete graphics;

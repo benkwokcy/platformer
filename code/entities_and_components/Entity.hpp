@@ -30,7 +30,7 @@ public:
     ~Entity();
     Entity(const Entity& other) = delete;
     Entity& operator=(const Entity& other) = delete;
-    Entity(Entity&& other) = delete;
+    Entity(Entity&& other);
     Entity& operator=(Entity&& other) = delete;
 
     void paint();

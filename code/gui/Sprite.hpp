@@ -64,25 +64,25 @@ public:
     Sprite(const Sprite& other) = delete;
     Sprite& operator=(const Sprite& other) = delete;
 
-    Sprite(Sprite&& other) {
-        filename = std::move(other.filename);
-        image_width = other.image_width;
-        image_height = other.image_height;
-        frame_width = other.frame_width;
-        frame_height = other.frame_height;
-        sprite_width = other.sprite_width;
-        sprite_height = other.sprite_height;
-        x_offset = other.x_offset;
-        y_offset = other.y_offset;
-        num_rows = other.num_rows;
-        num_cols = other.num_cols;
-        num_frames = other.num_frames;
-        faces_left = other.faces_left;
-        surface = other.surface; other.surface = nullptr;
-        texture = other.texture; other.texture = nullptr;
-        source_rect = other.source_rect;
-        dest_rect = other.dest_rect;
-    }
+    Sprite(Sprite&& other) : 
+        filename(std::move(other.filename)),
+        image_width(other.image_width),
+        image_height(other.image_height),
+        frame_width(other.frame_width),
+        frame_height(other.frame_height),
+        sprite_width(other.sprite_width),
+        sprite_height(other.sprite_height),
+        x_offset(other.x_offset),
+        y_offset(other.y_offset),
+        num_rows(other.num_rows),
+        num_cols(other.num_cols),
+        num_frames(other.num_frames),
+        faces_left(other.faces_left),
+        surface(std::exchange(other.surface, nullptr)),
+        texture(std::exchange(other.texture, nullptr)),
+        source_rect(other.source_rect),
+        dest_rect(other.dest_rect)
+    {}
 
     // I could implement this but not necessary right now
     Sprite& operator=(Sprite&& other) = delete;
