@@ -92,7 +92,7 @@ Entity* create_player(int x, int y) {
             AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, w, h, 23, 16, 10),
             AnimatedSprite("assets/images/playerground.png", 78, 58, 78, 58, w, h, 23, 16, 10)
         ),
-        new InputComponent(),
+        new PlayerInputComponent(),
         new PhysicsComponent()
     );
 }
@@ -111,7 +111,7 @@ Entity* create_pig(int x, int y) {
             AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, w, h, 12, 12, 10, true),
             AnimatedSprite("assets/images/pigground.png", 34, 28, 34, 28, w, h, 12, 12, 10, true)
         ),
-        new InputComponent(),
+        new PigInputComponent(),
         new PhysicsComponent()
     );
 }
