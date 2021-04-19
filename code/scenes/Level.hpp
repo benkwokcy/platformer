@@ -11,10 +11,10 @@
 class Level : public Scene {
 public:
     Level() :
-        tilemap("assets/level.tmx")
+        level("assets/level.tmx")
     {
-        player = create_player(tilemap.markers.at("PlayerSpawn").x, tilemap.markers.at("PlayerSpawn").y);
-        pig = create_player(tilemap.markers.at("PigSpawn").x, tilemap.markers.at("PigSpawn").y);
+        player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
+        pig = create_player(level.markers.at("PigSpawn").x, level.markers.at("PigSpawn").y);
     }
 
     ~Level() {
@@ -23,7 +23,7 @@ public:
     }
 
     void paint() override {
-        tilemap.paint();
+        level.paint();
         player->paint();
         pig->paint();
     }
@@ -36,17 +36,16 @@ public:
     void tick() override {
         player->tick();
         pig->tick();
-        for (auto& c : tilemap.collisions) {
+        for (auto& c : level.collisions) {
             player->collide(c);
             pig->collide(c);
         }
         player->collide(pig->bounding_box());
-        // TODO - pig collide player
         Camera::tick(static_cast<int>(player->x));
     }
 
 private:
-    Tilemap tilemap;
+    Tilemap level;
     Entity* player;
     Entity* pig;
 };

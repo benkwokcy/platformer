@@ -2,8 +2,6 @@
 
 #include <SDL2/SDL.h>
 
-#include <memory>
-
 #include "Input.hpp"
 #include "Menu.hpp"
 #include "Window.hpp"
@@ -34,6 +32,9 @@ public:
                     if (state == GameState::MENU) {
                         state = GameState::LEVEL;
                         current_scene = &level;
+                    } else if (state == GameState::LEVEL) {
+                        state = GameState::MENU;
+                        current_scene = &menu;
                     }
                     break;
                 default:
