@@ -3,6 +3,7 @@
 #include <stack>
 
 #include "Input.hpp"
+#include "Level.hpp"
 
 struct SDL_Rect;
 class GraphicsComponent;
@@ -21,6 +22,7 @@ public:
     float w, h; // dimensions of the bounding box
     float speed_x, speed_y;
     bool facing_left;
+    bool is_alive;
     std::stack<EntityState> states;
     GraphicsComponent* graphics;
     InputComponent* input;
@@ -35,7 +37,8 @@ public:
 
     void paint();
     void handle_event(InputEvent e);
-    void tick(Tilemap& level);
+    void handle_event(LevelEvent event, Entity* other);
+    void tick(Level& level);
     void collide_immovable(const SDL_Rect& other);
     void collide_movable(Entity& other);
     SDL_Rect bounding_box();

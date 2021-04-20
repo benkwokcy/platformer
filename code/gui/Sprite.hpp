@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 
 #include <string>
+#include <unordered_map>
 
 #include "Window.hpp"
 
@@ -26,7 +27,6 @@ public:
     // Main constructor
     Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
            int x_offset = 0, int y_offset = 0, bool faces_left = false) : 
-        filename(filename),
         image_width(image_width),
         image_height(image_height),
         frame_width(frame_width),
@@ -65,7 +65,6 @@ public:
     Sprite& operator=(const Sprite& other) = delete;
 
     Sprite(Sprite&& other) : 
-        filename(std::move(other.filename)),
         image_width(other.image_width),
         image_height(other.image_height),
         frame_width(other.frame_width),
@@ -107,7 +106,6 @@ public:
     }
 
 protected:
-    std::string filename;
     int image_width, image_height;
     int frame_width, frame_height;
     int sprite_width, sprite_height; // if the sprite is smaller than the frame
@@ -127,6 +125,7 @@ protected:
 // Doesn't necessarily need to have more than one frame.
 class AnimatedSprite : public Sprite {
 public:
+
     AnimatedSprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
                    int x_offset, int y_offset, int frames_per_second, bool faces_left = false) : 
         Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset, faces_left),
@@ -142,13 +141,25 @@ public:
     {
         frames_per_second = other.frames_per_second;
         creation_time = other.creation_time;
+        collisions = std::move(other.collisions);
     }
 
     AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
     void paint(int screen_x, int screen_y, bool horizontal_flip = false) {
-        int frame_index = frames_elapsed() % num_frames;
-        Sprite::paint(screen_x, screen_y, frame_index, horizontal_flip);
+        Sprite::paint(screen_x, screen_y, get_frame_index(), horizontal_flip);
+    }
+
+    // TODO - Show bounding boxes
+    // void paint_debug(int screen_x, int screen_y, bool horizontal_flip = false) {
+    //     if (has_collision) {
+
+    //     }
+    //     Sprite::paint(screen_x, screen_y, get_frame_index(), horizontal_flip);
+    // }
+
+    int get_frame_index() {
+        return frames_elapsed() % num_frames;
     }
 
     // Returns true if the animation has completed one loop
@@ -161,9 +172,26 @@ public:
         creation_time = SDL_GetTicks();
     }
 
+    void add_collision(int index, SDL_Rect rect) {
+        assert(collisions.count(index) == 0);
+        collisions[index] = rect;
+    }
+
+    bool has_collision() {
+        return collisions.count(get_frame_index()) != 0;
+    }
+
+    SDL_Rect get_collision(int level_x, int level_y) {
+        SDL_Rect collision = collisions.at(get_frame_index());
+        collision.x += level_x - x_offset;
+        collision.y += level_y - y_offset;
+        return collision;
+    }
+
 private:
     int frames_per_second;
     int creation_time;
+    std::unordered_map<int,SDL_Rect> collisions;
 
     // Get the number of frames elapsed since creation or the last reset
     int frames_elapsed() {

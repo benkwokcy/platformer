@@ -1,4 +1,5 @@
 #include <utility>
+#include <iostream>
 
 #include "Input.hpp"
 #include "PhysicsComponent.hpp"
@@ -20,6 +21,7 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
     speed_x(0.0f),
     speed_y(0.0f),
     facing_left(false),
+    is_alive(true),
     graphics(graphics),
     input(input),
     physics(physics)
@@ -35,6 +37,7 @@ Entity::Entity(Entity&& other) :
     speed_x(other.speed_x),
     speed_y(other.speed_y),
     facing_left(other.facing_left),
+    is_alive(other.is_alive),
     graphics(std::exchange(other.graphics, nullptr)),
     input(std::exchange(other.input, nullptr)),
     physics(std::exchange(other.physics, nullptr))    
@@ -58,9 +61,32 @@ void Entity::handle_event(InputEvent e) {
     input->handle_event(*this, e);
 }
 
-void Entity::tick(Tilemap& level) {
-    input->tick(*this, level);
+void Entity::handle_event(LevelEvent event, Entity* other) {
+    if (other == this) { return; }
+
+    switch(event) {
+        case LevelEvent::ATTACKED:
+            if (other->graphics->attack.has_collision()) {
+                SDL_Rect me_box = bounding_box();
+                SDL_Rect other_box = other->graphics->attack.get_collision(other->x, other->y);
+                if (CollisionDetection::is_overlapping(me_box, other_box)) {
+                    is_alive = false;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+
+void Entity::tick(Level& level) {
+    input->tick(*this, level.level);
     physics->tick(*this);
+    if (states.top() == EntityState::ATTACK && graphics->attack.has_collision()) {
+        level.send_event(LevelEvent::ATTACKED, this);
+        // TODO
+    }
 }
 
 void Entity::collide_movable(Entity& other) {
@@ -82,20 +108,23 @@ SDL_Rect Entity::bounding_box() {
 Entity* create_player(int x, int y) {
     float w = 16.0f;
     float h = 28.0f;
-    return new Entity(
+    Entity* player = new Entity(
         x, y,
         w, h,    
         new GraphicsComponent(
-            AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, w, h, 23, 16, 10),
-            AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, w, h, 23, 16, 10),
-            AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, w, h, 23, 16, 10),
-            AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, w, h, 23, 16, 10),
-            AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, w, h, 23, 16, 10),
-            AnimatedSprite("assets/images/playerground.png", 78, 58, 78, 58, w, h, 23, 16, 10)
+            AnimatedSprite("assets/images/playerrun.png", 624, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playeridle.png", 858, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerattack.png", 234, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
+            AnimatedSprite("assets/images/playerground.png", 78, 58, 78, 58, 16, 28, 23, 16, 10)
         ),
         new PlayerInputComponent(),
         new PhysicsComponent()
     );
+    player->graphics->attack.add_collision(2, { 1, 2, 9, 20 });
+    player->graphics->attack.add_collision(3, { 5, 0, 8, 10 });
+    return player;
 }
 
 Entity* create_pig(int x, int y) {
@@ -105,12 +134,12 @@ Entity* create_pig(int x, int y) {
         x, y,
         w, h,     
         new GraphicsComponent(
-            AnimatedSprite("assets/images/pigrun.png", 204, 28, 34, 28, w, h, 12, 12, 10, true),
-            AnimatedSprite("assets/images/pigidle.png", 374, 28, 34, 28, w, h, 12, 12, 10, true),
-            AnimatedSprite("assets/images/pigattack.png", 170, 28, 34, 28, w, h, 12, 12, 10, true),
-            AnimatedSprite("assets/images/pigjump.png", 34, 28, 34, 28, w, h, 12, 12, 10, true),
-            AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, w, h, 12, 12, 10, true),
-            AnimatedSprite("assets/images/pigground.png", 34, 28, 34, 28, w, h, 12, 12, 10, true)
+            AnimatedSprite("assets/images/pigrun.png", 204, 28, 34, 28, 15, 16, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigidle.png", 374, 28, 34, 28, 15, 16, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigattack.png", 170, 28, 34, 28, 15, 16, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigjump.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
+            AnimatedSprite("assets/images/pigground.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true)
         ),
         new PigInputComponent(),
         new PhysicsComponent()

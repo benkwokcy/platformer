@@ -20,6 +20,10 @@ constexpr float GRAVITY = 0.55f;
  *           COLLISION DETECTION
  *********************************************/
 
+bool CollisionDetection::is_overlapping(SDL_Rect& a, SDL_Rect& b) {
+    return (b.y + b.h) > a.y && (a.y + a.h) > b.y && (b.x + b.w) > a.x && (a.x + a.w) > b.x; 
+}
+
 // From a's perspective.
 std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
     int top_overlap = (b.y + b.h) - a.y;
