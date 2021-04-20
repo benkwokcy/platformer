@@ -1,3 +1,5 @@
+#include <SDL2/SDL.h>
+
 #include <utility>
 #include <iostream>
 
@@ -69,7 +71,7 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
             if (other->graphics->attack.has_collision()) {
                 SDL_Rect me_box = bounding_box();
                 SDL_Rect other_box = other->graphics->attack.get_collision(other->x, other->y);
-                if (CollisionDetection::is_overlapping(me_box, other_box)) {
+                if (SDL_HasIntersection(&me_box, &other_box) == SDL_TRUE) {
                     is_alive = false;
                 }
             }
@@ -122,15 +124,15 @@ Entity* create_player(int x, int y) {
         new PlayerInputComponent(),
         new PhysicsComponent()
     );
-    player->graphics->attack.add_collision(2, { 1, 2, 9, 20 });
-    player->graphics->attack.add_collision(3, { 5, 0, 8, 10 });
+    player->graphics->attack.add_collision(0, { 49, 6, 29, 38 });
+    player->graphics->attack.add_collision(1, { 42, 4, 29, 40 });
     return player;
 }
 
 Entity* create_pig(int x, int y) {
     float w = 15.0f;
     float h = 16.0f;
-    return new Entity(
+    Entity* pig = new Entity(
         x, y,
         w, h,     
         new GraphicsComponent(
@@ -144,4 +146,7 @@ Entity* create_pig(int x, int y) {
         new PigInputComponent(),
         new PhysicsComponent()
     );
+    pig->graphics->attack.add_collision(2, { 1, 2, 9, 20 });
+    pig->graphics->attack.add_collision(3, { 5, 0, 8, 10 });
+    return pig;
 }

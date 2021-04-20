@@ -5,10 +5,6 @@
 struct SDL_Rect;
 class Entity;
 
-namespace CollisionDetection {
-    bool is_overlapping(SDL_Rect& a, SDL_Rect& b);
-};
-
 enum class CollisionType {
     OVERLAP_TOP, OVERLAP_BOTTOM, OVERLAP_LEFT, OVERLAP_RIGHT, 
     TOUCH_TOP, TOUCH_BOTTOM, TOUCH_LEFT, TOUCH_RIGHT, // touching means the distance between the two is 0.

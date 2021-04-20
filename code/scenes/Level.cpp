@@ -47,7 +47,7 @@ void Level::tick() {
     // update camera
     Camera::tick(static_cast<int>(player->x));
     // remove any dead objects
-    std::remove_if(pigs.begin(), pigs.end(), [](Entity* p){ return !p->is_alive; });
+    pigs.erase(std::remove_if(pigs.begin(), pigs.end(), [](Entity* p){ return !(p->is_alive); }));
     // TODO - memory leak because delete is not called
 }
 

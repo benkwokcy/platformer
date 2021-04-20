@@ -181,10 +181,11 @@ public:
         return collisions.count(get_frame_index()) != 0;
     }
 
+    // Convert frame coordinates to level coordinates
     SDL_Rect get_collision(int level_x, int level_y) {
         SDL_Rect collision = collisions.at(get_frame_index());
-        collision.x += level_x - x_offset;
-        collision.y += level_y - y_offset;
+        collision.x = level_x - (x_offset - collision.x);
+        collision.y = level_y - (y_offset - collision.y);
         return collision;
     }
 
