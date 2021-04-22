@@ -24,6 +24,7 @@ public:
     float knockback_speed_x, knockback_speed_y;
     bool facing_left;
     int health;
+    int time_last_hit;
     std::stack<EntityState> states;
     GraphicsComponent* graphics;
     InputComponent* input;

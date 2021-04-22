@@ -68,8 +68,8 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
 
 void PhysicsComponent::tick(Entity& entity) {
     entity.speed_y += GRAVITY;
-    entity.knockback_speed_x = std::max(0.0f, entity.knockback_speed_x - 0.55f);
-    entity.knockback_speed_y = std::max(0.0f, entity.knockback_speed_y - 0.55f);
+    entity.knockback_speed_x = entity.knockback_speed_x > 0.0f ? std::max(0.0f, entity.knockback_speed_x - 0.2f) : std::min(0.0f, entity.knockback_speed_x + 0.2f);
+    // entity.knockback_speed_y = std::max(0.0f, entity.knockback_speed_y - 0.2f); // TODO
     entity.x += entity.speed_x + entity.knockback_speed_x;
     entity.y += entity.speed_y + entity.knockback_speed_y;
     touching = { false, false, false, false };
@@ -80,11 +80,10 @@ void PhysicsComponent::die(Entity& me) {
 }
 
 void PhysicsComponent::knockback(Entity& me, float source_x) {
-    std::cout << "HI\n";
     if (source_x < me.x) {
-        me.knockback_speed_x += 2.0f;
+        me.knockback_speed_x += 6.0f;
     } else {
-        me.knockback_speed_x -= 2.0f;
+        me.knockback_speed_x -= 6.0f;
     }
 }
 

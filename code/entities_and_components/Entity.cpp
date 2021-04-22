@@ -25,7 +25,8 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
     knockback_speed_x(0.0f),
     knockback_speed_y(0.0f),
     facing_left(false),
-    health(2),
+    health(5),
+    time_last_hit(0),
     graphics(graphics),
     input(input),
     physics(physics)
@@ -44,6 +45,7 @@ Entity::Entity(Entity&& other) :
     knockback_speed_y(other.knockback_speed_y),
     facing_left(other.facing_left),
     health(other.health),
+    time_last_hit(other.time_last_hit),
     graphics(std::exchange(other.graphics, nullptr)),
     input(std::exchange(other.input, nullptr)),
     physics(std::exchange(other.physics, nullptr))    
@@ -74,10 +76,11 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
 
     switch(event) {
         case LevelEvent::ATTACKED:
-            if (other->graphics->attack.has_collision()) {
+            if (other->graphics->attack.has_collision() && SDL_GetTicks() - time_last_hit > 500) {
                 SDL_Rect me_box = bounding_box();
                 SDL_Rect other_box = other->graphics->attack.get_collision(other->x, other->y, other->facing_left);
                 if (SDL_HasIntersection(&me_box, &other_box) == SDL_TRUE) {
+                    time_last_hit = SDL_GetTicks();
                     health--; 
                     physics->knockback(*this, other->x);
                     if (health <= 0) {
