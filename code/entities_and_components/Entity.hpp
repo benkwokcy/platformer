@@ -13,7 +13,7 @@ class PhysicsComponent;
 class Tilemap;
 
 enum class EntityState {
-    MOVING, ATTACK, GROUND, DEAD
+    MOVING, ATTACK, GROUND, DEAD, HIT
 };
 
 class Entity {

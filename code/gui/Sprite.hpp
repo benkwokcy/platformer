@@ -127,22 +127,23 @@ class AnimatedSprite : public Sprite {
 public:
 
     AnimatedSprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
-                   int x_offset, int y_offset, int frames_per_second, bool faces_left = false) : 
+                   int x_offset, int y_offset, int frames_per_second, bool faces_left = false, bool loop = true) : 
         Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset, faces_left),
         frames_per_second(frames_per_second),
-        creation_time(static_cast<int>(SDL_GetTicks()))
+        creation_time(static_cast<int>(SDL_GetTicks())),
+        loop(loop)
     {}
 
     AnimatedSprite(const AnimatedSprite& other) = delete;
     AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
 
     AnimatedSprite(AnimatedSprite&& other) :
-        Sprite(std::move(other))
-    {
-        frames_per_second = other.frames_per_second;
-        creation_time = other.creation_time;
-        collisions = std::move(other.collisions);
-    }
+        Sprite(std::move(other)),
+        frames_per_second(other.frames_per_second),
+        creation_time(other.creation_time),
+        loop(other.loop),
+        collisions(std::move(other.collisions))
+    {}
 
     AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
 
@@ -151,25 +152,32 @@ public:
     }
 
     // TODO - Show bounding boxes
-    // void paint_debug(int screen_x, int screen_y, bool horizontal_flip = false) {
-    //     if (has_collision) {
-
-    //     }
-    //     Sprite::paint(screen_x, screen_y, get_frame_index(), horizontal_flip);
-    // }
+    // void paint_debug(int screen_x, int screen_y, bool horizontal_flip = false) {}
 
     int get_frame_index() {
-        return frames_elapsed() % num_frames;
+        if (loop) {
+            return frames_elapsed() % num_frames;
+        } else {
+            return std::min(frames_elapsed(), num_frames - 1);
+        }
     }
 
-    // Returns true if the animation has completed one loop
-    bool animation_complete() {
-        return frames_elapsed() >= num_frames;
+    int time_elapsed() {
+        return SDL_GetTicks() - creation_time;
     }
 
     // Reset the animation start time.
     void reset_time() {
         creation_time = SDL_GetTicks();
+    }
+
+    int loops_completed() {
+        return frames_elapsed() / num_frames;
+    }
+
+    // Get the number of frames elapsed since creation or the last reset
+    int frames_elapsed() {
+        return (SDL_GetTicks() - creation_time) * frames_per_second / 1000;
     }
 
     void add_collision(int index, SDL_Rect rect) {
@@ -196,10 +204,6 @@ public:
 private:
     int frames_per_second;
     int creation_time;
+    bool loop;
     std::unordered_map<int,SDL_Rect> collisions;
-
-    // Get the number of frames elapsed since creation or the last reset
-    int frames_elapsed() {
-        return (SDL_GetTicks() - creation_time) * frames_per_second / 1000;
-    }
 };

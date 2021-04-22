@@ -68,8 +68,12 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
 
 void PhysicsComponent::tick(Entity& entity) {
     entity.speed_y += GRAVITY;
-    entity.knockback_speed_x = entity.knockback_speed_x > 0.0f ? std::max(0.0f, entity.knockback_speed_x - 0.2f) : std::min(0.0f, entity.knockback_speed_x + 0.2f);
-    entity.knockback_speed_y = entity.knockback_speed_y > 0.0f ? std::max(0.0f, entity.knockback_speed_y - 0.2f) : std::min(0.0f, entity.knockback_speed_y + 0.2f);
+    if (entity.knockback_speed_x != 0.0f) {
+        entity.knockback_speed_x = entity.knockback_speed_x > 0.0f ? std::max(0.0f, entity.knockback_speed_x - 0.3f) : std::min(0.0f, entity.knockback_speed_x + 0.3f);
+    }
+    if (entity.knockback_speed_y != 0.0f) {
+        entity.knockback_speed_y = entity.knockback_speed_y > 0.0f ? std::max(0.0f, entity.knockback_speed_y - 0.3f) : std::min(0.0f, entity.knockback_speed_y + 0.3f);
+    }
     entity.x += entity.speed_x + entity.knockback_speed_x;
     entity.y += entity.speed_y + entity.knockback_speed_y;
     touching = { false, false, false, false };
@@ -80,12 +84,12 @@ void PhysicsComponent::die(Entity& me) {
 }
 
 void PhysicsComponent::knockback(Entity& me, float source_x) {
-    me.knockback_speed_y -= 4.0f;
+    me.knockback_speed_y -= 4.5f;
     if (source_x < me.x) {
-        me.knockback_speed_x += 7.0f;
+        me.knockback_speed_x += 6.5f;
     } else {
-        me.knockback_speed_x -= 7.0f;
-    }
+        me.knockback_speed_x -= 6.5f;
+    } 
 }
 
 // Collide a movable object (me) against an immovable object (other).
@@ -100,7 +104,7 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
         case CollisionType::OVERLAP_BOTTOM:
             touching.bottom = true;
             me.y -= penetration;
-            if (me.speed_y > 2.0f && me.current_state() != EntityState::ATTACK) { 
+            if (me.speed_y > 2.0f && me.current_state() == EntityState::MOVING) { 
                 me.states.push(EntityState::GROUND);
                 me.graphics->ground.reset_time();
             }

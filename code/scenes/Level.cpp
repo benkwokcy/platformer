@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "Camera.hpp"
 #include "Entity.hpp"
@@ -15,14 +16,14 @@ Level::Level() :
 
 Level::~Level() {
     delete player;
-    for (auto& pig : pigs) { 
+    for (auto pig : pigs) { 
         delete pig; 
     }
 }
 
 void Level::handle_event(InputEvent e) {
     player->handle_event(e);
-    for (auto& pig : pigs) { 
+    for (auto pig : pigs) { 
         pig->handle_event(e); 
     }
 }
@@ -30,8 +31,8 @@ void Level::handle_event(InputEvent e) {
 void Level::tick() {
     // update position
     player->tick(*this);
-    for (auto& pig : pigs) { 
-        pig->tick(*this); 
+    for (auto pig : pigs) { 
+        pig->tick(*this);   
     }
     // collide each object with level
     for (auto& c : level.collisions) {
@@ -41,7 +42,7 @@ void Level::tick() {
         }
     }
     // collide each pair of objects
-    for (auto& pig : pigs) { 
+    for (auto pig : pigs) { 
         player->collide_movable(*pig); 
     }
     // update camera
@@ -49,7 +50,7 @@ void Level::tick() {
     // remove any dead objects
     // TODO - eventually objects call for themselves to be deleted
     for (int i = pigs.size() - 1; i >= 0; i--) {
-        if (pigs[i]->current_state() == EntityState::DEAD && pigs[i]->graphics->dead.animation_complete()) {
+        if (pigs[i]->current_state() == EntityState::DEAD && pigs[i]->graphics->dead.loops_completed() >= 1 && pigs[i]->graphics->dead.time_elapsed() > 5000) {
             delete pigs[i];
             pigs.erase(pigs.begin() + i);
         }
@@ -59,15 +60,14 @@ void Level::tick() {
 void Level::paint() {
     level.paint();
     player->paint();
-    for (auto& pig : pigs) { 
+    for (auto pig : pigs) { 
         pig->paint(); 
     }
 }
 
 void Level::send_event(LevelEvent event, Entity* entity) {
     player->handle_event(event, entity);
-    for (auto& pig : pigs) { 
+    for (auto pig : pigs) { 
         pig->handle_event(event, entity);
     }
-    // TODO
 }

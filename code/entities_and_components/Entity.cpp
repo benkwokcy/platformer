@@ -25,7 +25,7 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
     knockback_speed_x(0.0f),
     knockback_speed_y(0.0f),
     facing_left(false),
-    health(5),
+    health(3),
     time_last_hit(0),
     graphics(graphics),
     input(input),
@@ -87,6 +87,9 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
                         states.push(EntityState::DEAD);
                         graphics->dead.reset_time();
                         physics->die(*this);
+                    } else {
+                        states.push(EntityState::HIT);
+                        graphics->hit.reset_time();
                     }
                 }
             }
@@ -98,7 +101,9 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
 
 
 void Entity::tick(Level& level) {
-    input->tick(*this, level.level);
+    if (current_state() != EntityState::DEAD) {
+        input->tick(*this, level.level);
+    }
     physics->tick(*this);
     if (current_state() == EntityState::ATTACK && graphics->attack.has_collision()) {
         level.send_event(LevelEvent::ATTACKED, this);
@@ -106,7 +111,6 @@ void Entity::tick(Level& level) {
 }
 
 void Entity::collide_movable(Entity& other) {
-    if (current_state() == EntityState::DEAD) { return; }
     physics->collide_movable(*this, other);
 }
 
@@ -140,7 +144,8 @@ Entity* create_player(int x, int y) {
             AnimatedSprite("assets/images/playerjump.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
             AnimatedSprite("assets/images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
             AnimatedSprite("assets/images/playerground.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite("assets/images/playerdead.png", 312, 58, 78, 58, 16, 28, 23, 16, 10)
+            AnimatedSprite("assets/images/playerdead.png", 312, 58, 78, 58, 16, 28, 23, 16, 10, false, false),
+            AnimatedSprite("assets/images/playerhit.png", 156, 58, 78, 58, 16, 28, 23, 16, 10)
         ),
         new PlayerInputComponent(),
         new PhysicsComponent()
@@ -163,7 +168,8 @@ Entity* create_pig(int x, int y) {
             AnimatedSprite("assets/images/pigjump.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
             AnimatedSprite("assets/images/pigfall.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
             AnimatedSprite("assets/images/pigground.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite("assets/images/pigdead.png", 136, 28, 34, 28, 15, 16, 12, 12, 10, true)
+            AnimatedSprite("assets/images/pigdead.png", 136, 28, 34, 28, 15, 16, 12, 12, 10, true, false),
+            AnimatedSprite("assets/images/pighit.png", 68, 28, 34, 28, 15, 16, 12, 12, 10, true)
         ),
         new PigInputComponent(),
         new PhysicsComponent()
