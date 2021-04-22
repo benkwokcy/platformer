@@ -181,11 +181,15 @@ public:
         return collisions.count(get_frame_index()) != 0;
     }
 
-    // Convert frame coordinates to level coordinates
-    SDL_Rect get_collision(int level_x, int level_y) {
+    SDL_Rect get_collision(int level_x, int level_y, bool horizontal_flip) {
         SDL_Rect collision = collisions.at(get_frame_index());
-        collision.x = level_x - (x_offset - collision.x);
-        collision.y = level_y - (y_offset - collision.y);
+        if (horizontal_flip) {
+            collision.x = level_x - (frame_width - x_offset - sprite_width) + (frame_width - collision.x - collision.w);
+            collision.y = level_y - y_offset + collision.y;
+        } else {
+            collision.x = level_x - x_offset + collision.x;
+            collision.y = level_y - y_offset + collision.y;
+        }
         return collision;
     }
 

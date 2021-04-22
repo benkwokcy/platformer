@@ -6,8 +6,10 @@ class Entity;
 
 class GraphicsComponent {
 public:
-    AnimatedSprite run, idle, attack, jump, fall, ground;
+    AnimatedSprite run, idle, attack, jump, fall, ground, dead;
 
-    GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle, AnimatedSprite&& attack, AnimatedSprite&& jump, AnimatedSprite&& fall, AnimatedSprite&& ground);
+    GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle, AnimatedSprite&& attack, AnimatedSprite&& jump, 
+                      AnimatedSprite&& fall, AnimatedSprite&& ground, AnimatedSprite&& dead);
+                      
     void paint(Entity& me);
 };

@@ -26,6 +26,8 @@ public:
     void tick(Entity& me);
     void collide_immovable(Entity& me, const SDL_Rect& other);
     void collide_movable(Entity& me, Entity& other);
+    void knockback(Entity& me, float source_x);
+    void die(Entity& me);
 
     inline bool on_ground() {
         return touching.bottom == true;

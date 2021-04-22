@@ -9,31 +9,32 @@
 
 #include "GraphicsComponent.hpp"
 
-GraphicsComponent::GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle, AnimatedSprite&& attack, AnimatedSprite&& jump, AnimatedSprite&& fall, AnimatedSprite&& ground) :
+GraphicsComponent::GraphicsComponent(AnimatedSprite&& run, AnimatedSprite&& idle, AnimatedSprite&& attack, AnimatedSprite&& jump, 
+                                     AnimatedSprite&& fall, AnimatedSprite&& ground, AnimatedSprite&& dead) :
     run(std::move(run)),
     idle(std::move(idle)),
     attack(std::move(attack)),
     jump(std::move(jump)),
     fall(std::move(fall)),
-    ground(std::move(ground))
+    ground(std::move(ground)),
+    dead(std::move(dead))
 {}
 
 void GraphicsComponent::paint(Entity& me) {
-    assert (!me.states.empty());
-    if (me.states.top() != EntityState::MOVING) {
-        if ((me.states.top() == EntityState::ATTACK && me.graphics->attack.animation_complete()) || 
-            (me.states.top() == EntityState::GROUND && me.graphics->ground.animation_complete())) {
-            me.states.pop();
-            assert(!me.states.empty());
-        }
+    if ((me.current_state() == EntityState::ATTACK && me.graphics->attack.animation_complete()) || 
+        (me.current_state() == EntityState::GROUND && me.graphics->ground.animation_complete())) {
+        me.states.pop();
     }
     auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(me.x, me.y);
-    switch (me.states.top()) {
+    switch (me.current_state()) {
         case EntityState::ATTACK:
             attack.paint(screen_x, screen_y, me.facing_left);
             break;
         case EntityState::GROUND:
             ground.paint(screen_x, screen_y, me.facing_left);
+            break;
+        case EntityState::DEAD:
+            dead.paint(screen_x, screen_y, me.facing_left);
             break;
         case EntityState::MOVING:
             if (me.speed_y < 0.0f) {

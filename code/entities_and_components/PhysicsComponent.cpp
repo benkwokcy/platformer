@@ -68,9 +68,24 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
 
 void PhysicsComponent::tick(Entity& entity) {
     entity.speed_y += GRAVITY;
-    entity.x += entity.speed_x;
-    entity.y += entity.speed_y;
+    entity.knockback_speed_x = std::max(0.0f, entity.knockback_speed_x - 0.55f);
+    entity.knockback_speed_y = std::max(0.0f, entity.knockback_speed_y - 0.55f);
+    entity.x += entity.speed_x + entity.knockback_speed_x;
+    entity.y += entity.speed_y + entity.knockback_speed_y;
     touching = { false, false, false, false };
+}
+
+void PhysicsComponent::die(Entity& me) {
+    me.speed_x = 0.0f;
+}
+
+void PhysicsComponent::knockback(Entity& me, float source_x) {
+    std::cout << "HI\n";
+    if (source_x < me.x) {
+        me.knockback_speed_x += 2.0f;
+    } else {
+        me.knockback_speed_x -= 2.0f;
+    }
 }
 
 // Collide a movable object (me) against an immovable object (other).
@@ -85,7 +100,7 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
         case CollisionType::OVERLAP_BOTTOM:
             touching.bottom = true;
             me.y -= penetration;
-            if (me.speed_y > 2.0f && me.states.top() != EntityState::ATTACK) { 
+            if (me.speed_y > 2.0f && me.current_state() != EntityState::ATTACK) { 
                 me.states.push(EntityState::GROUND);
                 me.graphics->ground.reset_time();
             }
@@ -128,7 +143,7 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 other.y -= penetration;
                 other.speed_y = 0.0f;
                 other.physics->touching.bottom = true;
-                if (other.speed_y > 2.0f && other.states.top() != EntityState::ATTACK) { 
+                if (other.speed_y > 2.0f && other.current_state() != EntityState::ATTACK) { 
                     other.states.push(EntityState::GROUND);
                     other.graphics->ground.reset_time();
                 }
@@ -158,7 +173,7 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 me.y -= penetration;
                 me.speed_y = 0.0f;
                 touching.bottom = true;
-                if (me.speed_y > 2.0f && me.states.top() != EntityState::ATTACK) { 
+                if (me.speed_y > 2.0f && me.current_state() != EntityState::ATTACK) { 
                     me.states.push(EntityState::GROUND);
                     me.graphics->ground.reset_time();
                 }

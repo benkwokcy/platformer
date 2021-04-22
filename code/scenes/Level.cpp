@@ -47,8 +47,9 @@ void Level::tick() {
     // update camera
     Camera::tick(static_cast<int>(player->x));
     // remove any dead objects
+    // TODO - eventually objects call for themselves to be deleted
     for (int i = pigs.size() - 1; i >= 0; i--) {
-        if (pigs[i]->is_alive == false) {
+        if (pigs[i]->current_state() == EntityState::DEAD && pigs[i]->graphics->dead.animation_complete()) {
             delete pigs[i];
             pigs.erase(pigs.begin() + i);
         }

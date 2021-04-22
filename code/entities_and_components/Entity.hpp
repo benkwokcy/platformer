@@ -13,7 +13,7 @@ class PhysicsComponent;
 class Tilemap;
 
 enum class EntityState {
-    MOVING, ATTACK, GROUND
+    MOVING, ATTACK, GROUND, DEAD
 };
 
 class Entity {
@@ -21,8 +21,9 @@ public:
     float x, y; // the top left corner of the entity in level coordinates
     float w, h; // dimensions of the bounding box
     float speed_x, speed_y;
+    float knockback_speed_x, knockback_speed_y;
     bool facing_left;
-    bool is_alive;
+    int health;
     std::stack<EntityState> states;
     GraphicsComponent* graphics;
     InputComponent* input;
@@ -41,6 +42,7 @@ public:
     void tick(Level& level);
     void collide_immovable(const SDL_Rect& other);
     void collide_movable(Entity& other);
+    EntityState current_state();
     SDL_Rect bounding_box();
 };
 
