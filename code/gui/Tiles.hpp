@@ -46,5 +46,4 @@ private:
     void add_tileset(tinyxml2::XMLElement* node);
     void add_tile_layer(tinyxml2::XMLElement* node);
     void add_object_layer(tinyxml2::XMLElement* object_group_node);
-    std::vector<int> split_comma_separated_ints(const std::string& text);
 };

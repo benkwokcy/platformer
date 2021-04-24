@@ -23,18 +23,15 @@ Level::~Level() {
 
 void Level::handle_event(InputEvent e) {
     player->handle_event(e);
-    for (auto pig : pigs) { 
-        pig->handle_event(e); 
-    }
 }
 
 void Level::tick() {
-    // update position
+    // update each object one frame
     player->tick(*this);
     for (auto pig : pigs) { 
         pig->tick(*this);   
     }
-    // collide each object with level
+    // collide each object with the level
     for (auto& c : level.collisions) {
         player->collide_immovable(c);
         for (auto& pig : pigs) { 
@@ -44,13 +41,13 @@ void Level::tick() {
     // collide each pair of objects
     for (auto pig : pigs) { 
         player->collide_movable(*pig); 
+        // TODO - collide pigs with each other
     }
     // update camera
     Camera::tick(static_cast<int>(player->x));
     // remove any dead objects
-    // TODO - eventually objects call for themselves to be deleted
     for (int i = pigs.size() - 1; i >= 0; i--) {
-        if (pigs[i]->current_state() == EntityState::DEAD && pigs[i]->graphics->dead.loops_completed() >= 1 && pigs[i]->graphics->dead.time_elapsed() > 5000) {
+        if (pigs[i]->should_be_deleted()) {
             delete pigs[i];
             pigs.erase(pigs.begin() + i);
         }

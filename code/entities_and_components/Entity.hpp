@@ -45,6 +45,7 @@ public:
     void collide_movable(Entity& other);
     EntityState current_state();
     SDL_Rect bounding_box();
+    bool should_be_deleted();
 };
 
 Entity* create_player(int x, int y);

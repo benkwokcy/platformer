@@ -21,7 +21,7 @@ struct Touching {
 
 class PhysicsComponent {
 public:
-    Touching touching {}; // keeps track where we are touching an immoveable object
+    Touching touching {}; // keeps track where we are touching an immovable object
 
     void tick(Entity& me);
     void collide_immovable(Entity& me, const SDL_Rect& other);

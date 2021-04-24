@@ -151,9 +151,6 @@ public:
         Sprite::paint(screen_x, screen_y, get_frame_index(), horizontal_flip);
     }
 
-    // TODO - Show bounding boxes
-    // void paint_debug(int screen_x, int screen_y, bool horizontal_flip = false) {}
-
     int get_frame_index() {
         if (loop) {
             return frames_elapsed() % num_frames;
@@ -166,18 +163,13 @@ public:
         return SDL_GetTicks() - creation_time;
     }
 
-    // Reset the animation start time.
+    // Resets the animation
     void reset_time() {
         creation_time = SDL_GetTicks();
     }
 
     int loops_completed() {
         return frames_elapsed() / num_frames;
-    }
-
-    // Get the number of frames elapsed since creation or the last reset
-    int frames_elapsed() {
-        return (SDL_GetTicks() - creation_time) * frames_per_second / 1000;
     }
 
     void add_collision(int index, SDL_Rect rect) {
@@ -206,4 +198,9 @@ private:
     int creation_time;
     bool loop;
     std::unordered_map<int,SDL_Rect> collisions;
+
+    // Get the number of frames elapsed since creation or the last reset
+    int frames_elapsed() {
+        return (SDL_GetTicks() - creation_time) * frames_per_second / 1000;
+    }
 };

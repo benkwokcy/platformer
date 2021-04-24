@@ -15,6 +15,9 @@
  *********************************************/
 
 constexpr float GRAVITY = 0.55f;
+constexpr float KNOCKBACK_DECAY = 0.3f;
+constexpr float KNOCKBACK_X = 4.5f;
+constexpr float KNOCKBACK_Y = 6.5f;
 
 /*********************************************
  *           COLLISION DETECTION
@@ -69,10 +72,10 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
 void PhysicsComponent::tick(Entity& entity) {
     entity.speed_y += GRAVITY;
     if (entity.knockback_speed_x != 0.0f) {
-        entity.knockback_speed_x = entity.knockback_speed_x > 0.0f ? std::max(0.0f, entity.knockback_speed_x - 0.3f) : std::min(0.0f, entity.knockback_speed_x + 0.3f);
+        entity.knockback_speed_x = entity.knockback_speed_x > 0.0f ? std::max(0.0f, entity.knockback_speed_x - KNOCKBACK_DECAY) : std::min(0.0f, entity.knockback_speed_x + KNOCKBACK_DECAY);
     }
     if (entity.knockback_speed_y != 0.0f) {
-        entity.knockback_speed_y = entity.knockback_speed_y > 0.0f ? std::max(0.0f, entity.knockback_speed_y - 0.3f) : std::min(0.0f, entity.knockback_speed_y + 0.3f);
+        entity.knockback_speed_y = entity.knockback_speed_y > 0.0f ? std::max(0.0f, entity.knockback_speed_y - KNOCKBACK_DECAY) : std::min(0.0f, entity.knockback_speed_y + KNOCKBACK_DECAY);
     }
     entity.x += entity.speed_x + entity.knockback_speed_x;
     entity.y += entity.speed_y + entity.knockback_speed_y;
@@ -84,11 +87,11 @@ void PhysicsComponent::die(Entity& me) {
 }
 
 void PhysicsComponent::knockback(Entity& me, float source_x) {
-    me.knockback_speed_y -= 4.5f;
+    me.knockback_speed_y -= KNOCKBACK_Y;
     if (source_x < me.x) {
-        me.knockback_speed_x += 6.5f;
+        me.knockback_speed_x += KNOCKBACK_X;
     } else {
-        me.knockback_speed_x -= 6.5f;
+        me.knockback_speed_x -= KNOCKBACK_X;
     } 
 }
 
@@ -138,7 +141,6 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
 }
 
 // Collide a movable object (me) against a movable object (other).
-// TODO - Should I be able to push people? Who can push who? The larger/heavier object? Is there friction?
 void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
     auto [collision_type, penetration] = rect_collide_rect(me.bounding_box(), other.bounding_box());
     switch (collision_type) {

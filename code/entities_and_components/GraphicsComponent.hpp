@@ -17,4 +17,5 @@ public:
     GraphicsComponent& operator=(GraphicsComponent&& other) = delete;
                       
     void paint(Entity& me);
+    AnimatedSprite& current_sprite(Entity& me);
 };

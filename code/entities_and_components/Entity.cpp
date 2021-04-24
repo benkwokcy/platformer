@@ -127,6 +127,10 @@ SDL_Rect Entity::bounding_box() {
     return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
 }
 
+bool Entity::should_be_deleted() {
+    return current_state() == EntityState::DEAD && graphics->dead.loops_completed() && graphics->dead.time_elapsed() > 5000;
+}
+
 /*********************************************
  *              FACTORY METHODS
  *********************************************/

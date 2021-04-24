@@ -1,6 +1,7 @@
 #include "SDL2/SDL.h"
 
 #include <stdexcept>
+#include <array>
 
 #include "Entity.hpp"
 #include "Sprite.hpp"
@@ -32,35 +33,29 @@ GraphicsComponent::GraphicsComponent(GraphicsComponent&& other) :
     hit(std::move(other.hit))
 {}
 
-void GraphicsComponent::paint(Entity& me) {
-    while ((me.current_state() == EntityState::ATTACK && me.graphics->attack.loops_completed()) || 
-           (me.current_state() == EntityState::GROUND && me.graphics->ground.loops_completed()) ||
-           (me.current_state() == EntityState::HIT && me.graphics->hit.loops_completed())) {
-        me.states.pop();
-    }
-    auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(me.x, me.y);
-    switch (me.current_state()) {
+AnimatedSprite& GraphicsComponent::current_sprite(Entity& me) {
+    switch(me.current_state()) {
         case EntityState::ATTACK:
-            attack.paint(screen_x, screen_y, me.facing_left);
+            return attack;
             break;
         case EntityState::GROUND:
-            ground.paint(screen_x, screen_y, me.facing_left);
+            return ground;
             break;
         case EntityState::DEAD:
-            dead.paint(screen_x, screen_y, me.facing_left);
+            return dead;
             break;
         case EntityState::HIT:
-            hit.paint(screen_x, screen_y, me.facing_left);
+            return hit;
             break;
         case EntityState::MOVING:
             if (me.speed_y < 0.0f) {
-                jump.paint(screen_x, screen_y, me.facing_left);
+                return jump;
             } else if (me.speed_y > 0.0f && !me.physics->on_ground()) {
-                fall.paint(screen_x, screen_y, me.facing_left);
+                return fall;
             } else if (me.speed_x != 0) {
-                run.paint(screen_x, screen_y, me.facing_left);
+                return run;
             } else if (me.speed_x == 0) {
-                idle.paint(screen_x, screen_y, me.facing_left);
+                return idle;
             } else {
                 throw std::runtime_error("Unexpected state");
             }
@@ -68,4 +63,12 @@ void GraphicsComponent::paint(Entity& me) {
         default:
             throw std::runtime_error("Unexpected state");
     }
+}
+
+void GraphicsComponent::paint(Entity& me) {
+    while (me.states.size() > 1 && me.current_state() != EntityState::DEAD && current_sprite(me).loops_completed()) {
+        me.states.pop();
+    }
+    auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(me.x, me.y);
+    current_sprite(me).paint(screen_x, screen_y, me.facing_left);
 }

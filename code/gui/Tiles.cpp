@@ -109,7 +109,7 @@ void Tilemap::paint() {
 void Tilemap::paint_layer(matrix& M) {
     for (size_t r = 0; r < M.size(); r++) {
         for (size_t c = 0; c < M[0].size(); c++) {
-            if (M[r][c] == 0) continue;
+            if (M[r][c] == 0) continue; // 0 means there's no tile painted there.
             
             int tile_index = M[r][c];
             int level_x = c * tile_width;
@@ -132,13 +132,21 @@ void Tilemap::add_tileset(tinyxml2::XMLElement* node) {
 }
 
 void Tilemap::add_tile_layer(tinyxml2::XMLElement* node) {
+    // get the name of the layer
     std::string layer_name = get_string_attribute(node, "name");
+    // get the matrix of ints
     auto data_node = node->FirstChildElement();
     std::stringstream csv_text(std::string(data_node->GetText()));
     std::string temp;
     matrix M;
     while (csv_text >> temp) {
-        M.push_back(split_comma_separated_ints(temp));
+        M.push_back({});
+        // split up the string of comma-separated ints
+        std::stringstream s_stream(temp);
+        std::string buffer;
+        while (std::getline(s_stream, buffer, ',')) {
+            M.back().push_back(std::stoi(buffer));
+        }
     }
     layers[layer_name] = M;
 }
@@ -169,14 +177,4 @@ void Tilemap::add_object_layer(tinyxml2::XMLElement* object_group_node) {
     } else {
         throw std::runtime_error("Unexpected name for objectgroup in tilemap file.");
     }
-}
-
-std::vector<int> Tilemap::split_comma_separated_ints(const std::string& text) {
-    std::vector<int> V;
-    std::stringstream s_stream(text);
-    std::string buffer;
-    while (std::getline(s_stream, buffer, ',')) {
-        V.push_back(std::stoi(buffer));
-    }
-    return V;
 }

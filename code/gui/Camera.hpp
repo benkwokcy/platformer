@@ -20,7 +20,7 @@ public:
         }
     }
 
-    // Returns true if the given box is within the camera's view
+    // Returns true if the given box is visible from the camera's POV.
     static bool is_visible(int level_x, int level_y, int width, int height) {
         return level_x + width >= x && level_y + height >= y && level_x < x + Window::width && level_y < y + Window::height;
     }
