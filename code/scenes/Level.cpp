@@ -61,6 +61,7 @@ void Level::paint() {
     for (auto pig : pigs) { 
         pig->paint(); 
     }
+    healthbar.paint();
 }
 
 void Level::send_event(LevelEvent event, Entity* entity) {

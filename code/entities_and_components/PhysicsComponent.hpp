@@ -1,7 +1,5 @@
 #pragma once
 
-#include <utility>
-
 struct SDL_Rect;
 class Entity;
 

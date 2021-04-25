@@ -4,6 +4,7 @@
 
 #include "Scene.hpp"
 #include "Tiles.hpp"
+#include "HealthBar.hpp"
 
 class Entity;
 
@@ -16,6 +17,7 @@ public:
     Tilemap level;
     Entity* player;
     std::vector<Entity*> pigs;
+    HealthBar healthbar;
 
     Level();
     ~Level();
