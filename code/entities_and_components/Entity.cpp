@@ -170,7 +170,7 @@ Entity* create_player(int x, int y) {
     return player;
 }
 
-Entity* create_pig(int x, int y) {
+Entity* create_pig(int x, int y, int left_boundary, int right_boundary) {
     float w = 15.0f;
     float h = 16.0f;
     Entity* pig = new Entity(
@@ -186,7 +186,7 @@ Entity* create_pig(int x, int y) {
             AnimatedSprite("assets/images/pigdead.png", 136, 28, 34, 28, 15, 16, 12, 12, 10, true, false),
             AnimatedSprite("assets/images/pighit.png", 68, 28, 34, 28, 15, 16, 12, 12, 10, true)
         ),
-        new PigInputComponent(),
+        new PigInputComponent(left_boundary, right_boundary),
         new PhysicsComponent()
     );
     pig->graphics->attack.add_collision(2, { 1, 2, 9, 20 });

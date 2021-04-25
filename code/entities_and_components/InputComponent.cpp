@@ -49,19 +49,24 @@ void PlayerInputComponent::tick(Entity& me, Level& level) {
  *           PigInputComponent
  *********************************************/
 
+PigInputComponent::PigInputComponent(int left_boundary, int right_boundary) :
+    left_boundary(left_boundary),
+    right_boundary(right_boundary)
+{}
+
 void PigInputComponent::handle_event(Entity& me, InputEvent e) {}
 
 void PigInputComponent::tick(Entity& me, Level& level) {
     if (me.current_state() != EntityState::ATTACK && me.could_hit_sometime(level.player->bounding_box())) {
         me.change_state(EntityState::ATTACK);
     }
-    if (me.x <= level.level.markers.at("PigLeftBoundary").x) {
+    if (me.x <= left_boundary) {
         if (me.physics->touching.right && me.physics->on_ground()) {
             me.speed_y -= 11.0f;
         }
         me.facing_left = false;
         me.speed_x = 2.0f;
-    } else if (me.x >= level.level.markers.at("PigRightBoundary").x) {
+    } else if (me.x >= right_boundary) {
         if (me.physics->touching.left && me.physics->on_ground()) {
             me.speed_y -= 11.0f;
         }

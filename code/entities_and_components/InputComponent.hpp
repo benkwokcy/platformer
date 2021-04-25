@@ -21,6 +21,9 @@ public:
 
 class PigInputComponent : public InputComponent {
 public:
+    PigInputComponent(int left_boundary, int right_boundary);
     void handle_event(Entity& me, InputEvent e) override;
     void tick(Entity& me, Level& level) override;
+private:
+    int left_boundary, right_boundary;
 };

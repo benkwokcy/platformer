@@ -11,7 +11,8 @@ Level::Level() :
     level("assets/level.tmx")
 {
     player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
-    pigs.push_back(create_pig(level.markers.at("PigSpawn").x, level.markers.at("PigSpawn").y));
+    pigs.push_back(create_pig(level.markers.at("PigSpawn1").x, level.markers.at("PigSpawn1").y, level.markers.at("PigLeftBoundary1").x, level.markers.at("PigRightBoundary1").x));
+    pigs.push_back(create_pig(level.markers.at("PigSpawn2").x, level.markers.at("PigSpawn2").y, level.markers.at("PigLeftBoundary2").x, level.markers.at("PigRightBoundary2").x));
 }
 
 Level::~Level() {
