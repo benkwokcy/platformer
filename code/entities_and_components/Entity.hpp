@@ -46,6 +46,7 @@ public:
     EntityState current_state();
     SDL_Rect bounding_box();
     bool should_be_deleted();
+    void change_state(EntityState state);
 };
 
 Entity* create_player(int x, int y);

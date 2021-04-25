@@ -83,7 +83,6 @@ public:
         dest_rect(other.dest_rect)
     {}
 
-    // I could implement this but not necessary right now
     Sprite& operator=(Sprite&& other) = delete;
 
     int get_num_frames() {

@@ -84,12 +84,10 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
                     health--; 
                     physics->knockback(*this, other->x);
                     if (health <= 0) {
-                        states.push(EntityState::DEAD);
-                        graphics->dead.reset_time();
+                        change_state(EntityState::DEAD);
                         physics->die(*this);
                     } else {
-                        states.push(EntityState::HIT);
-                        graphics->hit.reset_time();
+                        change_state(EntityState::HIT);
                     }
                 }
             }
@@ -129,6 +127,11 @@ SDL_Rect Entity::bounding_box() {
 
 bool Entity::should_be_deleted() {
     return current_state() == EntityState::DEAD && graphics->dead.loops_completed() && graphics->dead.time_elapsed() > 5000;
+}
+
+void Entity::change_state(EntityState state) {
+    states.push(state);
+    graphics->current_sprite(*this).reset_time();
 }
 
 /*********************************************

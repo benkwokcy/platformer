@@ -21,8 +21,7 @@ void PlayerInputComponent::handle_event(Entity& me, InputEvent e) {
             break;
         case InputEvent::ATTACK:
             if (me.current_state() != EntityState::ATTACK) {
-                me.states.push(EntityState::ATTACK);
-                me.graphics->attack.reset_time();
+                me.change_state(EntityState::ATTACK);
             }
             break;
         case InputEvent::JUMP:

@@ -108,8 +108,7 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
             touching.bottom = true;
             me.y -= penetration;
             if (me.speed_y > 2.0f && me.current_state() == EntityState::MOVING) { 
-                me.states.push(EntityState::GROUND);
-                me.graphics->ground.reset_time();
+                me.change_state(EntityState::GROUND);
             }
             me.speed_y = std::min(me.speed_y, 0.0f);
             break;
@@ -149,9 +148,8 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 other.y -= penetration;
                 other.speed_y = 0.0f;
                 other.physics->touching.bottom = true;
-                if (other.speed_y > 2.0f && other.current_state() != EntityState::ATTACK) { 
-                    other.states.push(EntityState::GROUND);
-                    other.graphics->ground.reset_time();
+                if (other.speed_y > 2.0f && other.current_state() != EntityState::ATTACK) {
+                    other.change_state(EntityState::GROUND);
                 }
             } else if (other.physics->touching.top) { // I have to move
                 me.y += penetration;
@@ -180,8 +178,7 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 me.speed_y = 0.0f;
                 touching.bottom = true;
                 if (me.speed_y > 2.0f && me.current_state() != EntityState::ATTACK) { 
-                    me.states.push(EntityState::GROUND);
-                    me.graphics->ground.reset_time();
+                    me.change_state(EntityState::GROUND);
                 }
             } else if (other.speed_y * me.speed_y >= 0.0f) { // moving in the same direction or one is stationary
                 other.y += penetration / 2;
