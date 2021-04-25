@@ -102,7 +102,7 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
 
 void Entity::tick(Level& level) {
     if (current_state() != EntityState::DEAD) {
-        input->tick(*this, level.level);
+        input->tick(*this, level);
     }
     physics->tick(*this);
     if (current_state() == EntityState::ATTACK && graphics->attack.has_collision()) {
