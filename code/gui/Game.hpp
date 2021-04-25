@@ -21,7 +21,7 @@ public:
     }
 
     void tick() {
-        for (InputEvent e = get_event(); e != InputEvent::NONE; e = get_event()) {
+        for (InputEvent e = Input::get_event(); e != InputEvent::NONE; e = Input::get_event()) {
             switch (e) {
                 case InputEvent::IGNORE:
                     break;

@@ -34,7 +34,7 @@ void PlayerInputComponent::handle_event(Entity& me, InputEvent e) {
 }
 
 void PlayerInputComponent::tick(Entity& me, Level& level) {
-    if (Input::left_down() || Input::right_down()) {
+    if (Input::is_left_down() || Input::is_right_down()) {
         if (me.facing_left) {
             me.speed_x = -4.0f;
         } else {
@@ -52,6 +52,9 @@ void PlayerInputComponent::tick(Entity& me, Level& level) {
 void PigInputComponent::handle_event(Entity& me, InputEvent e) {}
 
 void PigInputComponent::tick(Entity& me, Level& level) {
+    if (me.current_state() != EntityState::ATTACK && me.could_hit_sometime(level.player->bounding_box())) {
+        me.change_state(EntityState::ATTACK);
+    }
     if (me.x <= level.level.markers.at("PigLeftBoundary").x || me.speed_x == 0.0f) {
         if (me.physics->touching.right && me.physics->on_ground()) {
             me.speed_y -= 11.0f;

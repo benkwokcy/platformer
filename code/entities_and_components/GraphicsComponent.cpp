@@ -33,7 +33,7 @@ GraphicsComponent::GraphicsComponent(GraphicsComponent&& other) :
     hit(std::move(other.hit))
 {}
 
-AnimatedSprite& GraphicsComponent::current_sprite(Entity& me) {
+AnimatedSprite& GraphicsComponent::get_current_sprite(Entity& me) {
     switch(me.current_state()) {
         case EntityState::ATTACK:
             return attack;
@@ -66,9 +66,9 @@ AnimatedSprite& GraphicsComponent::current_sprite(Entity& me) {
 }
 
 void GraphicsComponent::paint(Entity& me) {
-    while (me.states.size() > 1 && me.current_state() != EntityState::DEAD && current_sprite(me).loops_completed()) {
+    while (me.states.size() > 1 && me.current_state() != EntityState::DEAD && get_current_sprite(me).loops_completed()) {
         me.states.pop();
     }
     auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(me.x, me.y);
-    current_sprite(me).paint(screen_x, screen_y, me.facing_left);
+    get_current_sprite(me).paint(screen_x, screen_y, me.facing_left);
 }

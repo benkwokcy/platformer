@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <iostream>
+#include <optional>
 
 #include "Input.hpp"
 #include "PhysicsComponent.hpp"
@@ -70,25 +71,34 @@ void Entity::handle_event(InputEvent e) {
     input->handle_event(*this, e);
 }
 
+// Using the hit box of the current attack frame. If there isn't one, then it returns false.
+bool Entity::can_hit_now(SDL_Rect other) {
+    std::optional<SDL_Rect> my_attack_box = graphics->attack.get_current_collision(x, y, facing_left);
+    if (!my_attack_box) { return false; }
+    return SDL_HasIntersection(&*my_attack_box, &other) == SDL_TRUE;
+}
+
+// Using the hitbox that you pass in as my_box.
+bool Entity::could_hit_sometime(SDL_Rect other) {
+    SDL_Rect my_attack_box = graphics->attack.get_any_collision(x, y, facing_left);
+    return SDL_HasIntersection(&my_attack_box, &other) == SDL_TRUE;
+}
+
 void Entity::handle_event(LevelEvent event, Entity* other) {
     if (other == this) { return; }
     if (current_state() == EntityState::DEAD) { return; }
 
     switch(event) {
         case LevelEvent::ATTACKED:
-            if (other->graphics->attack.has_collision() && SDL_GetTicks() - time_last_hit > 500) {
-                SDL_Rect me_box = bounding_box();
-                SDL_Rect other_box = other->graphics->attack.get_collision(other->x, other->y, other->facing_left);
-                if (SDL_HasIntersection(&me_box, &other_box) == SDL_TRUE) {
-                    time_last_hit = SDL_GetTicks();
-                    health--; 
-                    physics->knockback(*this, other->x);
-                    if (health <= 0) {
-                        change_state(EntityState::DEAD);
-                        physics->die(*this);
-                    } else {
-                        change_state(EntityState::HIT);
-                    }
+            if (other->can_hit_now(bounding_box()) && SDL_GetTicks() - time_last_hit > 500) {
+                time_last_hit = SDL_GetTicks();
+                health--; 
+                physics->knockback(*this, other->x);
+                if (health <= 0) {
+                    change_state(EntityState::DEAD);
+                    physics->die(*this);
+                } else {
+                    change_state(EntityState::HIT);
                 }
             }
             break;
@@ -131,7 +141,7 @@ bool Entity::should_be_deleted() {
 
 void Entity::change_state(EntityState state) {
     states.push(state);
-    graphics->current_sprite(*this).reset_time();
+    graphics->get_current_sprite(*this).reset_time();
 }
 
 /*********************************************

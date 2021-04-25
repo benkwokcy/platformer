@@ -5,6 +5,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <optional>
 
 #include "Window.hpp"
 
@@ -180,8 +181,23 @@ public:
         return collisions.count(get_frame_index()) != 0;
     }
 
-    SDL_Rect get_collision(int level_x, int level_y, bool horizontal_flip) {
+    std::optional<SDL_Rect> get_current_collision(int level_x, int level_y, bool horizontal_flip) {
+        if (!has_collision()) { 
+            return {};
+        }
         SDL_Rect collision = collisions.at(get_frame_index());
+        if (horizontal_flip) {
+            collision.x = level_x - (frame_width - x_offset - sprite_width) + (frame_width - collision.x - collision.w);
+            collision.y = level_y - y_offset + collision.y;
+        } else {
+            collision.x = level_x - x_offset + collision.x;
+            collision.y = level_y - y_offset + collision.y;
+        }
+        return collision;
+    }
+
+    SDL_Rect get_any_collision(int level_x, int level_y, bool horizontal_flip) {
+        SDL_Rect collision = collisions.begin()->second;
         if (horizontal_flip) {
             collision.x = level_x - (frame_width - x_offset - sprite_width) + (frame_width - collision.x - collision.w);
             collision.y = level_y - y_offset + collision.y;
