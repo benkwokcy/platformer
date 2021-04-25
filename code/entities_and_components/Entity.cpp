@@ -71,14 +71,13 @@ void Entity::handle_event(InputEvent e) {
     input->handle_event(*this, e);
 }
 
-// Using the hit box of the current attack frame. If there isn't one, then it returns false.
+// Check if we can hit the other box using the hit box of the current attack frame. If there isn't one, then it returns false.
 bool Entity::can_hit_now(SDL_Rect other) {
     std::optional<SDL_Rect> my_attack_box = graphics->attack.get_current_collision(x, y, facing_left);
-    if (!my_attack_box) { return false; }
-    return SDL_HasIntersection(&*my_attack_box, &other) == SDL_TRUE;
+    return my_attack_box && SDL_HasIntersection(&*my_attack_box, &other) == SDL_TRUE;
 }
 
-// Using the hitbox that you pass in as my_box.
+// Check if we can hit the other box using the hit box of some random attack frame.
 bool Entity::could_hit_sometime(SDL_Rect other) {
     SDL_Rect my_attack_box = graphics->attack.get_any_collision(x, y, facing_left);
     return SDL_HasIntersection(&my_attack_box, &other) == SDL_TRUE;
@@ -106,7 +105,6 @@ void Entity::handle_event(LevelEvent event, Entity* other) {
             break;
     }
 }
-
 
 void Entity::tick(Level& level) {
     if (current_state() != EntityState::DEAD) {

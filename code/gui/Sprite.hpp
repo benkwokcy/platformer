@@ -181,31 +181,31 @@ public:
         return collisions.count(get_frame_index()) != 0;
     }
 
-    std::optional<SDL_Rect> get_current_collision(int level_x, int level_y, bool horizontal_flip) {
-        if (!has_collision()) { 
-            return {};
-        }
-        SDL_Rect collision = collisions.at(get_frame_index());
+    SDL_Rect get_collision(int index, int x, int y, bool horizontal_flip) {
+        if (faces_left) { horizontal_flip = !horizontal_flip; }
+        SDL_Rect collision = collisions.at(index);
         if (horizontal_flip) {
-            collision.x = level_x - (frame_width - x_offset - sprite_width) + (frame_width - collision.x - collision.w);
-            collision.y = level_y - y_offset + collision.y;
+            collision.x = x - (frame_width - x_offset - sprite_width) + (frame_width - collision.x - collision.w);
+            collision.y = y - y_offset + collision.y;
         } else {
-            collision.x = level_x - x_offset + collision.x;
-            collision.y = level_y - y_offset + collision.y;
+            collision.x = x - x_offset + collision.x;
+            collision.y = y - y_offset + collision.y;
         }
         return collision;
     }
 
-    SDL_Rect get_any_collision(int level_x, int level_y, bool horizontal_flip) {
-        SDL_Rect collision = collisions.begin()->second;
-        if (horizontal_flip) {
-            collision.x = level_x - (frame_width - x_offset - sprite_width) + (frame_width - collision.x - collision.w);
-            collision.y = level_y - y_offset + collision.y;
+    std::optional<SDL_Rect> get_current_collision(int x, int y, bool horizontal_flip) {
+        int index = get_frame_index();
+        if (collisions.count(index) == 0) {
+            return {};
         } else {
-            collision.x = level_x - x_offset + collision.x;
-            collision.y = level_y - y_offset + collision.y;
+            return get_collision(index, x, y, horizontal_flip);
         }
-        return collision;
+    }
+
+    SDL_Rect get_any_collision(int x, int y, bool horizontal_flip) {
+        int index = collisions.begin()->first;
+        return get_collision(index, x, y, horizontal_flip);
     }
 
 private:
