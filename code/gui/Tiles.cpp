@@ -6,16 +6,9 @@ Parse maps and tilesets from the Tiled map editor into game objects.
 #include <stdexcept>
 
 #include "Camera.hpp"
+#include "Assets.hpp"
 
 #include "Tiles.hpp"
-
-/*********************************************
- *               CONSTANTS
- *********************************************/
-
-namespace Assets {
-    std::string path("assets/");
-};
 
 /*********************************************
  *            XML HELPER FUNCTIONS
@@ -64,7 +57,7 @@ Sprite Tileset::create_sprite_from_tileset_file(std::string filename) {
     int tile_height = get_int_attribute(tileset_node, "tileheight");
 
     auto image_node = tileset_node->FirstChildElement();
-    std::string image_path = Assets::path + get_string_attribute(image_node, "source");
+    std::string image_path = Assets::PATH + get_string_attribute(image_node, "source");
     int image_width = get_int_attribute(image_node, "width");
     int image_height = get_int_attribute(image_node, "height");
 
@@ -127,7 +120,7 @@ void Tilemap::paint_layer(matrix& M) {
 
 void Tilemap::add_tileset(tinyxml2::XMLElement* node) {
     int first_id = get_int_attribute(node, "firstgid");
-    std::string filename = Assets::path + get_string_attribute(node, "source");
+    std::string filename = Assets::PATH + get_string_attribute(node, "source");
     tilesets.emplace_back(first_id, filename);
 }
 

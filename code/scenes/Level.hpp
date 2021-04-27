@@ -5,12 +5,9 @@
 #include "Scene.hpp"
 #include "Tiles.hpp"
 #include "HealthBar.hpp"
+#include "LevelEvent.hpp"
 
 class Entity;
-
-enum class LevelEvent {
-    ATTACKED
-};
 
 class Level : public Scene {
 public:

@@ -3,7 +3,7 @@
 #include <stack>
 
 #include "Input.hpp"
-#include "Level.hpp"
+#include "LevelEvent.hpp"
 
 struct SDL_Rect;
 class GraphicsComponent;
@@ -11,6 +11,7 @@ class InputComponent;
 class PhysicsComponent;
 class PhysicsComponent;
 class Tilemap;
+class Level;
 
 enum class EntityState {
     MOVING, ATTACK, GROUND, DEAD, HIT
@@ -39,7 +40,7 @@ public:
 
     void paint();
     void handle_event(InputEvent e);
-    void handle_event(LevelEvent event, Entity* other);
+    void handle_event(LevelEvent event, Level* level, Entity* other);
     void tick(Level& level);
     void collide_immovable(const SDL_Rect& other);
     void collide_movable(Entity& other);

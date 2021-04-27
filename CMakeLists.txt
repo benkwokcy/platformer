@@ -14,6 +14,7 @@ add_link_options(-lSDL2 -lSDL2_image -ltinyxml2)
 add_executable(platformer 
     code/Main.cpp 
     code/scenes/Level.cpp 
+    code/gui/HealthBar.cpp 
     code/gui/Tiles.cpp 
     code/entities_and_components/Entity.cpp 
     code/entities_and_components/GraphicsComponent.cpp 

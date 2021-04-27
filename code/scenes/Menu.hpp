@@ -6,11 +6,12 @@
 
 #include "Scene.hpp"
 #include "Sprite.hpp"
+#include "Assets.hpp"
 
 class Menu : public Scene {
 public:
     Menu() :
-        sprite(Sprite("assets/images/mainmenu.png", 640, 480))
+        sprite(Sprite(Assets::PATH + "images/mainmenu.png", 640, 480))
     {}
 
     void paint() override {

@@ -39,10 +39,10 @@ public:
         faces_left(faces_left)
     {
         if (surface = IMG_Load(filename.c_str()); surface == nullptr) {
-            throw std::runtime_error("Failed IMG_Load.");
+            throw std::runtime_error(SDL_GetError());
         }
         if (texture = SDL_CreateTextureFromSurface(Window::renderer, surface); texture == nullptr) {
-            throw std::runtime_error("Failed CreateTextureFromSurface.");
+            throw std::runtime_error(SDL_GetError());
         }
 
         num_cols = image_width / frame_width;
@@ -123,10 +123,12 @@ protected:
  *********************************************/
 
 // Doesn't necessarily need to have more than one frame.
+// TODO - Flyweight - have animatedsprite contain a sprite pointer, so we can have lots of animatedsprites sharing a sprite
+// but having their own timer
 class AnimatedSprite : public Sprite {
 public:
 
-    AnimatedSprite(const char* filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
+    AnimatedSprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
                    int x_offset, int y_offset, int frames_per_second, bool faces_left = false, bool loop = true) : 
         Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset, faces_left),
         frames_per_second(frames_per_second),
