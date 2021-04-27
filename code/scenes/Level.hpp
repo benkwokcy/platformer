@@ -22,5 +22,5 @@ public:
     void handle_event(InputEvent e) override;
     void tick() override;
     void paint() override;
-    void send_event(LevelEvent event, Entity* entity);
+    void send_event(LevelEvent event, Entity& entity);
 };

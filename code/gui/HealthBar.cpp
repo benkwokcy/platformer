@@ -15,10 +15,10 @@ HealthBar::HealthBar() :
     isOneHit(false), isTwoHit(false), isThreeHit(false)
 {}
 
-void HealthBar::handle_event(LevelEvent event, Level* level, Entity* other) {
+void HealthBar::handle_event(LevelEvent event, Level& level, Entity& other) {
     switch(event) {
         case LevelEvent::LOST_HEALTH:
-            switch (other->health) {
+            switch (other.health) {
                 case 2:
                     isThreeHit = true;
                     hearthit3.reset_time();

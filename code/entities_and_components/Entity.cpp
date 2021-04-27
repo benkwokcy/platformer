@@ -85,24 +85,23 @@ bool Entity::could_hit_sometime(SDL_Rect other) {
     return SDL_HasIntersection(&my_attack_box, &other) == SDL_TRUE;
 }
 
-// TODO - use references instead of pointers
-void Entity::handle_event(LevelEvent event, Level* level, Entity* other) {
-    if (other == this) { return; }
+void Entity::handle_event(LevelEvent event, Level& level, Entity& other) {
+    if (&other == this) { return; }
     if (current_state() == EntityState::DEAD) { return; }
 
     switch(event) {
         case LevelEvent::ATTACKED:
-            if (other->can_hit_now(bounding_box()) && SDL_GetTicks() - time_last_hit > 500) {
+            if (other.can_hit_now(bounding_box()) && SDL_GetTicks() - time_last_hit > 500) {
                 time_last_hit = SDL_GetTicks();
                 health--; 
-                physics->knockback(*this, other->x);
+                physics->knockback(*this, other.x);
                 assert(health >= 0);
                 if (health == 0) {
                     change_state(EntityState::DEAD);
                     physics->die(*this);
                 } else {
                     change_state(EntityState::HIT);
-                    level->send_event(LevelEvent::LOST_HEALTH, this);
+                    level.send_event(LevelEvent::LOST_HEALTH, *this);
                 }
             }
             break;
@@ -117,7 +116,7 @@ void Entity::tick(Level& level) {
     }
     physics->tick(*this);
     if (current_state() == EntityState::ATTACK && graphics->attack.has_collision()) {
-        level.send_event(LevelEvent::ATTACKED, this);
+        level.send_event(LevelEvent::ATTACKED, *this);
     }
 }
 

@@ -10,7 +10,7 @@ class HealthBar {
 public:
     HealthBar();
 
-    void handle_event(LevelEvent event, Level* level, Entity* other);
+    void handle_event(LevelEvent event, Level& level, Entity& other);
     void paint(int health);
 
     Sprite bar;

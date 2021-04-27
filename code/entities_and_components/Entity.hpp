@@ -40,7 +40,7 @@ public:
 
     void paint();
     void handle_event(InputEvent e);
-    void handle_event(LevelEvent event, Level* level, Entity* other);
+    void handle_event(LevelEvent event, Level& level, Entity& other);
     void tick(Level& level);
     void collide_immovable(const SDL_Rect& other);
     void collide_movable(Entity& other);
