@@ -3,14 +3,14 @@
 #include "Sprite.hpp"
 #include "LevelEvent.hpp"
 
-class Entity;
+class Character;
 class Level;
 
 class HealthBar {
 public:
     HealthBar();
 
-    void handle_event(LevelEvent event, Level& level, Entity& other);
+    void handle_event(LevelEvent event, Level& level, Character& other);
     void paint(int health);
 
     Sprite& bar;

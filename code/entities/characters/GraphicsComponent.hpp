@@ -2,7 +2,7 @@
 
 #include "Sprite.hpp"
 
-class Entity;
+class Character;
 
 class GraphicsComponent {
 public:
@@ -16,6 +16,6 @@ public:
     GraphicsComponent(GraphicsComponent&& other);
     GraphicsComponent& operator=(GraphicsComponent&& other) = delete;
                       
-    void paint(Entity& me);
-    AnimatedSprite& get_current_sprite(Entity& me);
+    void paint(Character& me);
+    AnimatedSprite& get_current_sprite(Character& me);
 };

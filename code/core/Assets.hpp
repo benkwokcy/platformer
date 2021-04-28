@@ -15,7 +15,6 @@ public:
 
     // Don't show these file paths if I make my code public on Github
     const static inline std::string PATH = "/Users/benkwok/Desktop/school.nosync/platformer/assets/";
-
     Sprite player_run;
     Sprite player_idle;
     Sprite player_attack;
@@ -37,7 +36,6 @@ public:
     Sprite heart_hit;
     Sprite door_idle;
     Sprite door_opening;
-
 private:
     Assets() :
         player_run(PATH + "images/playerrun.png", 624, 58, 78, 58, 16, 28, 23, 16),

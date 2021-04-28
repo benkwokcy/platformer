@@ -20,17 +20,6 @@ public:
         opening(AnimatedSprite(Assets::instance().door_opening))
     {}
 
-    AnimatedSprite& get_current_sprite() {
-        switch (current_state) {
-            case DoorState::IDLE:
-                return idle;
-            case DoorState::OPENING:
-                return opening;
-            default:
-                throw std::runtime_error("Unexpected door state.");
-        }
-    }
-
     void paint() {
         auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(x, y);
         if (current_state != DoorState::IDLE && get_current_sprite().loops_completed()) {
@@ -47,4 +36,15 @@ public:
     int x, y;
     DoorState current_state;
     AnimatedSprite idle, opening;
+private:
+    AnimatedSprite& get_current_sprite() {
+        switch (current_state) {
+            case DoorState::IDLE:
+                return idle;
+            case DoorState::OPENING:
+                return opening;
+            default:
+                throw std::runtime_error("Unexpected door state.");
+        }
+    }
 };

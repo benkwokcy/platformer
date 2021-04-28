@@ -13,44 +13,44 @@ class PhysicsComponent;
 class Tilemap;
 class Level;
 
-enum class EntityState {
+enum class CharacterState {
     MOVING, ATTACK, GROUND, DEAD, HIT
 };
 
-class Entity {
+class Character {
 public:
-    float x, y; // the top left corner of the entity in level coordinates
+    float x, y; // the top left corner of the character in level coordinates
     float w, h; // dimensions of the bounding box
     float speed_x, speed_y;
     float knockback_speed_x, knockback_speed_y;
     bool facing_left;
     int health;
     int time_last_hit;
-    std::stack<EntityState> states;
+    std::stack<CharacterState> states;
     GraphicsComponent* graphics;
     InputComponent* input;
     PhysicsComponent* physics;
 
-    Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics);
-    ~Entity();
-    Entity(const Entity& other) = delete;
-    Entity& operator=(const Entity& other) = delete;
-    Entity(Entity&& other);
-    Entity& operator=(Entity&& other) = delete;
+    Character(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics);
+    ~Character();
+    Character(const Character& other) = delete;
+    Character& operator=(const Character& other) = delete;
+    Character(Character&& other);
+    Character& operator=(Character&& other) = delete;
 
     void paint();
     void handle_event(InputEvent e);
-    void handle_event(LevelEvent event, Level& level, Entity& other);
+    void handle_event(LevelEvent event, Level& level, Character& other);
     void tick(Level& level);
     void collide_immovable(const SDL_Rect& other);
-    void collide_movable(Entity& other);
-    EntityState current_state();
+    void collide_movable(Character& other);
+    CharacterState current_state();
     SDL_Rect bounding_box();
     bool should_be_deleted();
-    void change_state(EntityState state);
+    void change_state(CharacterState state);
     bool can_hit_now(SDL_Rect other);
     bool could_hit_sometime(SDL_Rect other);
 };
 
-Entity* create_player(int x, int y);
-Entity* create_pig(int x, int y, int left_boundary, int right_boundary);
+Character* create_player(int x, int y);
+Character* create_pig(int x, int y, int left_boundary, int right_boundary);

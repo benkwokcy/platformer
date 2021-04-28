@@ -14,14 +14,16 @@ add_link_options(-lSDL2 -lSDL2_image -ltinyxml2)
 add_executable(platformer 
     code/Main.cpp 
     code/scenes/Level.cpp 
-    code/gui/HealthBar.cpp 
-    code/gui/Tiles.cpp 
-    code/entities_and_components/Entity.cpp 
-    code/entities_and_components/GraphicsComponent.cpp 
-    code/entities_and_components/InputComponent.cpp 
-    code/entities_and_components/PhysicsComponent.cpp)
+    code/core/Tiles.cpp 
+    code/entities/ui/HealthBar.cpp 
+    code/entities/characters/Character.cpp 
+    code/entities/characters/GraphicsComponent.cpp 
+    code/entities/characters/InputComponent.cpp 
+    code/entities/characters/PhysicsComponent.cpp)
 
 target_include_directories(platformer PUBLIC 
-    code/entities_and_components 
-    code/gui 
+    code/entities/characters
+    code/entities/objects 
+    code/entities/ui 
+    code/core 
     code/scenes)

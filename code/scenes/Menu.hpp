@@ -11,7 +11,7 @@
 class Menu : public Scene {
 public:
     Menu() :
-        sprite(Sprite(Assets::PATH + "images/mainmenu.png", 640, 480))
+        sprite(Sprite(Assets::PATH + "images/startmenu.png", 640, 480))
     {}
 
     void paint() override {

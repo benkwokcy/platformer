@@ -1,6 +1,6 @@
 #include "Window.hpp"
 #include "Assets.hpp"
-#include "Entity.hpp"
+#include "Character.hpp"
 #include "Level.hpp"
 
 #include "HealthBar.hpp"
@@ -15,7 +15,7 @@ HealthBar::HealthBar() :
     isOneHit(false), isTwoHit(false), isThreeHit(false)
 {}
 
-void HealthBar::handle_event(LevelEvent event, Level& level, Entity& other) {
+void HealthBar::handle_event(LevelEvent event, Level& level, Character& other) {
     switch(event) {
         case LevelEvent::LOST_HEALTH:
             switch (other.health) {

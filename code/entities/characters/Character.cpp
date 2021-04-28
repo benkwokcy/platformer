@@ -12,13 +12,13 @@
 #include "Assets.hpp"
 #include "Level.hpp"
 
-#include "Entity.hpp"
+#include "Character.hpp"
 
 /*********************************************
  *              CONSTRUCTORS
  *********************************************/
 
-Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics) :
+Character::Character(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics) :
     x(x),
     y(y),
     w(w),
@@ -34,10 +34,10 @@ Entity::Entity(float x, float y, float w, float h, GraphicsComponent* graphics, 
     input(input),
     physics(physics)
 {
-    states.push(EntityState::MOVING);
+    states.push(CharacterState::MOVING);
 }
 
-Entity::Entity(Entity&& other) :
+Character::Character(Character&& other) :
     x(other.x),
     y(other.y),
     w(other.w),
@@ -49,12 +49,13 @@ Entity::Entity(Entity&& other) :
     facing_left(other.facing_left),
     health(other.health),
     time_last_hit(other.time_last_hit),
+    states(std::move(other.states)),
     graphics(std::exchange(other.graphics, nullptr)),
     input(std::exchange(other.input, nullptr)),
     physics(std::exchange(other.physics, nullptr))    
 {}
 
-Entity::~Entity() {
+Character::~Character() {
     delete graphics;
     delete input;
     delete physics;
@@ -64,30 +65,30 @@ Entity::~Entity() {
  *              METHODS
  *********************************************/
 
-void Entity::paint() {
+void Character::paint() {
     graphics->paint(*this);
 }
 
-void Entity::handle_event(InputEvent e) {
-    if (current_state() == EntityState::DEAD) { return; }
+void Character::handle_event(InputEvent e) {
+    if (current_state() == CharacterState::DEAD) { return; }
     input->handle_event(*this, e);
 }
 
 // Check if we can hit the other box using the hit box of the current attack frame. If there isn't one, then it returns false.
-bool Entity::can_hit_now(SDL_Rect other) {
+bool Character::can_hit_now(SDL_Rect other) {
     std::optional<SDL_Rect> my_attack_box = graphics->attack.get_current_collision(x, y, facing_left);
     return my_attack_box && SDL_HasIntersection(&*my_attack_box, &other) == SDL_TRUE;
 }
 
 // Check if we can hit the other box using the hit box of some random attack frame.
-bool Entity::could_hit_sometime(SDL_Rect other) {
+bool Character::could_hit_sometime(SDL_Rect other) {
     SDL_Rect my_attack_box = graphics->attack.get_any_collision(x, y, facing_left);
     return SDL_HasIntersection(&my_attack_box, &other) == SDL_TRUE;
 }
 
-void Entity::handle_event(LevelEvent event, Level& level, Entity& other) {
+void Character::handle_event(LevelEvent event, Level& level, Character& other) {
     if (&other == this) { return; }
-    if (current_state() == EntityState::DEAD) { return; }
+    if (current_state() == CharacterState::DEAD) { return; }
 
     switch(event) {
         case LevelEvent::ATTACKED:
@@ -97,10 +98,10 @@ void Entity::handle_event(LevelEvent event, Level& level, Entity& other) {
                 physics->knockback(*this, other.x);
                 assert(health >= 0);
                 if (health == 0) {
-                    change_state(EntityState::DEAD);
+                    change_state(CharacterState::DEAD);
                     physics->die(*this);
                 } else {
-                    change_state(EntityState::HIT);
+                    change_state(CharacterState::HIT);
                     level.send_event(LevelEvent::LOST_HEALTH, *this);
                 }
             }
@@ -110,38 +111,38 @@ void Entity::handle_event(LevelEvent event, Level& level, Entity& other) {
     }
 }
 
-void Entity::tick(Level& level) {
-    if (current_state() != EntityState::DEAD) {
+void Character::tick(Level& level) {
+    if (current_state() != CharacterState::DEAD) {
         input->tick(*this, level);
     }
     physics->tick(*this);
-    if (current_state() == EntityState::ATTACK && graphics->attack.has_collision()) {
+    if (current_state() == CharacterState::ATTACK && graphics->attack.has_collision()) {
         level.send_event(LevelEvent::ATTACKED, *this);
     }
 }
 
-void Entity::collide_movable(Entity& other) {
+void Character::collide_movable(Character& other) {
     physics->collide_movable(*this, other);
 }
 
-void Entity::collide_immovable(const SDL_Rect& other) {
+void Character::collide_immovable(const SDL_Rect& other) {
     physics->collide_immovable(*this, other);
 }
 
-EntityState Entity::current_state() {
+CharacterState Character::current_state() {
     assert(!states.empty());
     return states.top();
 }
 
-SDL_Rect Entity::bounding_box() {
+SDL_Rect Character::bounding_box() {
     return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
 }
 
-bool Entity::should_be_deleted() {
-    return current_state() == EntityState::DEAD && graphics->dead.loops_completed() && graphics->dead.time_elapsed() > 5000;
+bool Character::should_be_deleted() {
+    return current_state() == CharacterState::DEAD && graphics->dead.loops_completed() && graphics->dead.time_elapsed() > 5000;
 }
 
-void Entity::change_state(EntityState state) {
+void Character::change_state(CharacterState state) {
     states.push(state);
     graphics->get_current_sprite(*this).reset_time();
 }
@@ -150,10 +151,9 @@ void Entity::change_state(EntityState state) {
  *              FACTORY METHODS
  *********************************************/
 
-Entity* create_player(int x, int y) {
-    float w = 16.0f;
-    float h = 28.0f;
-    Entity* player = new Entity(
+Character* create_player(int x, int y) {
+    float w = 16.0f, h = 28.0f;
+    Character* player = new Character(
         x, y,
         w, h,    
         new GraphicsComponent(
@@ -172,10 +172,9 @@ Entity* create_player(int x, int y) {
     return player;
 }
 
-Entity* create_pig(int x, int y, int left_boundary, int right_boundary) {
-    float w = 15.0f;
-    float h = 16.0f;
-    Entity* pig = new Entity(
+Character* create_pig(int x, int y, int left_boundary, int right_boundary) {
+    float w = 15.0f, h = 16.0f;
+    Character* pig = new Character(
         x, y,
         w, h,     
         new GraphicsComponent(

@@ -28,7 +28,6 @@ public:
             max_time_in_frame = 0;
         }
     }
-
 };
 
 int main() {

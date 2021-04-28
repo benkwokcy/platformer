@@ -8,13 +8,13 @@
 #include "LevelEvent.hpp"
 #include "Door.hpp"
 
-class Entity;
+class Character;
 
 class Level : public Scene {
 public:
     Tilemap level;
-    Entity* player;
-    std::vector<Entity*> pigs;
+    Character* player;
+    std::vector<Character*> pigs;
     HealthBar healthbar;
     Door start_door;
 
@@ -24,6 +24,6 @@ public:
     void handle_event(InputEvent e) override;
     void tick() override;
     void paint() override;
-    void send_event(LevelEvent event, Entity& entity);
+    void send_event(LevelEvent event, Character& character);
     void enter() override;
 };

@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <array>
 
-#include "Entity.hpp"
+#include "Character.hpp"
 #include "Sprite.hpp"
 #include "Camera.hpp"
 #include "PhysicsComponent.hpp"
@@ -33,21 +33,21 @@ GraphicsComponent::GraphicsComponent(GraphicsComponent&& other) :
     hit(std::move(other.hit))
 {}
 
-AnimatedSprite& GraphicsComponent::get_current_sprite(Entity& me) {
+AnimatedSprite& GraphicsComponent::get_current_sprite(Character& me) {
     switch(me.current_state()) {
-        case EntityState::ATTACK:
+        case CharacterState::ATTACK:
             return attack;
             break;
-        case EntityState::GROUND:
+        case CharacterState::GROUND:
             return ground;
             break;
-        case EntityState::DEAD:
+        case CharacterState::DEAD:
             return dead;
             break;
-        case EntityState::HIT:
+        case CharacterState::HIT:
             return hit;
             break;
-        case EntityState::MOVING:
+        case CharacterState::MOVING:
             if (me.speed_y < 0.0f) {
                 return jump;
             } else if (me.speed_y > 0.0f && !me.physics->on_ground()) {
@@ -65,8 +65,8 @@ AnimatedSprite& GraphicsComponent::get_current_sprite(Entity& me) {
     }
 }
 
-void GraphicsComponent::paint(Entity& me) {
-    while (me.states.size() > 1 && me.current_state() != EntityState::DEAD && get_current_sprite(me).loops_completed()) {
+void GraphicsComponent::paint(Character& me) {
+    while (me.states.size() > 1 && me.current_state() != CharacterState::DEAD && get_current_sprite(me).loops_completed()) {
         me.states.pop();
     }
     auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(me.x, me.y);

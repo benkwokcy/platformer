@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "Entity.hpp"
+#include "Character.hpp"
 #include "GraphicsComponent.hpp"
 
 #include "PhysicsComponent.hpp"
@@ -69,24 +69,24 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
  *              COMPONENTS
  *********************************************/
 
-void PhysicsComponent::tick(Entity& entity) {
-    entity.speed_y += GRAVITY;
-    if (entity.knockback_speed_x != 0.0f) {
-        entity.knockback_speed_x = entity.knockback_speed_x > 0.0f ? std::max(0.0f, entity.knockback_speed_x - KNOCKBACK_DECAY) : std::min(0.0f, entity.knockback_speed_x + KNOCKBACK_DECAY);
+void PhysicsComponent::tick(Character& character) {
+    character.speed_y += GRAVITY;
+    if (character.knockback_speed_x != 0.0f) {
+        character.knockback_speed_x = character.knockback_speed_x > 0.0f ? std::max(0.0f, character.knockback_speed_x - KNOCKBACK_DECAY) : std::min(0.0f, character.knockback_speed_x + KNOCKBACK_DECAY);
     }
-    if (entity.knockback_speed_y != 0.0f) {
-        entity.knockback_speed_y = entity.knockback_speed_y > 0.0f ? std::max(0.0f, entity.knockback_speed_y - KNOCKBACK_DECAY) : std::min(0.0f, entity.knockback_speed_y + KNOCKBACK_DECAY);
+    if (character.knockback_speed_y != 0.0f) {
+        character.knockback_speed_y = character.knockback_speed_y > 0.0f ? std::max(0.0f, character.knockback_speed_y - KNOCKBACK_DECAY) : std::min(0.0f, character.knockback_speed_y + KNOCKBACK_DECAY);
     }
-    entity.x += entity.speed_x + entity.knockback_speed_x;
-    entity.y += entity.speed_y + entity.knockback_speed_y;
+    character.x += character.speed_x + character.knockback_speed_x;
+    character.y += character.speed_y + character.knockback_speed_y;
     touching = { false, false, false, false };
 }
 
-void PhysicsComponent::die(Entity& me) {
+void PhysicsComponent::die(Character& me) {
     me.speed_x = 0.0f;
 }
 
-void PhysicsComponent::knockback(Entity& me, float source_x) {
+void PhysicsComponent::knockback(Character& me, float source_x) {
     me.knockback_speed_y -= KNOCKBACK_Y;
     if (source_x < me.x) {
         me.knockback_speed_x += KNOCKBACK_X;
@@ -96,7 +96,7 @@ void PhysicsComponent::knockback(Entity& me, float source_x) {
 }
 
 // Collide a movable object (me) against an immovable object (other).
-void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
+void PhysicsComponent::collide_immovable(Character& me, const SDL_Rect& other) {
     auto [collision_type, penetration] = rect_collide_rect(me.bounding_box(), other);
     switch (collision_type) {
         case CollisionType::OVERLAP_TOP:
@@ -107,8 +107,8 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
         case CollisionType::OVERLAP_BOTTOM:
             touching.bottom = true;
             me.y -= penetration;
-            if (me.speed_y > 2.0f && me.current_state() == EntityState::MOVING) { 
-                me.change_state(EntityState::GROUND);
+            if (me.speed_y > 2.0f && me.current_state() == CharacterState::MOVING) { 
+                me.change_state(CharacterState::GROUND);
             }
             me.speed_y = std::min(me.speed_y, 0.0f);
             break;
@@ -140,7 +140,7 @@ void PhysicsComponent::collide_immovable(Entity& me, const SDL_Rect& other) {
 }
 
 // Collide a movable object (me) against a movable object (other).
-void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
+void PhysicsComponent::collide_movable(Character& me, Character& other) {
     auto [collision_type, penetration] = rect_collide_rect(me.bounding_box(), other.bounding_box());
     switch (collision_type) {
         case CollisionType::OVERLAP_TOP:
@@ -148,8 +148,8 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 other.y -= penetration;
                 other.speed_y = 0.0f;
                 other.physics->touching.bottom = true;
-                if (other.speed_y > 2.0f && other.current_state() != EntityState::ATTACK) {
-                    other.change_state(EntityState::GROUND);
+                if (other.speed_y > 2.0f && other.current_state() != CharacterState::ATTACK) {
+                    other.change_state(CharacterState::GROUND);
                 }
             } else if (other.physics->touching.top) { // I have to move
                 me.y += penetration;
@@ -177,8 +177,8 @@ void PhysicsComponent::collide_movable(Entity& me, Entity& other) {
                 me.y -= penetration;
                 me.speed_y = 0.0f;
                 touching.bottom = true;
-                if (me.speed_y > 2.0f && me.current_state() != EntityState::ATTACK) { 
-                    me.change_state(EntityState::GROUND);
+                if (me.speed_y > 2.0f && me.current_state() != CharacterState::ATTACK) { 
+                    me.change_state(CharacterState::GROUND);
                 }
             } else if (other.speed_y * me.speed_y >= 0.0f) { // moving in the same direction or one is stationary
                 other.y += penetration / 2;

@@ -9,15 +9,16 @@
 #include "Scene.hpp"
 
 enum class GameState {
-    MENU, LEVEL, QUIT
+    START_MENU, LEVEL, QUIT
 };
 
+// Essentially a "Scene Manager". This is a top level class that reads user input and toggles between scenes.
 class Game {
 public:
     Game() : 
-        state(GameState::MENU)
+        state(GameState::START_MENU)
     {
-        current_scene = &menu;
+        current_scene = &start_menu;
     }
 
     void tick() {
@@ -29,13 +30,13 @@ public:
                     state = GameState::QUIT; 
                     break;
                 case InputEvent::CONTINUE:
-                    if (state == GameState::MENU) {
+                    if (state == GameState::START_MENU) {
                         state = GameState::LEVEL;
                         current_scene = &level;
                         current_scene->enter();
                     } else if (state == GameState::LEVEL) {
-                        state = GameState::MENU;
-                        current_scene = &menu;
+                        state = GameState::START_MENU;
+                        current_scene = &start_menu;
                     }
                     break;
                 default:
@@ -54,9 +55,9 @@ public:
 
 private:
     // State
-    Scene* current_scene; // TODO - replace with reference
+    Scene* current_scene;
     GameState state;
     // Scenes
-    Menu menu;
+    Menu start_menu;
     Level level;
 };

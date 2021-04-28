@@ -1,7 +1,7 @@
 #pragma once
 
 struct SDL_Rect;
-class Entity;
+class Character;
 
 enum class CollisionType {
     OVERLAP_TOP, OVERLAP_BOTTOM, OVERLAP_LEFT, OVERLAP_RIGHT, 
@@ -21,11 +21,11 @@ class PhysicsComponent {
 public:
     Touching touching {}; // keeps track where we are touching an immovable object
 
-    void tick(Entity& me);
-    void collide_immovable(Entity& me, const SDL_Rect& other);
-    void collide_movable(Entity& me, Entity& other);
-    void knockback(Entity& me, float source_x);
-    void die(Entity& me);
+    void tick(Character& me);
+    void collide_immovable(Character& me, const SDL_Rect& other);
+    void collide_movable(Character& me, Character& other);
+    void knockback(Character& me, float source_x);
+    void die(Character& me);
 
     inline bool on_ground() {
         return touching.bottom == true;

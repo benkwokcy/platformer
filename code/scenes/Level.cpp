@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "Camera.hpp"
-#include "Entity.hpp"
+#include "Character.hpp"
 #include "GraphicsComponent.hpp"
 #include "Assets.hpp"
 
@@ -77,10 +77,10 @@ void Level::paint() {
     healthbar.paint(player->health);
 }
 
-void Level::send_event(LevelEvent event, Entity& entity) {
-    player->handle_event(event, *this, entity);
+void Level::send_event(LevelEvent event, Character& character) {
+    player->handle_event(event, *this, character);
     for (auto pig : pigs) { 
-        pig->handle_event(event, *this, entity);
+        pig->handle_event(event, *this, character);
     }
-    healthbar.handle_event(event, *this, entity);
+    healthbar.handle_event(event, *this, character);
 }
