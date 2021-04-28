@@ -25,4 +25,5 @@ public:
     void tick() override;
     void paint() override;
     void send_event(LevelEvent event, Entity& entity);
+    void enter() override;
 };

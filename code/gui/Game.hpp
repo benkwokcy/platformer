@@ -32,6 +32,7 @@ public:
                     if (state == GameState::MENU) {
                         state = GameState::LEVEL;
                         current_scene = &level;
+                        current_scene->enter();
                     } else if (state == GameState::LEVEL) {
                         state = GameState::MENU;
                         current_scene = &menu;

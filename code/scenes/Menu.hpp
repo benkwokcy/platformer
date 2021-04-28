@@ -20,6 +20,7 @@ public:
 
     void handle_event(InputEvent e) override {}
     void tick() override {}
+    void enter() override {}
 
 private:
     Sprite sprite;

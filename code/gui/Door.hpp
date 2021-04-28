@@ -1,22 +1,50 @@
 #pragma once
 
+#include <stdexcept>
+
 #include "Sprite.hpp"
 #include "Assets.hpp"
 #include "Camera.hpp"
+
+enum class DoorState {
+    IDLE, OPENING
+};
 
 class Door {
 public:
     Door(int x, int y) :
         x(x),
         y(y),
-        idle(Assets::PATH + "images/dooridle.png", 46, 56, 46, 56, 46, 56, 0, 0, 10)
+        current_state(DoorState::IDLE),
+        idle(Assets::PATH + "images/dooridle.png", 46, 56, 46, 56, 46, 56, 0, 0, 10),
+        opening(Assets::PATH + "images/dooropening.png", 230, 56, 46, 56, 46, 56, 0, 0, 10)
     {}
+
+    AnimatedSprite& get_current_sprite() {
+        switch (current_state) {
+            case DoorState::IDLE:
+                return idle;
+            case DoorState::OPENING:
+                return opening;
+            default:
+                throw std::runtime_error("Unexpected door state.");
+        }
+    }
 
     void paint() {
         auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(x, y);
-        idle.paint(screen_x, screen_y);
+        if (current_state != DoorState::IDLE && get_current_sprite().loops_completed()) {
+            current_state = DoorState::IDLE;
+        }
+        get_current_sprite().paint(screen_x, screen_y);
+    }
+
+    void open() {
+        current_state = DoorState::OPENING;
+        opening.reset_time();
     }
 
     int x, y;
-    AnimatedSprite idle;
+    DoorState current_state;
+    AnimatedSprite idle, opening;
 };

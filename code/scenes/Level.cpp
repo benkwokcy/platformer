@@ -24,6 +24,10 @@ Level::~Level() {
     }
 }
 
+void Level::enter() {
+    start_door.open();
+}
+
 void Level::handle_event(InputEvent e) {
     player->handle_event(e);
 }
@@ -50,6 +54,7 @@ void Level::tick() {
     if (player->should_be_deleted()) {
         delete player;
         player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
+        start_door.open();
     }
     // update camera
     Camera::tick(static_cast<int>(player->x));
