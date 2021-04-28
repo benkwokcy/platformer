@@ -46,9 +46,14 @@ void Level::tick() {
         player->collide_movable(*pig); 
         // TODO - collide pigs with each other
     }
+    // if player is dead, respawn player
+    if (player->should_be_deleted()) {
+        delete player;
+        player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
+    }
     // update camera
     Camera::tick(static_cast<int>(player->x));
-    // remove any dead objects
+    // remove any dead pigs
     for (int i = pigs.size() - 1; i >= 0; i--) {
         if (pigs[i]->should_be_deleted()) {
             delete pigs[i];
