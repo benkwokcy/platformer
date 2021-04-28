@@ -6,6 +6,7 @@
 #include "Tiles.hpp"
 #include "HealthBar.hpp"
 #include "LevelEvent.hpp"
+#include "Door.hpp"
 
 class Entity;
 
@@ -15,6 +16,7 @@ public:
     Entity* player;
     std::vector<Entity*> pigs;
     HealthBar healthbar;
+    Door start_door;
 
     Level();
     ~Level();
