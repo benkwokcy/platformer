@@ -157,20 +157,18 @@ Entity* create_player(int x, int y) {
         x, y,
         w, h,    
         new GraphicsComponent(
-            AnimatedSprite(Assets::PATH + "images/playerrun.png", 624, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite(Assets::PATH + "images/playeridle.png", 858, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite(Assets::PATH + "images/playerattack.png", 234, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite(Assets::PATH + "images/playerjump.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite(Assets::PATH + "images/playerfall.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite(Assets::PATH + "images/playerground.png", 78, 58, 78, 58, 16, 28, 23, 16, 10),
-            AnimatedSprite(Assets::PATH + "images/playerdead.png", 312, 58, 78, 58, 16, 28, 23, 16, 10, false, false),
-            AnimatedSprite(Assets::PATH + "images/playerhit.png", 156, 58, 78, 58, 16, 28, 23, 16, 10)
+            AnimatedSprite(Assets::instance().player_run),
+            AnimatedSprite(Assets::instance().player_idle),
+            AnimatedSprite(Assets::instance().player_attack),
+            AnimatedSprite(Assets::instance().player_jump),
+            AnimatedSprite(Assets::instance().player_fall),
+            AnimatedSprite(Assets::instance().player_ground),
+            AnimatedSprite(Assets::instance().player_dead, 10, false),
+            AnimatedSprite(Assets::instance().player_hit)
         ),
         new PlayerInputComponent(),
         new PhysicsComponent()
     );
-    player->graphics->attack.add_collision(0, { 49, 6, 29, 38 });
-    player->graphics->attack.add_collision(1, { 42, 4, 29, 40 });
     return player;
 }
 
@@ -181,19 +179,17 @@ Entity* create_pig(int x, int y, int left_boundary, int right_boundary) {
         x, y,
         w, h,     
         new GraphicsComponent(
-            AnimatedSprite(Assets::PATH + "images/pigrun.png", 204, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite(Assets::PATH + "images/pigidle.png", 374, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite(Assets::PATH + "images/pigattack.png", 170, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite(Assets::PATH + "images/pigjump.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite(Assets::PATH + "images/pigfall.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite(Assets::PATH + "images/pigground.png", 34, 28, 34, 28, 15, 16, 12, 12, 10, true),
-            AnimatedSprite(Assets::PATH + "images/pigdead.png", 136, 28, 34, 28, 15, 16, 12, 12, 10, true, false),
-            AnimatedSprite(Assets::PATH + "images/pighit.png", 68, 28, 34, 28, 15, 16, 12, 12, 10, true)
+            AnimatedSprite(Assets::instance().pig_run),
+            AnimatedSprite(Assets::instance().pig_idle),
+            AnimatedSprite(Assets::instance().pig_attack),
+            AnimatedSprite(Assets::instance().pig_jump),
+            AnimatedSprite(Assets::instance().pig_fall),
+            AnimatedSprite(Assets::instance().pig_ground),
+            AnimatedSprite(Assets::instance().pig_dead, 10, false),
+            AnimatedSprite(Assets::instance().pig_hit)
         ),
         new PigInputComponent(left_boundary, right_boundary),
         new PhysicsComponent()
     );
-    pig->graphics->attack.add_collision(2, { 1, 2, 9, 20 });
-    pig->graphics->attack.add_collision(3, { 5, 0, 8, 10 });
     return pig;
 }

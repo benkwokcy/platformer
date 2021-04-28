@@ -54,7 +54,7 @@ public:
 
 private:
     // State
-    Scene* current_scene;
+    Scene* current_scene; // TODO - replace with reference
     GameState state;
     // Scenes
     Menu menu;

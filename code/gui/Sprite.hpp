@@ -28,6 +28,7 @@ public:
     // Main constructor
     Sprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
            int x_offset = 0, int y_offset = 0, bool faces_left = false) : 
+        filename(filename),
         image_width(image_width),
         image_height(image_height),
         frame_width(frame_width),
@@ -66,6 +67,7 @@ public:
     Sprite& operator=(const Sprite& other) = delete;
 
     Sprite(Sprite&& other) : 
+        filename(std::move(other.filename)),
         image_width(other.image_width),
         image_height(other.image_height),
         frame_width(other.frame_width),
@@ -105,82 +107,9 @@ public:
         }
     }
 
-protected:
-    int image_width, image_height;
-    int frame_width, frame_height;
-    int sprite_width, sprite_height; // if the sprite is smaller than the frame
-    int x_offset, y_offset; // if the sprite is smaller than the frame
-    int num_rows, num_cols, num_frames;
-    bool faces_left; // true if the sprite is drawn facing left
-    SDL_Surface* surface;
-    SDL_Texture* texture;
-    SDL_Rect source_rect; // image coordinates
-    SDL_Rect dest_rect; // screen coordinates
-};
-
-/*********************************************
- *            ANIMATED SPRITE
- *********************************************/
-
-// Doesn't necessarily need to have more than one frame.
-// TODO - Flyweight - have animatedsprite contain a sprite pointer, so we can have lots of animatedsprites sharing a sprite
-// but having their own timer
-class AnimatedSprite : public Sprite {
-public:
-
-    AnimatedSprite(std::string filename, int image_width, int image_height, int frame_width, int frame_height, int sprite_width, int sprite_height, 
-                   int x_offset, int y_offset, int frames_per_second, bool faces_left = false, bool loop = true) : 
-        Sprite(filename, image_width, image_height, frame_width, frame_height, sprite_width, sprite_height, x_offset, y_offset, faces_left),
-        frames_per_second(frames_per_second),
-        creation_time(static_cast<int>(SDL_GetTicks())),
-        loop(loop)
-    {}
-
-    AnimatedSprite(const AnimatedSprite& other) = delete;
-    AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
-
-    AnimatedSprite(AnimatedSprite&& other) :
-        Sprite(std::move(other)),
-        frames_per_second(other.frames_per_second),
-        creation_time(other.creation_time),
-        loop(other.loop),
-        collisions(std::move(other.collisions))
-    {}
-
-    AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
-
-    void paint(int screen_x, int screen_y, bool horizontal_flip = false) {
-        Sprite::paint(screen_x, screen_y, get_frame_index(), horizontal_flip);
-    }
-
-    int get_frame_index() {
-        if (loop) {
-            return frames_elapsed() % num_frames;
-        } else {
-            return std::min(frames_elapsed(), num_frames - 1);
-        }
-    }
-
-    int time_elapsed() {
-        return SDL_GetTicks() - creation_time;
-    }
-
-    // Resets the animation
-    void reset_time() {
-        creation_time = SDL_GetTicks();
-    }
-
-    int loops_completed() {
-        return frames_elapsed() / num_frames;
-    }
-
     void add_collision(int index, SDL_Rect rect) {
         assert(collisions.count(index) == 0);
         collisions[index] = rect;
-    }
-
-    bool has_collision() {
-        return collisions.count(get_frame_index()) != 0;
     }
 
     SDL_Rect get_collision(int index, int x, int y, bool horizontal_flip) {
@@ -196,25 +125,95 @@ public:
         return collision;
     }
 
+    std::string filename;
+    int image_width, image_height;
+    int frame_width, frame_height;
+    int sprite_width, sprite_height; // if the sprite is smaller than the frame
+    int x_offset, y_offset; // if the sprite is smaller than the frame
+    int num_rows, num_cols, num_frames;
+    bool faces_left; // true if the sprite is drawn facing left
+    std::unordered_map<int,SDL_Rect> collisions;
+    SDL_Surface* surface;
+    SDL_Texture* texture;
+    SDL_Rect source_rect; // image coordinates
+    SDL_Rect dest_rect; // screen coordinates
+};
+
+/*********************************************
+ *            ANIMATED SPRITE
+ *********************************************/
+
+// Doesn't necessarily need to have more than one frame.
+class AnimatedSprite {
+public:
+
+    AnimatedSprite(Sprite& sprite, int frames_per_second = 10, bool loop = true) : 
+        sprite(sprite),
+        frames_per_second(frames_per_second),
+        creation_time(static_cast<int>(SDL_GetTicks())),
+        loop(loop)
+    {}
+
+    AnimatedSprite(const AnimatedSprite& other) = delete;
+    AnimatedSprite& operator=(const AnimatedSprite& other) = delete;
+
+    AnimatedSprite(AnimatedSprite&& other) :
+        sprite(other.sprite),
+        frames_per_second(other.frames_per_second),
+        creation_time(other.creation_time),
+        loop(other.loop)
+    {}
+
+    AnimatedSprite& operator=(AnimatedSprite&& other) = delete;
+
+    void paint(int screen_x, int screen_y, bool horizontal_flip = false) {
+        sprite.paint(screen_x, screen_y, get_frame_index(), horizontal_flip);
+    }
+
+    int get_frame_index() {
+        if (loop) {
+            return frames_elapsed() % sprite.num_frames;
+        } else {
+            return std::min(frames_elapsed(), sprite.num_frames - 1);
+        }
+    }
+
+    int time_elapsed() {
+        return SDL_GetTicks() - creation_time;
+    }
+
+    // Resets the animation
+    void reset_time() {
+        creation_time = SDL_GetTicks();
+    }
+
+    int loops_completed() {
+        return frames_elapsed() / sprite.num_frames;
+    }
+
+    bool has_collision() {
+        return sprite.collisions.count(get_frame_index()) != 0;
+    }
+
     std::optional<SDL_Rect> get_current_collision(int x, int y, bool horizontal_flip) {
         int index = get_frame_index();
-        if (collisions.count(index) == 0) {
+        if (sprite.collisions.count(index) == 0) {
             return {};
         } else {
-            return get_collision(index, x, y, horizontal_flip);
+            return sprite.get_collision(index, x, y, horizontal_flip);
         }
     }
 
     SDL_Rect get_any_collision(int x, int y, bool horizontal_flip) {
-        int index = collisions.begin()->first;
-        return get_collision(index, x, y, horizontal_flip);
+        int index = sprite.collisions.begin()->first;
+        return sprite.get_collision(index, x, y, horizontal_flip);
     }
 
 private:
+    Sprite& sprite;
     int frames_per_second;
     int creation_time;
     bool loop;
-    std::unordered_map<int,SDL_Rect> collisions;
 
     // Get the number of frames elapsed since creation or the last reset
     int frames_elapsed() {

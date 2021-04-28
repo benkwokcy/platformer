@@ -16,8 +16,8 @@ public:
         x(x),
         y(y),
         current_state(DoorState::IDLE),
-        idle(Assets::PATH + "images/dooridle.png", 46, 56, 46, 56, 46, 56, 0, 0, 10),
-        opening(Assets::PATH + "images/dooropening.png", 230, 56, 46, 56, 46, 56, 0, 0, 10)
+        idle(AnimatedSprite(Assets::instance().door_idle)),
+        opening(AnimatedSprite(Assets::instance().door_opening))
     {}
 
     AnimatedSprite& get_current_sprite() {

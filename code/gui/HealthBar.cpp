@@ -6,11 +6,11 @@
 #include "HealthBar.hpp"
 
 HealthBar::HealthBar() :
-    bar(Sprite(Assets::PATH + "images/playerhealthbar.png", 66, 34)),
-    heartidle(AnimatedSprite(Assets::PATH + "images/smallheartidle.png", 144, 14, 18, 14, 8, 7, 7, 4, 10)),
-    hearthit1(AnimatedSprite(Assets::PATH + "images/smallhearthit.png", 36, 14, 18, 14, 8, 7, 7, 4, 10)),
-    hearthit2(AnimatedSprite(Assets::PATH + "images/smallhearthit.png", 36, 14, 18, 14, 8, 7, 7, 4, 10)),
-    hearthit3(AnimatedSprite(Assets::PATH + "images/smallhearthit.png", 36, 14, 18, 14, 8, 7, 7, 4, 10)),
+    bar(Assets::instance().health_bar),
+    heartidle(AnimatedSprite(Assets::instance().heart_idle)),
+    hearthit1(AnimatedSprite(Assets::instance().heart_hit)),
+    hearthit2(AnimatedSprite(Assets::instance().heart_hit)),
+    hearthit3(AnimatedSprite(Assets::instance().heart_hit)),
     x(Window::width - 66 - 15), y(15),
     isOneHit(false), isTwoHit(false), isThreeHit(false)
 {}
