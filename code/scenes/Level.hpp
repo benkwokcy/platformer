@@ -17,6 +17,7 @@ public:
     std::vector<Character*> pigs;
     HealthBar healthbar;
     Door start_door;
+    Door end_door;
 
     Level();
     ~Level();

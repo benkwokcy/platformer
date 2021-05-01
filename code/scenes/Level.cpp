@@ -10,11 +10,13 @@
 
 Level::Level() :
     level(Assets::PATH + "level.tmx"),
-    start_door(level.markers.at("StartDoor").x, level.markers.at("StartDoor").y)
+    start_door(level.markers.at("StartDoor").x, level.markers.at("StartDoor").y),
+    end_door(level.markers.at("EndDoor").x, level.markers.at("EndDoor").y)
 {
     player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
     pigs.push_back(create_pig(level.markers.at("PigSpawn1").x, level.markers.at("PigSpawn1").y, level.markers.at("PigLeftBoundary1").x, level.markers.at("PigRightBoundary1").x));
     pigs.push_back(create_pig(level.markers.at("PigSpawn2").x, level.markers.at("PigSpawn2").y, level.markers.at("PigLeftBoundary2").x, level.markers.at("PigRightBoundary2").x));
+    pigs.push_back(create_pig(level.markers.at("PigSpawn3").x, level.markers.at("PigSpawn3").y, level.markers.at("PigLeftBoundary3").x, level.markers.at("PigRightBoundary3").x));
 }
 
 Level::~Level() {
@@ -70,6 +72,7 @@ void Level::tick() {
 void Level::paint() {
     level.paint();
     start_door.paint();
+    end_door.paint();
     player->paint();
     for (auto pig : pigs) { 
         pig->paint(); 
