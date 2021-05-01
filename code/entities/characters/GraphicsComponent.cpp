@@ -69,6 +69,7 @@ void GraphicsComponent::paint(Character& me) {
     while (me.states.size() > 1 && me.current_state() != CharacterState::DEAD && get_current_sprite(me).loops_completed()) {
         me.states.pop();
     }
+    if (!Camera::is_box_visible(me.x, me.y, me.w, me.h)) { return; }
     auto [screen_x, screen_y] = Camera::convert_to_screen_coordinates(me.x, me.y);
     get_current_sprite(me).paint(screen_x, screen_y, me.facing_left);
 }
