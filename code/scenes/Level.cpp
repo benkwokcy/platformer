@@ -63,7 +63,7 @@ void Level::tick() {
         enter();
     }
     // update camera
-    Camera::tick(static_cast<int>(player->x));
+    Camera::tick(static_cast<int>(player->x), static_cast<int>(player->y));
     // remove any dead pigs
     for (int i = pigs.size() - 1; i >= 0; i--) {
         if (pigs[i]->should_be_deleted(*this)) {

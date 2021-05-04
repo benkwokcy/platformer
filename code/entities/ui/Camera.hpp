@@ -10,13 +10,22 @@ class Camera {
 public:
     static inline int x = 0, y = 0; // top left corner of the camera view in level coordinates, this position is directly modified by the level
 
-    static void tick(int player_x) {
+    static void tick(int player_x, int player_y) {
         int left_boundary = x + (0.3 * Window::width);
         int right_boundary = x + (0.7 * Window::width);
         if (player_x > right_boundary) {
             x += player_x - right_boundary;
         } else if (player_x < left_boundary) {
             x += player_x - left_boundary;
+        }
+
+        // TODO - camera shouldn't fall below the fall death marker, or out of the level boundaries in general
+        int top_boundary = y + (0.2 * Window::height);
+        int bottom_boundary = y + (0.8 * Window::height);
+        if (player_y < top_boundary) {
+            y += player_y - top_boundary;
+        } else if (player_y > bottom_boundary) {
+            y += player_y - bottom_boundary;
         }
     }
 
