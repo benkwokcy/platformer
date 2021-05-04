@@ -46,7 +46,7 @@ public:
     void collide_movable(Character& other);
     CharacterState current_state();
     SDL_Rect bounding_box();
-    bool should_be_deleted();
+    bool should_be_deleted(Level& level);
     void change_state(CharacterState state);
     bool can_hit_now(SDL_Rect other);
     bool could_hit_sometime(SDL_Rect other);

@@ -138,8 +138,9 @@ SDL_Rect Character::bounding_box() {
     return { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
 }
 
-bool Character::should_be_deleted() {
-    return current_state() == CharacterState::DEAD && graphics->dead.loops_completed() && graphics->dead.time_elapsed() > 5000;
+bool Character::should_be_deleted(Level& level) {
+    return (current_state() == CharacterState::DEAD && graphics->dead.loops_completed() && graphics->dead.time_elapsed() > 5000) ||
+            y > level.level.markers.at("FallDeath").y + 1000;
 }
 
 void Character::change_state(CharacterState state) {

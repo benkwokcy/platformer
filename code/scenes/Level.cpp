@@ -40,20 +40,20 @@ void Level::tick() {
     for (auto pig : pigs) { 
         pig->tick(*this);   
     }
-    // collide each object with the level
+    // collide each character with the level
     for (auto& c : level.collisions) {
         player->collide_immovable(c);
         for (auto& pig : pigs) { 
             pig->collide_immovable(c); 
         }
     }
-    // collide each pair of objects
+    // collide each pair of characters
     for (auto pig : pigs) { 
         player->collide_movable(*pig); 
         // TODO - collide pigs with each other
     }
     // if player is dead, respawn player
-    if (player->should_be_deleted()) {
+    if (player->should_be_deleted(*this)) {
         delete player;
         player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
         start_door.open();
@@ -62,7 +62,7 @@ void Level::tick() {
     Camera::tick(static_cast<int>(player->x));
     // remove any dead pigs
     for (int i = pigs.size() - 1; i >= 0; i--) {
-        if (pigs[i]->should_be_deleted()) {
+        if (pigs[i]->should_be_deleted(*this)) {
             delete pigs[i];
             pigs.erase(pigs.begin() + i);
         }
