@@ -8,7 +8,7 @@
 // Side scrolling camera
 class Camera {
 public:
-    static inline int x = 0, y = 0; // top left corner of the camera view in level coordinates
+    static inline int x = 0, y = 0; // top left corner of the camera view in level coordinates, this position is directly modified by the level
 
     static void tick(int player_x) {
         int left_boundary = x + (0.3 * Window::width);

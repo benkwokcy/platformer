@@ -14,9 +14,11 @@ Level::Level() :
     end_door(level.markers.at("EndDoor").x, level.markers.at("EndDoor").y)
 {
     player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
+    // TODO - turn this into a loop so its easier to add pigs
     pigs.push_back(create_pig(level.markers.at("PigSpawn1").x, level.markers.at("PigSpawn1").y, level.markers.at("PigLeftBoundary1").x, level.markers.at("PigRightBoundary1").x));
     pigs.push_back(create_pig(level.markers.at("PigSpawn2").x, level.markers.at("PigSpawn2").y, level.markers.at("PigLeftBoundary2").x, level.markers.at("PigRightBoundary2").x));
     pigs.push_back(create_pig(level.markers.at("PigSpawn3").x, level.markers.at("PigSpawn3").y, level.markers.at("PigLeftBoundary3").x, level.markers.at("PigRightBoundary3").x));
+    pigs.push_back(create_pig(level.markers.at("PigSpawn4").x, level.markers.at("PigSpawn4").y, level.markers.at("PigLeftBoundary4").x, level.markers.at("PigRightBoundary4").x));
 }
 
 Level::~Level() {
@@ -27,6 +29,8 @@ Level::~Level() {
 }
 
 void Level::enter() {
+    Camera::x = level.markers.at("CameraStart").x;
+    Camera::y = level.markers.at("CameraStart").y;
     start_door.open();
 }
 
@@ -56,7 +60,7 @@ void Level::tick() {
     if (player->should_be_deleted(*this)) {
         delete player;
         player = create_player(level.markers.at("PlayerSpawn").x, level.markers.at("PlayerSpawn").y);
-        start_door.open();
+        enter();
     }
     // update camera
     Camera::tick(static_cast<int>(player->x));
