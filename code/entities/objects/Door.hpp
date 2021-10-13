@@ -47,8 +47,6 @@ private:
                 return idle;
             case DoorState::OPENING:
                 return opening;
-            default:
-                throw std::runtime_error("Unexpected door state.");
         }
     }
 };
