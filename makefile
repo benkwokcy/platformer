@@ -1,14 +1,15 @@
+BUILD_DIRECTORY=/Users/benkwok/Desktop/school.nosync/other/projects/platformer/build
+
 comp:
-	/Applications/CMake.app/Contents/bin/cmake --build /Users/benkwok/Desktop/school.nosync/platformer/build --config Debug --target platformer -j 10
+	cmake --build $(BUILD_DIRECTORY) --config Debug --target platformer -j 4
 
 run:
-	/Users/benkwok/Desktop/school.nosync/platformer/build/platformer
+	$(BUILD_DIRECTORY)/platformer
 
 debug:
-	/Applications/CMake.app/Contents/bin/cmake --build /Users/benkwok/Desktop/school.nosync/platformer/build --config Debug --target platformer -j 10
-	/Users/benkwok/Desktop/school.nosync/platformer/build/platformer
+	cmake --build $(BUILD_DIRECTORY) --config Debug --target platformer -j 4
+	$(BUILD_DIRECTORY)/platformer
 
 fast:
-	/Applications/CMake.app/Contents/bin/cmake --build /Users/benkwok/Desktop/school.nosync/platformer/build --config Release --target platformer -j 10
-	/Users/benkwok/Desktop/school.nosync/platformer/build/platformer
-
+	cmake --build $(BUILD_DIRECTORY) --config Release --target platformer -j 4
+	$(BUILD_DIRECTORY)/platformer
