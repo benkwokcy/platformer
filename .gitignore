@@ -1,8 +1,12 @@
+# MacOS
 .DS_Store
-README.txt
+
+# VSCode
 .vscode
-platformer
+
+# Build
 assets
-*.dSYM
-sprites
 build
+
+# Other
+README.txt
