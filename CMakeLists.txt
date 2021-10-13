@@ -26,4 +26,5 @@ target_include_directories(platformer PUBLIC
     code/entities/objects 
     code/entities/ui 
     code/core 
-    code/scenes)
+    code/scenes
+    code/utils)
