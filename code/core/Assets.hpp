@@ -13,8 +13,9 @@ public:
         return *instance_;
     }
 
-    // Don't show these file paths if I make my code public on Github
-    const static inline std::string PATH = "/Users/benkwok/Desktop/school.nosync/platformer/assets/";
+    // Your assets should be in "PROJECT_DIRECTORY/assets/"
+    const static inline std::string PATH = "assets/"; 
+
     Sprite player_run;
     Sprite player_idle;
     Sprite player_attack;
