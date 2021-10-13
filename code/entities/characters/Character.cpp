@@ -14,9 +14,9 @@
 
 #include "Character.hpp"
 
-/*********************************************
- *              CONSTRUCTORS
- *********************************************/
+//--------------------------------------------
+//              CONSTRUCTORS
+//--------------------------------------------
 
 Character::Character(float x, float y, float w, float h, GraphicsComponent* graphics, InputComponent* input, PhysicsComponent* physics) :
     x(x),
@@ -61,9 +61,9 @@ Character::~Character() {
     delete physics;
 }
 
-/*********************************************
- *              METHODS
- *********************************************/
+//--------------------------------------------
+//              METHODS
+//--------------------------------------------
 
 void Character::paint() {
     graphics->paint(*this);
@@ -148,9 +148,9 @@ void Character::change_state(CharacterState state) {
     graphics->get_current_sprite(*this).reset_time();
 }
 
-/*********************************************
- *              FACTORY METHODS
- *********************************************/
+//--------------------------------------------
+//              FACTORY METHODS
+//--------------------------------------------
 
 Character* create_player(int x, int y) {
     float w = 16.0f, h = 28.0f;

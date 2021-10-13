@@ -2,9 +2,9 @@
 
 #include <SDL2/SDL.h>
 
-/*********************************************
- *              KEYBOARD EVENTS
- *********************************************/
+//--------------------------------------------
+//              KEYBOARD EVENTS
+//--------------------------------------------
 
 enum class InputEvent {
     NONE,  // no events in the SDL queue
@@ -17,9 +17,9 @@ enum class InputEvent {
     IGNORE,  // an SDL InputEvent that we don't care about
 };
 
-/*********************************************
- *              KEYBOARD STATE
- *********************************************/
+//--------------------------------------------
+//              KEYBOARD STATE
+//--------------------------------------------
 
 class Input {
 public:

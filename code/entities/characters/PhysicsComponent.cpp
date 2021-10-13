@@ -10,18 +10,18 @@
 
 #include "PhysicsComponent.hpp"
 
-/*********************************************
- *                CONSTANTS
- *********************************************/
+//--------------------------------------------
+//                CONSTANTS
+//--------------------------------------------
 
 constexpr float GRAVITY = 0.55f;
 constexpr float KNOCKBACK_DECAY = 0.3f;
 constexpr float KNOCKBACK_X = 4.5f;
 constexpr float KNOCKBACK_Y = 6.5f;
 
-/*********************************************
- *           COLLISION DETECTION
- *********************************************/
+//--------------------------------------------
+//           COLLISION DETECTION
+//--------------------------------------------
 
 // From a's perspective.
 std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect& b) {
@@ -65,9 +65,9 @@ std::pair<CollisionType,int> rect_collide_rect(const SDL_Rect& a, const SDL_Rect
     throw std::runtime_error("Unhandled collision type");
 }
 
-/*********************************************
- *              COMPONENTS
- *********************************************/
+//--------------------------------------------
+//              COMPONENTS
+//--------------------------------------------
 
 void PhysicsComponent::tick(Character& character) {
     character.speed_y += GRAVITY;

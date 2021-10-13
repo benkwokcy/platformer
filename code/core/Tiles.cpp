@@ -10,9 +10,9 @@ Parse maps and tilesets from the Tiled map editor into game objects.
 
 #include "Tiles.hpp"
 
-/*********************************************
- *            XML HELPER FUNCTIONS
- *********************************************/
+//--------------------------------------------
+//            XML HELPER FUNCTIONS
+//--------------------------------------------
 
 inline void xml_assert(tinyxml2::XMLError error_code) {
     assert(error_code == tinyxml2::XML_SUCCESS);
@@ -30,9 +30,9 @@ std::string get_string_attribute(tinyxml2::XMLElement* element, const char* attr
     return std::string(temp);
 }
 
-/*********************************************
- *                TILESET
- *********************************************/
+//--------------------------------------------
+//                 TILESET
+//--------------------------------------------
 
 Tileset::Tileset(int first_tile_id, std::string filename):
     sprite(create_sprite_from_tileset_file(filename)),
@@ -64,9 +64,9 @@ Sprite Tileset::create_sprite_from_tileset_file(std::string filename) {
     return Sprite(image_path, image_width, image_height, tile_width, tile_height);
 }
 
-/*********************************************
- *                TILEMAP
- *********************************************/
+//--------------------------------------------
+//                  TILEMAP
+//--------------------------------------------
 
 Tilemap::Tilemap(std::string filename) : 
     name(filename) 

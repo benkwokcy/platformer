@@ -7,9 +7,9 @@
 
 #include "InputComponent.hpp"
 
-/*********************************************
- *           PlayerInputComponent
- *********************************************/
+//--------------------------------------------
+//           PlayerInputComponent
+//--------------------------------------------
 
 void PlayerInputComponent::handle_event(Character& me, InputEvent e) {
     switch (e) {
@@ -45,9 +45,9 @@ void PlayerInputComponent::tick(Character& me, Level& level) {
     }
 }
 
-/*********************************************
- *           PigInputComponent
- *********************************************/
+//--------------------------------------------
+//           PigInputComponent
+//--------------------------------------------
 
 namespace Pig {
     constexpr float run_speed = 2.0f;
