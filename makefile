@@ -1,4 +1,4 @@
-BUILD_DIRECTORY=/Users/benkwok/Desktop/school.nosync/other/projects/platformer/build
+BUILD_DIRECTORY=./build
 
 comp:
 	cmake --build $(BUILD_DIRECTORY) --config Debug --target platformer -j 4
