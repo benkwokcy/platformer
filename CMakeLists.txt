@@ -8,9 +8,6 @@ add_compile_options(-Wall -Wextra -Wpedantic -Wshadow)
 add_compile_options(-fsanitize=address -fsanitize=undefined)
 add_link_options(-fsanitize=address -fsanitize=undefined)
 
-# Libraries
-add_link_options(-lSDL2 -lSDL2_image -ltinyxml2)
-
 add_executable(platformer 
     code/Main.cpp 
     code/scenes/Level.cpp 
@@ -28,3 +25,8 @@ target_include_directories(platformer PUBLIC
     code/core 
     code/scenes
     code/utils)
+
+target_link_libraries(platformer 
+    SDL2
+    SDL2_image
+    tinyxml2)
