@@ -1,16 +1,16 @@
-/*
-Parse maps and tilesets from the Tiled map editor into game objects.
-*/
-
 #pragma once
 
 #include <tinyxml2.h>
+
+#include "Sprite.hpp"
 
 #include <unordered_map>
 #include <vector>
 #include <string>
 
-#include "Sprite.hpp"
+/*
+Parse maps and tilesets from the Tiled map editor into game objects.
+*/
 
 class Tileset {
 public:

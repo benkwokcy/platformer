@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(platformer LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wall -Wextra -Wpedantic -Wshadow)
+include_directories("~/DevLib/miniconda3/include")
+link_directories("~/DevLib/miniconda3/lib")
 
 # Sanitizers
 add_compile_options(-fsanitize=address -fsanitize=undefined)
