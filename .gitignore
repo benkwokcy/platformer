@@ -5,7 +5,6 @@
 .vscode
 
 # Build
-assets
 build
 
 # Other

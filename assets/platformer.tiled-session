@@ -1,0 +1,182 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "level.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "/Users/benkwok/Downloads/kaka.tmx": {
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 776,
+                "y": 1235.5
+            }
+        },
+        "/Users/benkwok/Downloads/ro.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "background.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "decorations.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "dooridle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "healthbar.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "idle.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "level.tmx": {
+            "scale": 1.28,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 353.125,
+                "y": 643.359375
+            }
+        },
+        "level2.tmx": {
+            "scale": 1.52,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 319.7368421052632,
+                "y": 240.1315789473685
+            }
+        },
+        "mainmenu.tmx": {
+            "scale": 1.01,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 334.65346534653463,
+                "y": 213.36633663366337
+            }
+        },
+        "menufont.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "pigattack.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "piggy.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "pigidle.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "pigrun.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "playerattack.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "playeridle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "playerrun.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "smallhearthit.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "smallheartidle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "smallstuff.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "sprites/background.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "sprites/mainmenu.tmx": {
+            "scale": 1.57,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 319.10828025477707,
+                "y": 227.70700636942672
+            }
+        },
+        "sprites/menufont.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "terrain.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.externalTilesetPath": "/Users/benkwok/Desktop/school.nosync/platformer/assets",
+    "last.imagePath": "/Users/benkwok/Desktop/school.nosync/platformer/assets/spritesheets/kingsandpigs-10fps/11-Door",
+    "map.fixedSize": true,
+    "map.height": 15,
+    "map.lastUsedFormat": "tmx",
+    "map.orientation": null,
+    "map.width": 20,
+    "openFiles": [
+        "level.tmx"
+    ],
+    "project": "platformer.tiled-project",
+    "property.type": "color",
+    "recentFiles": [
+        "level.tmx",
+        "dooridle.tsx",
+        "smallhearthit.tsx",
+        "healthbar.tsx",
+        "smallheartidle.tsx",
+        "playerattack.tsx",
+        "pigattack.tsx",
+        "playeridle.tsx",
+        "idle.tsx",
+        "playerrun.tsx",
+        "decorations.tsx",
+        "terrain.tsx"
+    ],
+    "resizeMap.removeObjects": false,
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 56,
+        "width": 46
+    },
+    "tileset.transparentColor": "#ffffff",
+    "tileset.type": 0,
+    "tileset.useTransparentColor": false
+}
